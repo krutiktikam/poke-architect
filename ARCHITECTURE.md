@@ -4,21 +4,24 @@ This document outlines the technical design and architectural decisions behind t
 
 ## 🏗️ High-Level Architecture
 
-The application follows a decoupled **Client-Server Architecture** to ensure separation of concerns and scalability.
+The application follows a decoupled **Client-Server Architecture** with a Multi-Page frontend for enhanced user experience.
 
 ```mermaid
 graph TD
     User((User))
     
-    subgraph "Frontend (React SPA)"
-        UI[Tailwind UI]
-        React[React Hooks/State]
-        Recharts[Recharts Data Viz]
+    subgraph "Frontend (React Multi-Page)"
+        Router[React Router]
+        Context[Team Context + LocalStorage]
+        Builder[Builder Page]
+        Analysis[Analysis Page]
+        Pokedex[Pokedex Page]
     end
     
     subgraph "Backend (FastAPI)"
         API[REST Endpoints]
-        Logic[Team Analysis Logic]
+        Heuristics[Heuristic Recommendation Engine]
+        Tactical[Tactical Advice Logic]
         ORM[SQLAlchemy ORM]
     end
     
@@ -28,9 +31,10 @@ graph TD
         PokeAPI[External PokéAPI]
     end
     
-    User <--> UI
-    UI <--> React
-    React <--> API
+    User <--> Router
+    Router <--> Builder & Analysis & Pokedex
+    Builder & Analysis & Pokedex <--> Context
+    Context <--> API
     API <--> ORM
     ORM <--> DB
     ETL -- Extract --> PokeAPI
@@ -40,28 +44,28 @@ graph TD
 ## 📋 Component Breakdown
 
 ### 1. Frontend (Vite + React + Tailwind)
-- **Component Driven**: Modular React components (TeamDock, PokemonCard, AnalysisDashboard) for high reusability.
-- **Data Visualization**: Uses `recharts` for Radar (Stats) and Bar (Types) charts, providing immediate tactical feedback to the user.
-- **Responsive Design**: Utilizes Tailwind CSS v4's mobile-first approach to ensure the Team Builder works on all devices.
+- **Multi-Page Routing**: Uses `react-router-dom` to separate the **Builder**, **Deep Analysis**, and **PokéDex** into distinct, focused views.
+- **Global State Management**: Implements a `TeamContext` provider that persists the user's selection across pages and through browser refreshes via `localStorage`.
+- **Advanced Data Viz**: Utilizes `recharts` for complex radar charts and horizontal bar graphs to visualize team dynamics.
+- **Dynamic UX**: Features a persistent "Team Dock" that follows the user across pages for quick access to their roster.
 
 ### 2. Backend (FastAPI + Python)
-- **Asynchronous Processing**: FastAPI handles concurrent requests efficiently.
-- **Business Logic**: Dedicated utility functions calculate complex Pokémon type interactions (dual-type coverage) and suggest optimal team members based on identified weaknesses.
-- **RESTful API**: Clean JSON endpoints for Pokémon search, detailed stats, and team analytics.
+- **Heuristic Recommendation Engine**: A multi-factor algorithm that suggests members based on defensive synergy (resisting team weaknesses) and Base Stat Total (BST).
+- **Team Archetype Detection**: Automatically classifies teams (e.g., "Glass Cannon", "Bulky Stall", "Balanced") by analyzing average speed, offense, and bulk metrics.
+- **Tactical Advice**: Generates human-readable coaching tips based on identified critical gaps in type coverage.
+- **Generation-Aware API**: All endpoints support filtering by Pokémon Generation (1-9), allowing for game-specific team building.
 
 ### 3. Data Engineering (ETL Pipeline)
-- **ETL Strategy**: Instead of direct API calls, we use a custom pipeline (`scripts/etl_pipeline.py`).
-- **Extraction**: Pulls raw data for the first 151 Pokémon and all 18 types from PokéAPI.
-- **Transformation**: flattens nested JSON, handles missing sprite data, and calculates regional mapping.
-- **Storage**: Sanitized data is stored in a local SQLite database for sub-millisecond query performance.
+- **All Generations Support**: The pipeline extracts data for all 1025+ Pokémon (Gens 1-9).
+- **Enriched Metadata**: Stores regional information, generation numbers, and detailed base stats.
+- **Optimized Storage**: Uses a local SQLite database for sub-millisecond query performance on large datasets.
 
 ## 🛡️ Key Design Patterns
 
-- **Decoupling**: The frontend communicates via a standard REST API, allowing the backend to be swapped or scaled independently.
-- **Single Source of Truth**: The local SQLite database acts as the primary data source, protecting the app from external API downtime and rate limits.
-- **State Management**: Uses React's `useState` and `useEffect` for predictable UI updates during team construction.
+- **Persistence Layer**: The combination of a local DB and Frontend LocalStorage ensures a seamless "offline-first" feel for team construction.
+- **Single Source of Truth**: The local database acts as the primary source, protecting the app from external API rate limits.
+- **Surgical Updates**: The backend uses an efficacy map pre-fetched from the database to perform high-speed type calculations without redundant queries.
 
 ## 🚀 Future Scalability
-- **AI Integration**: The architecture is ready for a dedicated ML service to provide "Meta-aware" team recommendations.
-- **Authentication**: Ready for PostgreSQL migration to support user accounts and cloud-saved teams.
-- **Expansion**: The ETL pipeline can be easily extended to fetch data for all 1000+ Pokémon.
+- **Cloud Hosting**: Ready for PostgreSQL migration to support multi-user accounts and shared teams.
+- **Asset Optimization**: Plans for a local sprite cache to further increase performance.
