@@ -52,26 +52,85 @@ def suggest_pokemon(current_team: List[Pokemon], all_pokemon: List[Pokemon], eff
         return []
         
     coverage = calculate_type_coverage(current_team, efficacy_map)
-    # Find the types we are most weak to (highest score)
-    weakest_to = sorted(coverage.items(), key=lambda x: x[1], reverse=True)[0][0]
+    # Types the team is weakest to (score > 0)
+    weak_types = [t for t, score in coverage.items() if score > 0]
     
-    # Suggest pokemon that are resistant or immune to that type
-    suggestions = []
+    scored_suggestions = []
+    
     for p in all_pokemon:
         if p.id in [tp.id for tp in current_team]:
             continue
             
+        # 1. Defensive Score: How many team weaknesses does this Pokémon resist?
+        defensive_score = 0
         p_types = [p.type1]
         if p.type2:
             p_types.append(p.type2)
             
-        multiplier = 1.0
-        for def_type in p_types:
-            multiplier *= efficacy_map.get(weakest_to, {}).get(def_type, 1.0)
+        for wt in weak_types:
+            multiplier = 1.0
+            for pt in p_types:
+                multiplier *= efficacy_map.get(wt, {}).get(pt, 1.0)
             
-        if multiplier < 1.0:
-            suggestions.append(p)
-            if len(suggestions) >= 5:
-                break
+            if multiplier < 1.0:
+                defensive_score += (1.0 - multiplier) * 10 # Resistance is good
+            if multiplier == 0:
+                defensive_score += 15 # Immunity is great
+        
+        # 2. Stat Quality Score (BST normalized)
+        bst = (p.hp or 0) + (p.attack or 0) + (p.defense or 0) + \
+              (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0)
+        stat_score = bst / 100
+        
+        # Total Heuristic
+        total_score = (defensive_score * 2.0) + stat_score
+        
+        scored_suggestions.append((p, total_score))
                 
-    return suggestions
+    # Sort by score descending
+    scored_suggestions.sort(key=lambda x: x[1], reverse=True)
+    return [s[0] for s in scored_suggestions[:5]]
+
+def detect_team_archetype(pokemon_list: List[Pokemon]) -> str:
+    if not pokemon_list:
+        return "Unknown"
+        
+    avg_speed = sum(p.speed or 0 for p in pokemon_list) / len(pokemon_list)
+    avg_offense = sum((p.attack or 0) + (p.special_attack or 0) for p in pokemon_list) / (len(pokemon_list) * 2)
+    avg_bulk = sum((p.hp or 0) + (p.defense or 0) + (p.special_defense or 0) for p in pokemon_list) / (len(pokemon_list) * 3)
+    
+    if avg_speed > 95 and avg_offense > 100:
+        return "Hyper Offense"
+    elif avg_bulk > 90 and avg_speed < 70:
+        return "Bulky Stall"
+    elif avg_offense > 110 and avg_bulk < 70:
+        return "Glass Cannon"
+    elif avg_speed > 80 and avg_offense > 85 and avg_bulk > 80:
+        return "Balanced"
+    
+    return "Mixed"
+
+def generate_tactical_advice(coverage: Dict[str, float]) -> List[str]:
+    advice = []
+    
+    # Sort types by vulnerability score
+    vulnerabilities = sorted(coverage.items(), key=lambda x: x[1], reverse=True)
+    
+    major_weakness = [t for t, score in vulnerabilities if score >= 2.0]
+    moderate_weakness = [t for t, score in vulnerabilities if 0 < score < 2.0]
+    
+    if major_weakness:
+        advice.append(f"Critical Gap: Your team is heavily vulnerable to {', '.join(major_weakness[:2])} types. Consider adding a defensive pivot with resistance to these.")
+    
+    if len(moderate_weakness) > 3:
+        advice.append(f"Caution: You have multiple minor weaknesses. A balanced 'Steel' or 'Fairy' type could help shore up your general defenses.")
+
+    # Check for resistances
+    resistances = [t for t, score in vulnerabilities if score <= -2.0]
+    if len(resistances) > 2:
+        advice.append(f"Strength: You have excellent defensive coverage against {', '.join(resistances[:2])} attacks.")
+    
+    if not advice:
+        advice.append("Your team is fairly balanced, but watch out for specific dual-type threats.")
+        
+    return advice

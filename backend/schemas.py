@@ -14,6 +14,7 @@ class PokemonBase(BaseModel):
     speed: int
     sprite_url: Optional[str] = None
     region: str
+    generation: int
 
     class Config:
         from_attributes = True
@@ -27,3 +28,5 @@ class TeamAnalysisResponse(BaseModel):
     total_stats: dict
     type_coverage: dict # type -> multiplier
     suggestions: List[PokemonBase]
+    advice: List[str]
+    archetype: str

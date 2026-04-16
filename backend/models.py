@@ -16,8 +16,9 @@ class Pokemon(Base):
     speed = Column(Integer)
     sprite_url = Column(String)
     region = Column(String)
+    generation = Column(Integer)
 
-class TypeEfficacy(Base):
+class TypeEfficacy(Base) :
     __tablename__ = "type_efficacy"
 
     damage_type = Column(String, primary_key=True)

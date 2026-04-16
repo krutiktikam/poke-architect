@@ -1,14 +1,15 @@
 import React from 'react';
 import type { Pokemon } from '../types';
 import { X, Trophy } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface TeamDockProps {
   team: Pokemon[];
   onRemove: (id: number) => void;
-  onAnalyze: () => void;
+  onAnalyze?: () => void;
 }
 
-const TeamDock: React.FC<TeamDockProps> = ({ team, onRemove, onAnalyze }) => {
+const TeamDock: React.FC<TeamDockProps> = ({ team, onRemove }) => {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 z-40 transition-transform duration-300">
       <div className="container mx-auto flex flex-col md:flex-row gap-4 items-center">
@@ -49,18 +50,17 @@ const TeamDock: React.FC<TeamDockProps> = ({ team, onRemove, onAnalyze }) => {
             <span>Team Members</span>
             <span>{team.length}/6</span>
           </div>
-          <button 
-            onClick={onAnalyze}
-            disabled={team.length === 0}
+          <Link 
+            to={team.length > 0 ? "/analysis" : "#"}
             className={`flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-bold transition-all shadow-sm ${
               team.length > 0 
               ? 'bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95' 
-              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+              : 'bg-slate-200 text-slate-400 cursor-not-allowed pointer-events-none'
             }`}
           >
             <Trophy size={18} />
             Analyze Team
-          </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -4,24 +4,26 @@ import time
 
 DB_NAME = "pokemon.db"
 
-def get_region(pokemon_id):
+def get_generation_and_region(pokemon_id):
     if 1 <= pokemon_id <= 151:
-        return "Kanto"
+        return 1, "Kanto"
     elif 152 <= pokemon_id <= 251:
-        return "Johto"
+        return 2, "Johto"
     elif 252 <= pokemon_id <= 386:
-        return "Hoenn"
+        return 3, "Hoenn"
     elif 387 <= pokemon_id <= 493:
-        return "Sinnoh"
+        return 4, "Sinnoh"
     elif 494 <= pokemon_id <= 649:
-        return "Unova"
+        return 5, "Unova"
     elif 650 <= pokemon_id <= 721:
-        return "Kalos"
+        return 6, "Kalos"
     elif 722 <= pokemon_id <= 809:
-        return "Alola"
-    elif 810 <= pokemon_id <= 898:
-        return "Galar"
-    return "Unknown"
+        return 7, "Alola"
+    elif 810 <= pokemon_id <= 905:
+        return 8, "Galar"
+    elif 906 <= pokemon_id <= 1025:
+        return 9, "Paldea"
+    return 0, "Unknown"
 
 def setup_db():
     conn = sqlite3.connect(DB_NAME)
@@ -39,7 +41,8 @@ def setup_db():
             special_defense INTEGER,
             speed INTEGER,
             sprite_url TEXT,
-            region TEXT
+            region TEXT,
+            generation INTEGER
         )
     ''')
     cursor.execute('''
@@ -65,6 +68,7 @@ def fetch_pokemon_data(limit=151):
             stats = {stat['stat']['name']: stat['base_stat'] for stat in data['stats']}
             types = [t['type']['name'] for t in data['types']]
             
+            gen, region = get_generation_and_region(data['id'])
             pokemon_list.append({
                 'id': data['id'],
                 'name': data['name'].capitalize(),
@@ -77,7 +81,8 @@ def fetch_pokemon_data(limit=151):
                 'special_defense': stats.get('special-defense'),
                 'speed': stats.get('speed'),
                 'sprite_url': data['sprites']['other']['official-artwork']['front_default'] or data['sprites']['front_default'],
-                'region': get_region(data['id'])
+                'region': region,
+                'generation': gen
             })
             if i % 10 == 0:
                 print(f"Loaded {i}/{limit}...")
@@ -119,8 +124,8 @@ def load_data(conn, pokemon_list, efficacy_records):
     
     print("Saving Pokémon data to database...")
     cursor.executemany('''
-        INSERT OR REPLACE INTO pokemon (id, name, type1, type2, hp, attack, defense, special_attack, special_defense, speed, sprite_url, region)
-        VALUES (:id, :name, :type1, :type2, :hp, :attack, :defense, :special_attack, :special_defense, :speed, :sprite_url, :region)
+        INSERT OR REPLACE INTO pokemon (id, name, type1, type2, hp, attack, defense, special_attack, special_defense, speed, sprite_url, region, generation)
+        VALUES (:id, :name, :type1, :type2, :hp, :attack, :defense, :special_attack, :special_defense, :speed, :sprite_url, :region, :generation)
     ''', pokemon_list)
     
     print("Saving type efficacy data to database...")
@@ -135,9 +140,9 @@ def load_data(conn, pokemon_list, efficacy_records):
 if __name__ == "__main__":
     connection = setup_db()
     
-    # Let's start with Gen 1-3 for the portfolio demo (386 Pokémon)
-    # 151 is faster for initial dev, we can increase it later.
-    pkmn_data = fetch_pokemon_data(limit=151) 
+    # Increase limit to fetch all generations (up to Gen 9)
+    # Total Pokémon count as of Gen 9 is 1025.
+    pkmn_data = fetch_pokemon_data(limit=1025) 
     type_data = fetch_type_efficacy()
     
     load_data(connection, pkmn_data, type_data)
