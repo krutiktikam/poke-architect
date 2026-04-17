@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TrendingUp, ShieldAlert, Sparkles, Loader2, Info } from 'lucide-react';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, Tooltip, Cell
+  BarChart, Bar, XAxis, YAxis, Cell
 } from 'recharts';
 import { useTeam } from '../context/TeamContext';
 import { API_BASE_URL } from '../config';
