@@ -5,27 +5,25 @@ from sqlalchemy.orm import Session
 from .database import get_db
 from .models import SavedTeam, Pokemon, User
 from .auth import get_current_user
-from .schemas import PokemonBase
+from .schemas import PokemonBase, TeamCreate
 
 router = APIRouter(prefix="/api/teams", tags=["teams"])
 
 @router.post("/")
 async def save_team(
-    name: str, 
-    pokemon_ids: List[int], 
-    is_public: bool = False, 
+    team_in: TeamCreate,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
 ):
-    if not 1 <= len(pokemon_ids) <= 6:
+    if not 1 <= len(team_in.pokemon_ids) <= 6:
         raise HTTPException(status_code=400, detail="Team must have 1-6 Pokémon")
     
     # Store as JSON string
     team = SavedTeam(
         user_id=user.id,
-        name=name,
-        team_data=json.dumps(pokemon_ids),
-        is_public=is_public
+        name=team_in.name,
+        team_data=json.dumps(team_in.pokemon_ids),
+        is_public=team_in.is_public
     )
     db.add(team)
     db.commit()

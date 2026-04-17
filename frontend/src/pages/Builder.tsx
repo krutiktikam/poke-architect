@@ -57,12 +57,10 @@ const Builder = () => {
     }
     setSaving(true);
     try {
-      await axios.post(`${API_BASE_URL}/teams`, null, {
-        params: {
-          name: teamName,
-          is_public: isPublic
-        },
-        data: team.map(p => p.id)
+      await axios.post(`${API_BASE_URL}/teams`, {
+        name: teamName,
+        pokemon_ids: team.map(p => p.id),
+        is_public: isPublic
       });
       alert('Team saved successfully!');
       setTeamName('');

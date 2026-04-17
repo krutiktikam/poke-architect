@@ -31,3 +31,8 @@ class TeamAnalysisResponse(BaseModel):
     advice: List[str]
     archetype: str
     health_score: str
+
+class TeamCreate(BaseModel):
+    name: str
+    pokemon_ids: List[int]
+    is_public: bool = True
