@@ -32,7 +32,8 @@ This document outlines the roadmap for PokéArchitect's evolution. Items marked 
 *   **[x] Database Migration**: Prepare for Supabase (PostgreSQL) for user accounts and cloud-saved teams (Added `DATABASE_URL` support and migration script).
 
 ## 5. Bonus Polish Features
-*   **[ ] Comparison Mode**: Side-by-side Pokémon stat comparison with a "winner" prediction.
+*   **[x] Comparison Mode**: Side-by-side Pokémon stat comparison with a "winner" prediction.
+*   **[x] Unified Dashboard**: Persistent live analysis during team building.
 *   **[ ] Team Export**: Download a "Team Certificate" as an image or PDF.
 *   **[ ] Asset Cache**: Implement local caching for sprites to improve offline experience.
 
