@@ -12,13 +12,10 @@ from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemo
 
 app = FastAPI(title="Pokémon Team Architect API")
 
-# Default origins for development
-origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=False, # Changed to False to allow "*" wildcard origins
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
