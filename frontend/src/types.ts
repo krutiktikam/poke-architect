@@ -10,4 +10,6 @@ export type Pokemon = {
   special_defense: number;
   speed: number;
   sprite_url: string;
+  region: string;
+  generation: number;
 };

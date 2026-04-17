@@ -25,11 +25,11 @@ This document outlines the roadmap for PokéArchitect's evolution. Items marked 
 *   **[x] Team Archetypes**: Automatic detection and labeling of team styles (e.g., "Hyper Offense", "Bulky Stall", "Glass Cannon").
 
 ## 4. Mobile & Deployment Strategy
-*   **[ ] PWA Support**: Make the app "Installable" on mobile devices via Vite PWA plugin.
-*   **[ ] Cloud Hosting**: 
-    *   **Frontend**: Vercel/Netlify.
-    *   **Backend**: Render/Railway.
-*   **[ ] Database Migration**: Prepare for Supabase (PostgreSQL) for user accounts and cloud-saved teams.
+*   **[x] PWA Support**: Make the app "Installable" on mobile devices via Vite PWA plugin.
+*   **[x] Cloud Hosting**: 
+    *   **Frontend**: Vercel/Netlify (Added `vercel.json`).
+    *   **Backend**: Render/Railway (Added `Procfile` and dynamic CORS).
+*   **[x] Database Migration**: Prepare for Supabase (PostgreSQL) for user accounts and cloud-saved teams (Added `DATABASE_URL` support and migration script).
 
 ## 5. Bonus Polish Features
 *   **[ ] Comparison Mode**: Side-by-side Pokémon stat comparison with a "winner" prediction.

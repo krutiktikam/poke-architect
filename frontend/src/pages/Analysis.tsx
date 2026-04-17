@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { useTeam } from '../context/TeamContext';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+import { API_BASE_URL } from '../config';
 
 const Analysis = () => {
   const { team, targetGen, setTargetGen } = useTeam();

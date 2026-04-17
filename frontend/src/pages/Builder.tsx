@@ -5,7 +5,7 @@ import PokemonCard from '../components/PokemonCard';
 import { useTeam } from '../context/TeamContext';
 import type { Pokemon } from '../types';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+import { API_BASE_URL } from '../config';
 
 const Builder = () => {
   const { team, addToTeam } = useTeam();
