@@ -58,8 +58,11 @@ async def get_current_user(request: Request, db: Session = Depends(get_db)):
 
 @router.get("/google/login")
 async def login(request: Request):
-    redirect_uri = request.url_for('auth_callback')
-    # If using local dev with different port for frontend, make sure redirect_uri is correct
+    # Use environment variable for redirect_uri in production to avoid protocol issues
+    redirect_uri = os.getenv("GOOGLE_REDIRECT_URI")
+    if not redirect_uri:
+        redirect_uri = request.url_for('auth_callback')
+    
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @router.get("/google/callback", name='auth_callback')
