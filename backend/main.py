@@ -1,24 +1,36 @@
 import os
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from .database import engine, get_db, Base
 from .models import Pokemon, TypeEfficacy
 from .schemas import PokemonBase, TeamAnalysisResponse
-from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype
+from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score
+from . import auth, teams
 
-# Base.metadata.create_all(bind=engine) # Not needed as ETL created it
+# Create tables if they don't exist
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Pokémon Team Architect API")
 
+# Session Middleware required for OAuth
+app.add_middleware(
+    SessionMiddleware, 
+    secret_key=os.getenv("SECRET_KEY", "your-session-secret-change-it")
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[os.getenv("FRONTEND_URL", "http://localhost:5173"), "http://127.0.0.1:5173"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router)
+app.include_router(teams.router)
 
 @app.get("/")
 def read_root():
@@ -59,7 +71,7 @@ def analyze_team(
     target_generation: Optional[int] = Query(None)
 ):
     if not pokemon_ids:
-        return {"total_stats": {}, "type_coverage": {}, "suggestions": [], "advice": [], "archetype": "None"}
+        return {"total_stats": {}, "type_coverage": {}, "suggestions": [], "advice": [], "archetype": "None", "health_score": "F"}
     
     if len(pokemon_ids) > 6:
         raise HTTPException(status_code=400, detail="Team can have max 6 Pokémon")
@@ -86,13 +98,15 @@ def analyze_team(
     suggestions = suggest_pokemon(team, all_p, eff_map)
     advice = generate_tactical_advice(coverage)
     archetype = detect_team_archetype(team)
+    health_score = calculate_health_score(team, coverage)
     
     return {
         "total_stats": stats,
         "type_coverage": coverage,
         "suggestions": suggestions,
         "advice": advice,
-        "archetype": archetype
+        "archetype": archetype,
+        "health_score": health_score
     }
 
 if __name__ == "__main__":

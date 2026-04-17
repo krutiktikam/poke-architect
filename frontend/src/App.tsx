@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { TeamProvider } from './context/TeamContext';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import TeamDock from './components/TeamDock';
 import Builder from './pages/Builder';
 import Analysis from './pages/Analysis';
 import Pokedex from './pages/Pokedex';
+import Community from './pages/Community';
+import AuthCallback from './pages/AuthCallback';
 import { useTeam } from './context/TeamContext';
 
 // Wrapper component to handle TeamDock visibility and context
@@ -21,13 +24,15 @@ const AppContent = () => {
           <Route path="/builder" element={<Builder />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/pokedex" element={<Pokedex />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </main>
 
       <TeamDock 
         team={team} 
         onRemove={removeFromTeam} 
-        onAnalyze={() => {}} // Analysis is now a page, but TeamDock might still need to trigger it or just link to it
+        onAnalyze={() => {}} 
       />
     </div>
   );
@@ -35,11 +40,13 @@ const AppContent = () => {
 
 function App() {
   return (
-    <TeamProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </TeamProvider>
+    <AuthProvider>
+      <TeamProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </TeamProvider>
+    </AuthProvider>
   );
 }
 

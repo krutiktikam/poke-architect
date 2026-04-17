@@ -110,6 +110,36 @@ def detect_team_archetype(pokemon_list: List[Pokemon]) -> str:
     
     return "Mixed"
 
+def calculate_health_score(pokemon_list: List[Pokemon], coverage: Dict[str, float]) -> str:
+    if not pokemon_list:
+        return "F"
+    
+    # 1. Coverage Score (Lower is better, means fewer weaknesses)
+    weakness_count = sum(1 for score in coverage.values() if score > 0)
+    major_weakness_count = sum(1 for score in coverage.values() if score >= 2.0)
+    
+    # 2. Stat Score (BST)
+    avg_bst = sum((p.hp or 0) + (p.attack or 0) + (p.defense or 0) + 
+                  (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0) 
+                  for p in pokemon_list) / len(pokemon_list)
+    
+    # 3. Synergy Score (Archetype diversity)
+    # For now, let's just use a simple formula
+    score = 100
+    score -= weakness_count * 5
+    score -= major_weakness_count * 15
+    
+    if avg_bst > 540:
+        score += 20
+    elif avg_bst > 480:
+        score += 10
+        
+    if score >= 90: return "S"
+    if score >= 75: return "A"
+    if score >= 60: return "B"
+    if score >= 40: return "C"
+    return "D"
+
 def generate_tactical_advice(coverage: Dict[str, float]) -> List[str]:
     advice = []
     

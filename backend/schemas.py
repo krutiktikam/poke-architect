@@ -30,3 +30,4 @@ class TeamAnalysisResponse(BaseModel):
     suggestions: List[PokemonBase]
     advice: List[str]
     archetype: str
+    health_score: str
