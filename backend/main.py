@@ -18,7 +18,7 @@ origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
+    allow_credentials=False, # Changed to False to allow "*" wildcard origins
     allow_methods=["*"],
     allow_headers=["*"],
 )
