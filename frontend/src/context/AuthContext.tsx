@@ -40,12 +40,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUser = async () => {
     try {
-      // In a real implementation, you'd have this endpoint
-      // const response = await axios.get(`${API_BASE_URL}/auth/me`);
-      // setUser(response.data);
-      
-      // Since we don't have /me yet, let's just parse the token if possible or set a dummy user
-      // for demonstration if we have a token.
+      const response = await axios.get(`${API_BASE_URL}/auth/me`);
+      setUser(response.data);
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch user', error);
