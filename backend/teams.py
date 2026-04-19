@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .database import get_db
-from .models import SavedTeam, Pokemon, User
+from .models import SavedTeam, Pokemon, User, TypeEfficacy
 from .auth import get_current_user
 from .schemas import PokemonBase, TeamCreate
 
