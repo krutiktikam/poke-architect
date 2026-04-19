@@ -27,7 +27,7 @@ const CertificateCard = React.forwardRef<HTMLDivElement, CertificateCardProps>((
       
       {/* Subtle Grid Pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-           style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', size: '20px 20px' }}></div>
+           style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
 
       <div className="relative z-10 flex flex-col h-full justify-between">
         {/* Header */}
