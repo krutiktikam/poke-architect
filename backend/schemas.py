@@ -15,6 +15,8 @@ class PokemonBase(BaseModel):
     sprite_url: Optional[str] = None
     region: str
     generation: int
+    is_legendary: bool = False
+    is_mythical: bool = False
 
     class Config:
         from_attributes = True
@@ -36,3 +38,8 @@ class TeamCreate(BaseModel):
     name: str
     pokemon_ids: List[int]
     is_public: bool = True
+
+class TeamComparisonResponse(BaseModel):
+    team_a_win_prob: float
+    team_b_win_prob: float
+    advantage_factors: List[str]

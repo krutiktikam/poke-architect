@@ -1,19 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { TrendingUp, ShieldAlert, Sparkles, Loader2, AlertCircle } from 'lucide-react';
+import { TrendingUp, ShieldAlert, Sparkles, Loader2, AlertCircle, Download, FileText } from 'lucide-react';
+import { toPng } from 'html-to-image';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip, Cell
 } from 'recharts';
 import { useTeam } from '../context/TeamContext';
+import { useAuth } from '../context/AuthContext';
+import CertificateCard from '../components/CertificateCard';
 
 import { API_BASE_URL } from '../config';
 
 const Analysis = () => {
   const { team, targetGen, setTargetGen } = useTeam();
+  const { user } = useAuth();
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
+  
+  const certificateRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (team.length > 0) {
@@ -22,6 +29,24 @@ const Analysis = () => {
       setAnalysisData(null);
     }
   }, [team, targetGen]);
+
+  const handleExport = async () => {
+    if (!certificateRef.current) return;
+    
+    setExporting(true);
+    try {
+      const dataUrl = await toPng(certificateRef.current, { cacheBust: true });
+      const link = document.createElement('a');
+      link.download = `poke-architect-team-${new Date().getTime()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Failed to export certificate. Please try again.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const fetchAnalysis = async () => {
     setLoading(true);
@@ -122,6 +147,25 @@ const Analysis = () => {
             ))}
           </select>
         </div>
+
+        <button 
+          onClick={handleExport}
+          disabled={exporting}
+          className="flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-sm hover:bg-slate-800 transition-all shadow-lg disabled:opacity-50"
+        >
+          {exporting ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
+          EXPORT CERTIFICATE
+        </button>
+      </div>
+
+      {/* Hidden Certificate Card for Export */}
+      <div className="fixed left-[-9999px] top-0">
+        <CertificateCard 
+          ref={certificateRef}
+          team={team}
+          analysis={analysisData}
+          userName={user?.name}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">

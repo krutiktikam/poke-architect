@@ -12,4 +12,6 @@ export type Pokemon = {
   sprite_url: string;
   region: string;
   generation: number;
+  is_legendary?: boolean;
+  is_mythical?: boolean;
 };

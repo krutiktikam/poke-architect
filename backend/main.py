@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from .database import engine, get_db, Base
 from .models import Pokemon, TypeEfficacy
-from .schemas import PokemonBase, TeamAnalysisResponse
-from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score
+from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse
+from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score, calculate_win_probability
 from . import auth, teams
 
 # Create tables if they don't exist
@@ -57,12 +57,68 @@ def get_pokemon(
         query = query.filter(Pokemon.generation == generation)
     return query.limit(limit).all()
 
+@app.get("/api/pokemon/batch", response_model=List[PokemonBase])
+def get_pokemon_batch(
+    ids: str = Query(...),
+    db: Session = Depends(get_db)
+):
+    try:
+        id_list = [int(i) for i in ids.split(",")]
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid ID format. Use comma-separated integers.")
+    
+    pokemon = db.query(Pokemon).filter(Pokemon.id.in_(id_list)).all()
+    # Sort them according to the input IDs to maintain order
+    pokemon_map = {p.id: p for p in pokemon}
+    return [pokemon_map[i] for i in id_list if i in pokemon_map]
+
 @app.get("/api/pokemon/{pokemon_id}", response_model=PokemonBase)
 def get_single_pokemon(pokemon_id: int, db: Session = Depends(get_db)):
     pokemon = db.query(Pokemon).filter(Pokemon.id == pokemon_id).first()
     if not pokemon:
         raise HTTPException(status_code=404, detail="Pokémon not found")
     return pokemon
+
+@app.post("/api/compare-teams", response_model=TeamComparisonResponse)
+def compare_teams(
+    team_a_ids: List[int],
+    team_b_ids: List[int],
+    db: Session = Depends(get_db)
+):
+    team_a = db.query(Pokemon).filter(Pokemon.id.in_(team_a_ids)).all()
+    team_b = db.query(Pokemon).filter(Pokemon.id.in_(team_b_ids)).all()
+    
+    efficacies = db.query(TypeEfficacy).all()
+    eff_map = {}
+    for e in efficacies:
+        if e.damage_type not in eff_map:
+            eff_map[e.damage_type] = {}
+        eff_map[e.damage_type][e.target_type] = e.damage_factor
+        
+    prob_a = calculate_win_probability(team_a, team_b, eff_map)
+    
+    # Generate some simple advantage factors
+    factors = []
+    
+    avg_speed_a = sum(p.speed or 0 for p in team_a) / len(team_a) if team_a else 0
+    avg_speed_b = sum(p.speed or 0 for p in team_b) / len(team_b) if team_b else 0
+    if avg_speed_a > avg_speed_b + 10:
+        factors.append("Team A has a significant speed advantage")
+    elif avg_speed_b > avg_speed_a + 10:
+        factors.append("Team B has a significant speed advantage")
+        
+    bst_a = sum((p.hp or 0) + (p.attack or 0) + (p.defense or 0) + (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0) for p in team_a)
+    bst_b = sum((p.hp or 0) + (p.attack or 0) + (p.defense or 0) + (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0) for p in team_b)
+    if bst_a > bst_b * 1.1:
+        factors.append("Team A has higher overall base stats")
+    elif bst_b > bst_a * 1.1:
+        factors.append("Team B has higher overall base stats")
+        
+    return {
+        "team_a_win_prob": round(prob_a, 2),
+        "team_b_win_prob": round(1.0 - prob_a, 2),
+        "advantage_factors": factors
+    }
 
 @app.post("/api/team-analysis", response_model=TeamAnalysisResponse)
 def analyze_team(

@@ -62,3 +62,61 @@ async def get_public_teams(db: Session = Depends(get_db)):
             "created_at": t.created_at
         })
     return result
+
+@router.get("/leaderboard")
+async def get_leaderboard(db: Session = Depends(get_db)):
+    teams = db.query(SavedTeam).filter(SavedTeam.is_public == True).all()
+    
+    efficacies = db.query(TypeEfficacy).all()
+    eff_map = {}
+    for e in efficacies:
+        if e.damage_type not in eff_map:
+            eff_map[e.damage_type] = {}
+        eff_map[e.damage_type][e.target_type] = e.damage_factor
+
+    from .utils import calculate_type_coverage
+    
+    scored_teams = []
+    for t in teams:
+        p_ids = json.loads(t.team_data)
+        pokemon = db.query(Pokemon).filter(Pokemon.id.in_(p_ids)).all()
+        
+        # Power Rating Calculation
+        # 1. BST contribution
+        avg_bst = sum((p.hp or 0) + (p.attack or 0) + (p.defense or 0) + 
+                      (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0) 
+                      for p in pokemon) / len(pokemon)
+        
+        # 2. Coverage contribution
+        coverage = calculate_type_coverage(pokemon, eff_map)
+        weaknesses = sum(1 for score in coverage.values() if score > 0)
+        resistances = sum(1 for score in coverage.values() if score < 0)
+        
+        power_score = (avg_bst / 10) - (weaknesses * 2) + (resistances * 1)
+        
+        scored_teams.append({
+            "id": t.id,
+            "name": t.name,
+            "owner": t.owner.name,
+            "pokemon": [p.sprite_url for p in pokemon],
+            "power_score": round(power_score, 1),
+            "created_at": t.created_at
+        })
+        
+    # Sort by power_score descending
+    scored_teams.sort(key=lambda x: x["power_score"], reverse=True)
+    return scored_teams[:10]
+
+@router.delete("/{team_id}")
+async def delete_team(
+    team_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    team = db.query(SavedTeam).filter(SavedTeam.id == team_id, SavedTeam.user_id == user.id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found or unauthorized")
+    
+    db.delete(team)
+    db.commit()
+    return {"message": "Team deleted successfully"}

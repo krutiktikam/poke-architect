@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, LayoutDashboard, BarChart3, Library, Users, LogIn, LogOut, User } from 'lucide-react';
+import { Shield, LayoutDashboard, BarChart3, Library, Users, LogIn, LogOut, User, Trophy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,6 +12,7 @@ const Header: React.FC = () => {
     { name: 'Analysis', path: '/analysis', icon: BarChart3 },
     { name: 'Pokedex', path: '/pokedex', icon: Library },
     { name: 'Community', path: '/community', icon: Users },
+    { name: 'Leaderboard', path: '/leaderboard', icon: Trophy },
   ];
 
   return (
@@ -50,14 +51,21 @@ const Header: React.FC = () => {
 
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
+              <Link 
+                to="/profile"
+                className={`flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-full border transition-all ${
+                  location.pathname === '/profile' 
+                    ? 'border-indigo-500 bg-indigo-500/10' 
+                    : 'border-slate-700 hover:border-slate-500'
+                }`}
+              >
                 {user?.avatar_url ? (
                   <img src={user.avatar_url} alt={user.name} className="w-6 h-6 rounded-full" />
                 ) : (
                   <User size={16} className="text-slate-400" />
                 )}
                 <span className="text-xs font-bold text-slate-300 hidden lg:block">{user?.name}</span>
-              </div>
+              </Link>
               <button 
                 onClick={logout}
                 className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded-lg transition-all"

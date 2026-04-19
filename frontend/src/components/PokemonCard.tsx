@@ -1,11 +1,12 @@
 import React from 'react';
-import { Plus, Info } from 'lucide-react';
+import { Plus, Info, Crown } from 'lucide-react';
 import type { Pokemon } from '../types';
 
 interface PokemonCardProps {
   pokemon: Pokemon;
   onAdd: (pokemon: Pokemon) => void;
   isAdded: boolean;
+  disabled?: boolean;
 }
 
 const typeColors: Record<string, string> = {
@@ -29,22 +30,40 @@ const typeColors: Record<string, string> = {
   fairy: 'bg-pink-300',
 };
 
-const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded }) => {
+const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disabled }) => {
+  const isLegendary = pokemon.is_legendary || pokemon.is_mythical;
+
   return (
-    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-slate-100 overflow-hidden flex flex-col group">
-      <div className="bg-slate-50 p-4 flex justify-center items-center relative h-48">
+    <div className={`bg-white rounded-xl shadow-sm hover:shadow-md transition-all border overflow-hidden flex flex-col group ${
+      isLegendary ? 'border-yellow-200 ring-1 ring-yellow-100' : 'border-slate-100'
+    }`}>
+      <div className={`p-4 flex justify-center items-center relative h-48 ${
+        isLegendary ? 'bg-gradient-to-br from-yellow-50 to-amber-50' : 'bg-slate-50'
+      }`}>
         <img 
           src={pokemon.sprite_url} 
           alt={pokemon.name} 
-          className="w-40 h-40 object-contain group-hover:scale-110 transition-transform duration-300"
+          className="w-40 h-40 object-contain group-hover:scale-110 transition-transform duration-300 relative z-10"
         />
         <span className="absolute top-2 left-2 text-slate-400 text-xs font-mono">
           #{String(pokemon.id).padStart(3, '0')}
         </span>
+        {isLegendary && (
+          <div className="absolute top-2 right-2 bg-yellow-400 text-white p-1 rounded-lg shadow-lg" title={pokemon.is_mythical ? 'Mythical' : 'Legendary'}>
+            <Crown size={14} className="fill-current" />
+          </div>
+        )}
       </div>
       
       <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-lg font-bold text-slate-800 capitalize mb-2">{pokemon.name}</h3>
+        <h3 className="text-lg font-bold text-slate-800 capitalize mb-1 flex items-center gap-2">
+          {pokemon.name}
+        </h3>
+        {isLegendary && (
+          <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-2 block">
+            {pokemon.is_mythical ? 'Mythical Entity' : 'Legendary Entity'}
+          </span>
+        )}
         
         <div className="flex gap-2 mb-4">
           <span className={`${typeColors[pokemon.type1] || 'bg-slate-400'} text-white text-[10px] px-2 py-0.5 rounded-full uppercase font-bold tracking-wider`}>
@@ -60,15 +79,22 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded }) =>
         <div className="mt-auto flex justify-between items-center gap-2">
           <button 
             onClick={() => onAdd(pokemon)}
-            disabled={isAdded}
+            disabled={isAdded || (disabled && isLegendary)}
             className={`flex-grow flex items-center justify-center gap-1 py-2 rounded-lg font-semibold text-sm transition-colors ${
               isAdded 
               ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
-              : 'bg-yellow-400 text-slate-900 hover:bg-yellow-500'
+              : (disabled && isLegendary)
+                ? 'bg-slate-50 text-slate-300 cursor-not-allowed border border-dashed border-slate-200'
+                : 'bg-yellow-400 text-slate-900 hover:bg-yellow-500 shadow-sm'
             }`}
           >
-            <Plus size={16} />
-            {isAdded ? 'In Team' : 'Add to Team'}
+            {isAdded ? (
+              'In Team'
+            ) : (disabled && isLegendary) ? (
+              'Limit Reached'
+            ) : (
+              <><Plus size={16} /> Add to Team</>
+            )}
           </button>
           
           <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">

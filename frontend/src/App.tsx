@@ -7,6 +7,8 @@ import Builder from './pages/Builder';
 import Analysis from './pages/Analysis';
 import Pokedex from './pages/Pokedex';
 import Community from './pages/Community';
+import Profile from './pages/Profile';
+import Leaderboard from './pages/Leaderboard';
 import AuthCallback from './pages/AuthCallback';
 import { useTeam } from './context/TeamContext';
 
@@ -25,6 +27,8 @@ const AppContent = () => {
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/pokedex" element={<Pokedex />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </main>

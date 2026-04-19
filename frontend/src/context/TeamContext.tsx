@@ -6,6 +6,7 @@ interface TeamContextType {
   addToTeam: (pokemon: Pokemon) => void;
   removeFromTeam: (id: number) => void;
   clearTeam: () => void;
+  loadTeam: (team: Pokemon[]) => void;
   targetGen: number;
   setTargetGen: (gen: number) => void;
 }
@@ -40,9 +41,19 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [targetGen]);
 
   const addToTeam = (pokemon: Pokemon) => {
-    if (team.length < 6 && !team.find(p => p.id === pokemon.id)) {
-      setTeam([...team, pokemon]);
+    if (team.length >= 6) return;
+    if (team.find(p => p.id === pokemon.id)) return;
+    
+    // Constraint: Only one legendary/mythical per team
+    const isNewLegendary = pokemon.is_legendary || pokemon.is_mythical;
+    const hasLegendary = team.some(p => p.is_legendary || p.is_mythical);
+    
+    if (isNewLegendary && hasLegendary) {
+      alert('Strategic Constraint: Only one Legendary or Mythical Pokémon is allowed per team to maintain competitive balance.');
+      return;
     }
+
+    setTeam([...team, pokemon]);
   };
 
   const removeFromTeam = (id: number) => {
@@ -53,8 +64,12 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setTeam([]);
   };
 
+  const loadTeam = (newTeam: Pokemon[]) => {
+    setTeam(newTeam);
+  };
+
   return (
-    <TeamContext.Provider value={{ team, addToTeam, removeFromTeam, clearTeam, targetGen, setTargetGen }}>
+    <TeamContext.Provider value={{ team, addToTeam, removeFromTeam, clearTeam, loadTeam, targetGen, setTargetGen }}>
       {children}
     </TeamContext.Provider>
   );

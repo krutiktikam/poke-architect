@@ -43,6 +43,8 @@ class Pokemon(Base):
     sprite_url = Column(String)
     region = Column(String)
     generation = Column(Integer)
+    is_legendary = Column(Boolean, default=False)
+    is_mythical = Column(Boolean, default=False)
 
 class TypeEfficacy(Base) :
     __tablename__ = "type_efficacy"

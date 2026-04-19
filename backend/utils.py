@@ -140,6 +140,59 @@ def calculate_health_score(pokemon_list: List[Pokemon], coverage: Dict[str, floa
     if score >= 40: return "C"
     return "D"
 
+def calculate_win_probability(team_a: List[Pokemon], team_b: List[Pokemon], efficacy_map: Dict[str, Dict[str, float]]) -> float:
+    """Returns probability (0.0 to 1.0) that Team A wins against Team B."""
+    if not team_a or not team_b:
+        return 0.5
+        
+    score_a = 0
+    score_b = 0
+    
+    # 1. Type Matchup Advantage
+    # For each pair of pokemon, determine who has the type advantage
+    for pa in team_a:
+        for pb in team_b:
+            types_a = [pa.type1] + ([pa.type2] if pa.type2 else [])
+            types_b = [pb.type1] + ([pb.type2] if pb.type2 else [])
+            
+            # How A damages B
+            damage_a_to_b = 1.0
+            for ta in types_a:
+                for tb in types_b:
+                    damage_a_to_b = max(damage_a_to_b, efficacy_map.get(ta, {}).get(tb, 1.0))
+            
+            # How B damages A
+            damage_b_to_a = 1.0
+            for tb in types_b:
+                for ta in types_a:
+                    damage_b_to_a = max(damage_b_to_a, efficacy_map.get(tb, {}).get(ta, 1.0))
+            
+            if damage_a_to_b > damage_b_to_a:
+                score_a += 1
+            elif damage_b_to_a > damage_a_to_b:
+                score_b += 1
+
+    # 2. Speed Tier Advantage
+    avg_speed_a = sum(p.speed or 0 for p in team_a) / len(team_a)
+    avg_speed_b = sum(p.speed or 0 for p in team_b) / len(team_b)
+    
+    if avg_speed_a > avg_speed_b:
+        score_a += 2
+    else:
+        score_b += 2
+        
+    # 3. Overall Stat Power (BST)
+    bst_a = sum((p.hp or 0) + (p.attack or 0) + (p.defense or 0) + (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0) for p in team_a)
+    bst_b = sum((p.hp or 0) + (p.attack or 0) + (p.defense or 0) + (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0) for p in team_b)
+    
+    if bst_a > bst_b:
+        score_a += 3
+    else:
+        score_b += 3
+        
+    total = score_a + score_b
+    return score_a / total if total > 0 else 0.5
+
 def generate_tactical_advice(coverage: Dict[str, float]) -> List[str]:
     advice = []
     
@@ -149,8 +202,22 @@ def generate_tactical_advice(coverage: Dict[str, float]) -> List[str]:
     major_weakness = [t for t, score in vulnerabilities if score >= 2.0]
     moderate_weakness = [t for t, score in vulnerabilities if 0 < score < 2.0]
     
+    # Meta Threats based on major weaknesses
+    meta_threats = {
+        "ground": "Garchomp / Landorus (Earthquake)",
+        "fire": "Charizard / Volcarona (Flamethrower)",
+        "water": "Palafin / Kyogre (Surfing/Jet Punch)",
+        "fighting": "Lucario / Annihilape (Close Combat)",
+        "ghost": "Gengar / Dragapult (Shadow Ball)",
+        "fairy": "Flutter Mane / Sylveon (Moonblast)",
+        "steel": "Gholdengo / Scizor (Bullet Punch)",
+        "ice": "Iron Bundle / Baxcalibur (Ice Beam/Glaive Rush)",
+        "dragon": "Roaring Moon / Dragonite (Outrage/Draco Meteor)"
+    }
+    
     if major_weakness:
-        advice.append(f"Critical Gap: Your team is heavily vulnerable to {', '.join(major_weakness[:2])} types. Consider adding a defensive pivot with resistance to these.")
+        threats = [meta_threats.get(t, t) for t in major_weakness[:2]]
+        advice.append(f"Critical Gap: Your team is heavily vulnerable to {', '.join(major_weakness[:2])} types. Watch out for threats like {', '.join(threats)}.")
     
     if len(moderate_weakness) > 3:
         advice.append(f"Caution: You have multiple minor weaknesses. A balanced 'Steel' or 'Fairy' type could help shore up your general defenses.")

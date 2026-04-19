@@ -78,6 +78,7 @@ const Builder = () => {
   ];
 
   const generations = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const hasLegendary = team.some(p => p.is_legendary || p.is_mythical);
 
   return (
     <div className="flex h-[calc(100vh-64px-112px)] overflow-hidden">
@@ -172,6 +173,7 @@ const Builder = () => {
                   pokemon={pokemon} 
                   onAdd={() => addToTeam(pokemon)}
                   isAdded={team.some(p => p.id === pokemon.id)}
+                  disabled={hasLegendary}
                 />
               ))}
             </div>
