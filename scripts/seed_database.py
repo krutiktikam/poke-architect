@@ -38,13 +38,20 @@ def seed_data(limit=1025):
         print(f"Fetching {limit} Pokémon...")
         for i in range(1, limit + 1):
             try:
+                # Check if already exists to save time/requests on retries
+                existing = db.query(Pokemon).filter(Pokemon.id == i).first()
+                if existing and existing.sprite_url:
+                    if i % 50 == 0:
+                        print(f"Skipping ID {i} (already exists)...")
+                    continue
+
                 # 1. Fetch Pokemon Base Data
-                p_res = requests.get(f"https://pokeapi.co/api/v2/pokemon/{i}")
+                p_res = requests.get(f"https://pokeapi.co/api/v2/pokemon/{i}", timeout=10)
                 p_res.raise_for_status()
                 p_data = p_res.json()
                 
                 # 2. Fetch Species Data for Legendary/Mythical status
-                s_res = requests.get(f"https://pokeapi.co/api/v2/pokemon-species/{i}")
+                s_res = requests.get(f"https://pokeapi.co/api/v2/pokemon-species/{i}", timeout=10)
                 s_res.raise_for_status()
                 s_data = s_res.json()
                 
@@ -71,16 +78,21 @@ def seed_data(limit=1025):
                 )
                 
                 db.merge(pokemon)
+                db.commit()
                 
-                if i % 50 == 0:
-                    db.commit()
+                if i % 10 == 0:
                     print(f"Progress: {i}/{limit}...")
                 
-                time.sleep(0.01) # Polite sleep
+                if i % 50 == 0:
+                    print("Taking a breather for 10 seconds...")
+                    time.sleep(10)
+                
+                time.sleep(0.05) 
             except Exception as e:
+                db.rollback() # CRITICAL: Reset the transaction on error
                 print(f"Error fetching ID {i}: {e}")
+                time.sleep(1) # Wait a bit before next attempt
 
-        db.commit()
         print("Pokémon data seeded.")
 
         print("Fetching type effectiveness data...")
@@ -92,25 +104,29 @@ def seed_data(limit=1025):
             if type_name in ['unknown', 'shadow']:
                 continue
                 
-            details = requests.get(type_info['url']).json()
-            damage_relations = details['damage_relations']
-            
-            mapping = {
-                'double_damage_to': 2.0,
-                'half_damage_to': 0.5,
-                'no_damage_to': 0.0
-            }
-            
-            for relation, factor in mapping.items():
-                for target in damage_relations[relation]:
-                    efficacy = TypeEfficacy(
-                        damage_type=type_name,
-                        target_type=target['name'],
-                        damage_factor=factor
-                    )
-                    db.merge(efficacy)
+            try:
+                details = requests.get(type_info['url']).json()
+                damage_relations = details['damage_relations']
+                
+                mapping = {
+                    'double_damage_to': 2.0,
+                    'half_damage_to': 0.5,
+                    'no_damage_to': 0.0
+                }
+                
+                for relation, factor in mapping.items():
+                    for target in damage_relations[relation]:
+                        efficacy = TypeEfficacy(
+                            damage_type=type_name,
+                            target_type=target['name'],
+                            damage_factor=factor
+                        )
+                        db.merge(efficacy)
+                db.commit()
+            except Exception as e:
+                db.rollback()
+                print(f"Error with type {type_name}: {e}")
         
-        db.commit()
         print("Type efficacy data seeded.")
         print("Database Seeding Complete!")
 
@@ -118,5 +134,4 @@ def seed_data(limit=1025):
         db.close()
 
 if __name__ == "__main__":
-    # You can pass a smaller limit for testing, e.g., seed_data(151)
     seed_data()
