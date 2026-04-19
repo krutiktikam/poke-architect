@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Sparkles, Zap, Activity } from 'lucide-react';
+import { Shield, Activity } from 'lucide-react';
 import type { Pokemon } from '../types';
 
 interface CertificateCardProps {

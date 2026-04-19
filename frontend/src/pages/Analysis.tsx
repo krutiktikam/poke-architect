@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { TrendingUp, ShieldAlert, Sparkles, Loader2, AlertCircle, Download, FileText } from 'lucide-react';
+import { TrendingUp, ShieldAlert, Sparkles, Loader2, AlertCircle, Download } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,

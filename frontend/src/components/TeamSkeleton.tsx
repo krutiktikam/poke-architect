@@ -1,5 +1,3 @@
-import React from 'react';
-
 const TeamSkeleton = () => {
   return (
     <div className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm animate-pulse">

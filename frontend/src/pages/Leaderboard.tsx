@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Trophy, Medal, Star, Loader2, User, ChevronRight } from 'lucide-react';
+import { Trophy, Medal, Loader2, User, ChevronRight } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 

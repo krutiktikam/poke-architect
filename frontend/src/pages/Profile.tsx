@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Trash2, Edit3, Loader2, Calendar, Globe, Lock, ShieldAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTeam } from '../context/TeamContext';
 import { API_BASE_URL } from '../config';
-import type { Pokemon } from '../types';
 
 interface SavedTeam {
   id: number;
