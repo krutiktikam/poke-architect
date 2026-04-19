@@ -1,29 +1,22 @@
-import sqlite3
 import os
+from sqlalchemy import create_engine, text
 
-DB_NAME = "pokemon.db"
+# Use environment variable or default to the Supabase one provided
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres.iljyewcwtkmhjvjpnvut:Chunchunmaru02@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres")
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 def migrate():
-    if not os.path.exists(DB_NAME):
-        print("Database not found.")
-        return
-
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-    
-    print("Adding columns is_legendary and is_mythical to pokemon table...")
-    try:
-        cursor.execute("ALTER TABLE pokemon ADD COLUMN is_legendary BOOLEAN DEFAULT 0")
-        cursor.execute("ALTER TABLE pokemon ADD COLUMN is_mythical BOOLEAN DEFAULT 0")
-        conn.commit()
-        print("Migration successful.")
-    except sqlite3.OperationalError as e:
-        if "duplicate column name" in str(e):
-            print("Columns already exist.")
-        else:
-            print(f"Error: {e}")
-    finally:
-        conn.close()
+    print(f"Migrating database: {SQLALCHEMY_DATABASE_URL.split('@')[-1]}") # Log host safely
+    with engine.connect() as conn:
+        print("Adding columns is_legendary and is_mythical...")
+        try:
+            conn.execute(text("ALTER TABLE pokemon ADD COLUMN is_legendary BOOLEAN DEFAULT FALSE"))
+            conn.execute(text("ALTER TABLE pokemon ADD COLUMN is_mythical BOOLEAN DEFAULT FALSE"))
+            conn.commit()
+            print("Migration successful.")
+        except Exception as e:
+            print(f"Migration error (might already exist): {e}")
 
 if __name__ == "__main__":
     migrate()

@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
 import { TeamProvider } from './context/TeamContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
@@ -11,6 +12,8 @@ import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
 import AuthCallback from './pages/AuthCallback';
 import { useTeam } from './context/TeamContext';
+
+axios.defaults.withCredentials = true;
 
 // Wrapper component to handle TeamDock visibility and context
 const AppContent = () => {
