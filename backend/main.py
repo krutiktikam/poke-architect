@@ -21,9 +21,24 @@ app.add_middleware(
     secret_key=os.getenv("SECRET_KEY", "your-session-secret-change-it")
 )
 
+# Configure origins
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://poke-architect.vercel.app",
+]
+
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    # Allow comma-separated strings for multiple production origins
+    if "," in frontend_url:
+        origins.extend([u.strip() for u in frontend_url.split(",")])
+    else:
+        origins.append(frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL", "http://localhost:5173"), "http://127.0.0.1:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
