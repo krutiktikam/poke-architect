@@ -36,8 +36,12 @@ const Pokedex = () => {
   const [selectedGen, setSelectedGen] = useState<string>('');
 
   useEffect(() => {
-    fetchPokemon();
-  }, [selectedType, selectedGen]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchPokemon();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, selectedType, selectedGen]);
 
   const fetchPokemon = async () => {
     setLoading(true);

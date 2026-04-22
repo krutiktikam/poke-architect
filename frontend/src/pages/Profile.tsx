@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Trash2, Edit3, Loader2, Calendar, Globe, Lock, ShieldAlert } from 'lucide-react';
+import { Trash2, Edit3, Loader2, Calendar, Globe, Lock, ShieldAlert, Search, Filter, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTeam } from '../context/TeamContext';
@@ -22,6 +22,13 @@ const Profile = () => {
   const [teams, setTeams] = useState<SavedTeam[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState<'all' | 'public' | 'private'>('all');
+  
+  // Inline editing state
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editName, setEditName] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -66,6 +73,27 @@ const Profile = () => {
     }
   };
 
+  const handleUpdateTeam = async (team: SavedTeam, updates: Partial<SavedTeam>) => {
+    setIsUpdating(true);
+    try {
+      await axios.put(`${API_BASE_URL}/teams/${team.id}`, {
+        name: updates.name ?? team.name,
+        is_public: updates.is_public ?? team.is_public,
+        pokemon_ids: team.pokemon_ids
+      }, {
+        withCredentials: true
+      });
+      
+      setTeams(teams.map(t => t.id === team.id ? { ...t, ...updates } : t));
+      setEditingId(null);
+    } catch (error) {
+      console.error('Error updating team:', error);
+      alert('Failed to update team.');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const handleEditTeam = async (team: SavedTeam) => {
     try {
       // Fetch the full pokemon data for these IDs
@@ -79,6 +107,15 @@ const Profile = () => {
       alert('Failed to load team data.');
     }
   };
+
+  const filteredTeams = teams.filter(t => {
+    const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = 
+      filter === 'all' || 
+      (filter === 'public' && t.is_public) || 
+      (filter === 'private' && !t.is_public);
+    return matchesSearch && matchesFilter;
+  });
 
   if (authLoading || (isAuthenticated && loading)) {
     return (
@@ -122,11 +159,39 @@ const Profile = () => {
         </div>
 
         <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
             <h3 className="text-2xl font-black text-slate-800 flex items-center gap-3">
               My Teams
               <span className="bg-slate-100 text-slate-500 text-sm px-3 py-1 rounded-full">{teams.length}</span>
             </h3>
+            
+            <div className="flex flex-col sm:flex-row gap-4 flex-grow max-w-2xl">
+              <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                <input 
+                  type="text" 
+                  placeholder="Search teams..." 
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="flex bg-slate-100 p-1 rounded-xl">
+                {(['all', 'public', 'private'] as const).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                      filter === f 
+                        ? 'bg-white text-indigo-600 shadow-sm' 
+                        : 'text-slate-500 hover:text-slate-700'
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {teams.length === 0 ? (
@@ -139,38 +204,84 @@ const Profile = () => {
                 Build Your First Team
               </button>
             </div>
+          ) : filteredTeams.length === 0 ? (
+            <div className="text-center py-16 bg-slate-50 rounded-2xl border border-slate-100">
+              <p className="text-slate-400">No teams match your search or filter.</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {teams.map((team) => (
+              {filteredTeams.map((team) => (
                 <div 
                   key={team.id} 
                   className="group bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-xl hover:border-indigo-100 transition-all duration-300"
                 >
                   <div className="flex justify-between items-start mb-6">
-                    <div>
-                      <h4 className="text-xl font-black text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">
-                        {team.name}
-                      </h4>
+                    <div className="flex-grow">
+                      {editingId === team.id ? (
+                        <div className="flex items-center gap-2 mb-2">
+                          <input 
+                            type="text"
+                            value={editName}
+                            onChange={(e) => setEditName(e.target.value)}
+                            className="flex-grow bg-slate-50 border border-indigo-200 rounded-lg px-3 py-1 text-lg font-black text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleUpdateTeam(team, { name: editName });
+                              if (e.key === 'Escape') setEditingId(null);
+                            }}
+                          />
+                          <button 
+                            onClick={() => handleUpdateTeam(team, { name: editName })}
+                            disabled={isUpdating}
+                            className="p-1.5 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-all"
+                          >
+                            {isUpdating ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
+                          </button>
+                          <button 
+                            onClick={() => setEditingId(null)}
+                            className="p-1.5 text-slate-400 hover:bg-slate-50 rounded-lg transition-all"
+                          >
+                            <X size={18} />
+                          </button>
+                        </div>
+                      ) : (
+                        <h4 
+                          className="text-xl font-black text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors flex items-center gap-2 cursor-pointer"
+                          onClick={() => {
+                            setEditingId(team.id);
+                            setEditName(team.name);
+                          }}
+                        >
+                          {team.name}
+                          <Edit3 size={14} className="opacity-0 group-hover:opacity-100 text-slate-400 transition-all" />
+                        </h4>
+                      )}
+                      
                       <div className="flex items-center gap-3 text-sm text-slate-400">
                         <span className="flex items-center gap-1">
                           <Calendar size={14} />
                           {new Date(team.created_at).toLocaleDateString()}
                         </span>
                         <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                        <span className="flex items-center gap-1">
+                        <button 
+                          onClick={() => handleUpdateTeam(team, { is_public: !team.is_public })}
+                          className={`flex items-center gap-1 hover:underline transition-all ${
+                            team.is_public ? 'text-emerald-500' : 'text-amber-500'
+                          }`}
+                        >
                           {team.is_public ? (
-                            <><Globe size={14} className="text-emerald-500" /> Public</>
+                            <><Globe size={14} /> Public</>
                           ) : (
-                            <><Lock size={14} className="text-amber-500" /> Private</>
+                            <><Lock size={14} /> Private</>
                           )}
-                        </span>
+                        </button>
                       </div>
                     </div>
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleEditTeam(team)}
                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
-                        title="Edit Team"
+                        title="Load in Builder"
                       >
                         <Edit3 size={18} />
                       </button>

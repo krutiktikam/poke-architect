@@ -65,7 +65,7 @@ def get_pokemon(
 ):
     query = db.query(Pokemon)
     if search:
-        query = query.filter(Pokemon.name.contains(search.capitalize()))
+        query = query.filter(Pokemon.name.ilike(f"%{search}%"))
     if type:
         query = query.filter((Pokemon.type1 == type) | (Pokemon.type2 == type))
     if generation:

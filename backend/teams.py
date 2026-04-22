@@ -130,3 +130,26 @@ async def delete_team(
     db.delete(team)
     db.commit()
     return {"message": "Team deleted successfully"}
+
+@router.put("/{team_id}")
+async def update_team(
+    team_id: int,
+    team_in: TeamCreate,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    team = db.query(SavedTeam).filter(SavedTeam.id == team_id, SavedTeam.user_id == user.id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found or unauthorized")
+    
+    team.name = team_in.name
+    team.is_public = team_in.is_public
+    # Note: We could also update pokemon_ids if we wanted, but the schema has it.
+    # Let's support updating pokemon_ids too if provided.
+    if team_in.pokemon_ids:
+        if not 1 <= len(team_in.pokemon_ids) <= 6:
+            raise HTTPException(status_code=400, detail="Team must have 1-6 Pokémon")
+        team.team_data = json.dumps(team_in.pokemon_ids)
+        
+    db.commit()
+    return {"message": "Team updated successfully"}

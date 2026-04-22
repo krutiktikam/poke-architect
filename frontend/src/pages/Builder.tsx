@@ -23,8 +23,12 @@ const Builder = () => {
   const [isPublic, setIsPublic] = useState(true);
 
   useEffect(() => {
-    fetchPokemon();
-  }, [selectedType, selectedGen]);
+    const delayDebounceFn = setTimeout(() => {
+      fetchPokemon();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, selectedType, selectedGen]);
 
   const fetchPokemon = async () => {
     setLoading(true);
@@ -47,6 +51,7 @@ const Builder = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    // Manual search still works but is redundant now
     fetchPokemon();
   };
 
