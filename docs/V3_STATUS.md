@@ -34,4 +34,15 @@
     *   [ ] Search filter for the Leaderboard.
     *   [ ] Tooltips for specific type-coverage bars in Analysis.
 
-*Last Updated: April 19, 2026*
+## 🚀 V4 Roadmap - The "Team Optimizer" Update
+*   **Interactive Recommendations**:
+    *   [ ] **Direct Recruitment**: Add a "+" button on suggestion cards to recruit Pokémon directly from the sidebar.
+    *   [ ] **Strategic Rationale**: Add "Reasoning Badges" to suggestions (e.g., "Plugs Ice Gap", "Speed Specialist").
+*   **Swap & Compare Simulation**:
+    *   [ ] **Comparison Mode**: Implement a UI to see "Current Team" vs "Optimized Team" stats side-by-side.
+    *   [ ] **Delta Analysis**: Show live changes in Health Score and Type Coverage when simulating a Pokémon swap.
+*   **Engine Upgrades**:
+    *   [ ] **Archetype-Aware Suggestions**: Tailor recommendations based on detected team style (e.g., suggesting "Walls" for Stall teams).
+    *   [ ] **Evolutionary Awareness**: Prioritize fully evolved Pokémon for competitive viability.
+
+*Last Updated: April 22, 2026*
