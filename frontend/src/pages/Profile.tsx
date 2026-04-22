@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Trash2, Edit3, Loader2, Calendar, Globe, Lock, ShieldAlert, Search, Filter, Check, X } from 'lucide-react';
+import { Trash2, Edit3, Loader2, Calendar, Globe, Lock, ShieldAlert, Search, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTeam } from '../context/TeamContext';
