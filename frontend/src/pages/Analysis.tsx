@@ -31,6 +31,24 @@ const Analysis = () => {
     }
   }, [team, targetGen]);
 
+  const handleExport = async () => {
+    if (!certificateRef.current) return;
+    
+    setExporting(true);
+    try {
+      const dataUrl = await toPng(certificateRef.current, { cacheBust: true });
+      const link = document.createElement('a');
+      link.download = `poke-architect-team-${new Date().getTime()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Failed to export certificate. Please try again.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const fetchAnalysis = async () => {
     setLoading(true);
     setError(null);
