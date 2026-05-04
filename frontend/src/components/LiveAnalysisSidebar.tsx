@@ -9,7 +9,7 @@ import { useTeam } from '../context/TeamContext';
 import { API_BASE_URL } from '../config';
 
 const LiveAnalysisSidebar = () => {
-  const { team, targetGen } = useTeam();
+  const { team, targetGen, addToTeam } = useTeam();
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
