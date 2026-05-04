@@ -2,6 +2,10 @@
 
 ## 🚀 Completed in V3
 *   **Unified Dashboard**: Transitioned from multi-page context switching to a split-screen "Live Analysis" sidebar in the Builder.
+*   **Team Optimizer (V4 Preview)**:
+    *   **Strategic Recommendation Engine**: Enhanced heuristic engine with role classification (Sweepers, Walls, Tanks) and precise "Reasoning Badges".
+    *   **Direct Recruitment**: Interactive UI in the Live Analysis sidebar to instantly add suggested Pokémon to the team.
+    *   **Offensive/Defensive Synergy**: Advanced detection of immunities and offensive counters in suggestions.
 *   **Google OAuth & JWT**: Implemented secure authentication using Authlib and session management.
 *   **Saved Teams**: Users can now name, save, and toggle privacy (Public/Private) for their teams.
 *   **Community Showcase**: A global feed of public teams with a side-by-side **Comparison Tool**.
@@ -35,14 +39,10 @@
     *   [ ] Tooltips for specific type-coverage bars in Analysis.
 
 ## 🚀 V4 Roadmap - The "Team Optimizer" Update
-*   **Interactive Recommendations**:
-    *   [ ] **Direct Recruitment**: Add a "+" button on suggestion cards to recruit Pokémon directly from the sidebar.
-    *   [ ] **Strategic Rationale**: Add "Reasoning Badges" to suggestions (e.g., "Plugs Ice Gap", "Speed Specialist").
 *   **Swap & Compare Simulation**:
     *   [ ] **Comparison Mode**: Implement a UI to see "Current Team" vs "Optimized Team" stats side-by-side.
     *   [ ] **Delta Analysis**: Show live changes in Health Score and Type Coverage when simulating a Pokémon swap.
 *   **Engine Upgrades**:
     *   [ ] **Archetype-Aware Suggestions**: Tailor recommendations based on detected team style (e.g., suggesting "Walls" for Stall teams).
-    *   [ ] **Evolutionary Awareness**: Prioritize fully evolved Pokémon for competitive viability.
 
-*Last Updated: April 22, 2026*
+*Last Updated: May 4, 2026*

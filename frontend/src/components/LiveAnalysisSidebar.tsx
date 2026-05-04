@@ -124,7 +124,7 @@ const LiveAnalysisSidebar = () => {
 
           {/* Archetype & Advice */}
           {analysisData && (
-            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <div className="bg-indigo-50 rounded-2xl p-4 border border-indigo-100">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="text-indigo-600 w-4 h-4" />
                 <span className="text-xs font-bold text-indigo-600 uppercase tracking-tight">{analysisData.archetype} Team</span>
@@ -132,6 +132,47 @@ const LiveAnalysisSidebar = () => {
               <p className="text-xs text-slate-600 leading-relaxed italic">
                 {analysisData.advice[0]}
               </p>
+            </div>
+          )}
+
+          {/* Recommendations */}
+          {analysisData?.suggestions && analysisData.suggestions.length > 0 && (
+            <div className="pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="text-yellow-500 w-4 h-4" />
+                <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider">Strategic Recruits</h3>
+              </div>
+              <div className="space-y-3">
+                {analysisData.suggestions.map((p: any) => (
+                  <div key={p.id} className="group relative bg-white border border-slate-200 rounded-xl p-3 hover:border-indigo-300 hover:shadow-md transition-all">
+                    <div className="flex gap-3">
+                      <img src={p.sprite_url} alt={p.name} className="w-12 h-12 object-contain bg-slate-50 rounded-lg" />
+                      <div className="flex-grow">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-bold text-slate-800 capitalize">{p.name}</h4>
+                          <span className="text-[10px] font-black px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded uppercase tracking-tighter">
+                            {p.role}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {p.reasoning.map((reason: string, i: number) => (
+                            <span key={i} className="text-[9px] font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded-full border border-indigo-100">
+                              {reason}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => addToTeam(p)}
+                        className="self-center p-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm transition-colors"
+                        title="Add to Team"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

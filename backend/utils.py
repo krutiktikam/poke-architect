@@ -47,49 +47,111 @@ def calculate_type_coverage(pokemon_list: List[Pokemon], efficacy_map: Dict[str,
                 
     return coverage
 
-def suggest_pokemon(current_team: List[Pokemon], all_pokemon: List[Pokemon], efficacy_map: Dict[str, Dict[str, float]]) -> List[Pokemon]:
+def determine_pokemon_role(p: Pokemon) -> str:
+    stats = {
+        "hp": p.hp or 0, "atk": p.attack or 0, "def": p.defense or 0,
+        "spa": p.special_attack or 0, "spd": p.special_defense or 0, "spe": p.speed or 0
+    }
+    
+    if stats["spe"] > 100 and stats["atk"] > 100: return "Physical Sweeper"
+    if stats["spe"] > 100 and stats["spa"] > 100: return "Special Sweeper"
+    if stats["hp"] > 90 and stats["def"] > 90: return "Physical Wall"
+    if stats["hp"] > 90 and stats["spd"] > 90: return "Special Wall"
+    if stats["spe"] > 120: return "Speed Specialist"
+    if (stats["atk"] > 90 or stats["spa"] > 90) and (stats["hp"] > 80): return "Bulky Tank"
+    
+    return "Balanced"
+
+def suggest_pokemon(current_team: List[Pokemon], all_pokemon: List[Pokemon], efficacy_map: Dict[str, Dict[str, float]]) -> List[Dict]:
     if len(current_team) >= 6 or not current_team:
         return []
         
     coverage = calculate_type_coverage(current_team, efficacy_map)
-    # Types the team is weakest to (score > 0)
     weak_types = [t for t, score in coverage.items() if score > 0]
     
+    # Calculate team's average speed to see if they need a speed boost
+    avg_speed = sum(p.speed or 0 for p in current_team) / len(current_team)
+    needs_speed = avg_speed < 85
+
     scored_suggestions = []
     
     for p in all_pokemon:
         if p.id in [tp.id for tp in current_team]:
             continue
             
-        # 1. Defensive Score: How many team weaknesses does this Pokémon resist?
+        reasoning = []
         defensive_score = 0
         p_types = [p.type1]
         if p.type2:
             p_types.append(p.type2)
             
+        # 1. Defensive Synergy
+        covered_weaknesses = []
         for wt in weak_types:
             multiplier = 1.0
             for pt in p_types:
                 multiplier *= efficacy_map.get(wt, {}).get(pt, 1.0)
             
             if multiplier < 1.0:
-                defensive_score += (1.0 - multiplier) * 10 # Resistance is good
+                defensive_score += (1.0 - multiplier) * 15
+                covered_weaknesses.append(wt)
             if multiplier == 0:
-                defensive_score += 15 # Immunity is great
+                defensive_score += 25
+                reasoning.append(f"Immune to {wt} attacks")
         
-        # 2. Stat Quality Score (BST normalized)
+        if covered_weaknesses and not any("Immune" in r for r in reasoning):
+            reasoning.append(f"Resists key weaknesses: {', '.join(covered_weaknesses[:2])}")
+
+        # 2. Stat Quality & Role Fit
         bst = (p.hp or 0) + (p.attack or 0) + (p.defense or 0) + \
               (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0)
-        stat_score = bst / 100
         
-        # Total Heuristic
-        total_score = (defensive_score * 2.0) + stat_score
+        # Penalize non-fully evolved pokemon (rough heuristic: BST < 450)
+        evolution_penalty = 1.0
+        if bst < 450 and not p.is_legendary:
+            evolution_penalty = 0.5
+            
+        stat_score = (bst / 100) * evolution_penalty
         
-        scored_suggestions.append((p, total_score))
+        # 3. Speed Utility
+        speed_bonus = 0
+        if needs_speed and (p.speed or 0) > 110:
+            speed_bonus = 15
+            reasoning.append("High Speed utility")
+
+        # 4. Offensive Utility (Can it hit the things the team is weak to?)
+        offensive_bonus = 0
+        countered_types = []
+        for wt in weak_types:
+            # Check if p's STAB can hit wt super effectively
+            for pt in p_types:
+                if efficacy_map.get(pt, {}).get(wt, 1.0) > 1.0:
+                    offensive_bonus += 12
+                    countered_types.append(wt)
+                    break
+        
+        if countered_types:
+            reasoning.append(f"Offensive counter to {', '.join(countered_types[:2])}")
+        
+        role = determine_pokemon_role(p)
+        total_score = (defensive_score * 2.0) + stat_score + speed_bonus + offensive_bonus
+        
+        if total_score > 20: # Only suggest if actually helpful
+            # Create a dictionary that matches the schema
+            p_dict = {
+                "id": p.id, "name": p.name, "type1": p.type1, "type2": p.type2,
+                "hp": p.hp, "attack": p.attack, "defense": p.defense,
+                "special_attack": p.special_attack, "special_defense": p.special_defense,
+                "speed": p.speed, "sprite_url": p.sprite_url, "region": p.region,
+                "generation": p.generation, "is_legendary": p.is_legendary, "is_mythical": p.is_mythical,
+                "reasoning": list(set(reasoning))[:3], # Max 3 unique reasons
+                "role": role,
+                "score": total_score # Temporary for sorting
+            }
+            scored_suggestions.append(p_dict)
                 
-    # Sort by score descending
-    scored_suggestions.sort(key=lambda x: x[1], reverse=True)
-    return [s[0] for s in scored_suggestions[:5]]
+    scored_suggestions.sort(key=lambda x: x["score"], reverse=True)
+    return scored_suggestions[:5]
 
 def detect_team_archetype(pokemon_list: List[Pokemon]) -> str:
     if not pokemon_list:

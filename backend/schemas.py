@@ -21,6 +21,10 @@ class PokemonBase(BaseModel):
     class Config:
         from_attributes = True
 
+class SuggestedPokemon(PokemonBase):
+    reasoning: List[str]
+    role: str
+
 class TypeAnalysis(BaseModel):
     weaknesses: List[str]
     resistances: List[str]
@@ -29,7 +33,7 @@ class TypeAnalysis(BaseModel):
 class TeamAnalysisResponse(BaseModel):
     total_stats: dict
     type_coverage: dict # type -> multiplier
-    suggestions: List[PokemonBase]
+    suggestions: List[SuggestedPokemon]
     advice: List[str]
     archetype: str
     health_score: str
