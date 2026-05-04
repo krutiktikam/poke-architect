@@ -63,8 +63,11 @@ def determine_pokemon_role(p: Pokemon) -> str:
     return "Balanced"
 
 def suggest_pokemon(current_team: List[Pokemon], all_pokemon: List[Pokemon], efficacy_map: Dict[str, Dict[str, float]]) -> List[Dict]:
-    if len(current_team) >= 6 or not current_team:
+    if not current_team:
         return []
+    
+    # Allow suggestions even if team is full (for swapping)
+    is_full = len(current_team) >= 6
         
     coverage = calculate_type_coverage(current_team, efficacy_map)
     weak_types = [t for t, score in coverage.items() if score > 0]
