@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { TrendingUp, ShieldAlert, Sparkles, Loader2, AlertCircle, Download } from 'lucide-react';
+import { TrendingUp, ShieldAlert, Sparkles, Loader2, AlertCircle, Download, ArrowLeftRight, X } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
@@ -13,12 +13,13 @@ import CertificateCard from '../components/CertificateCard';
 import { API_BASE_URL } from '../config';
 
 const Analysis = () => {
-  const { team, targetGen, setTargetGen } = useTeam();
+  const { team, targetGen, setTargetGen, addToTeam, removeFromTeam } = useTeam();
   const { user } = useAuth();
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [swappingFor, setSwappingFor] = useState<any>(null);
   
   const certificateRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +63,12 @@ const Analysis = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSwap = (newPokemon: any, oldPokemonId: number) => {
+    removeFromTeam(oldPokemonId);
+    addToTeam(newPokemon);
+    setSwappingFor(null);
   };
 
   if (team.length === 0) {
@@ -225,41 +232,155 @@ const Analysis = () => {
         </div>
       </div>
       
-      {/* Tactical Advice & Suggestions */}
-      <div className="bg-indigo-600 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200">
-        <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-          <div className="flex-shrink-0 bg-white/20 p-4 rounded-2xl backdrop-blur-md">
-            <Sparkles size={40} className="text-white" />
+      {/* Swap UI Overlay */}
+      {swappingFor && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden border border-slate-100">
+            <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+              <div className="flex items-center gap-4">
+                <div className="bg-indigo-600 p-3 rounded-2xl text-white shadow-lg shadow-indigo-200">
+                  <ArrowLeftRight size={24} />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black text-slate-800 tracking-tight">Swap & Compare</h3>
+                  <p className="text-slate-500 font-medium text-sm">Select a member to replace</p>
+                </div>
+              </div>
+              <button onClick={() => setSwappingFor(null)} className="p-3 hover:bg-slate-200/50 rounded-2xl transition-all">
+                <X className="w-6 h-6 text-slate-400" />
+              </button>
+            </div>
+            
+            <div className="p-8 space-y-8">
+              <div className="flex items-center justify-center gap-12">
+                <div className="text-center group">
+                  <div className="w-28 h-28 bg-white rounded-3xl flex items-center justify-center mb-4 border-2 border-indigo-100 shadow-xl shadow-indigo-50 relative overflow-hidden transition-all group-hover:scale-105">
+                    <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <img src={swappingFor.sprite_url} alt={swappingFor.name} className="w-20 h-20 object-contain relative z-10" />
+                  </div>
+                  <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">New Recruit</p>
+                  <p className="text-lg font-black text-slate-800 capitalize">{swappingFor.name}</p>
+                </div>
+                
+                <ArrowLeftRight className="text-slate-200 w-12 h-12 animate-pulse" />
+                
+                <div className="text-center">
+                  <div className="w-28 h-28 bg-slate-50 rounded-3xl flex items-center justify-center mb-4 border-2 border-dashed border-slate-200 shadow-inner">
+                    <span className="text-slate-300 text-4xl font-black opacity-50">?</span>
+                  </div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Target</p>
+                  <p className="text-lg font-black text-slate-300">Choice</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {team.map((p) => (
+                  <button 
+                    key={p.id}
+                    onClick={() => handleSwap(swappingFor, p.id)}
+                    className="group flex flex-col items-center p-4 rounded-3xl border border-slate-100 hover:border-indigo-400 hover:bg-indigo-50/50 hover:shadow-lg hover:shadow-indigo-100 transition-all relative overflow-hidden"
+                  >
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ArrowLeftRight className="w-4 h-4 text-indigo-400" />
+                    </div>
+                    <img src={p.sprite_url} alt={p.name} className="w-16 h-16 object-contain mb-2 drop-shadow-md group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-black text-slate-600 capitalize group-hover:text-indigo-600">{p.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+        </div>
+      )}
+
+      {/* Tactical Advice & Suggestions */}
+      <div className="bg-indigo-600 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-400/20 rounded-full -ml-24 -mb-24 blur-2xl"></div>
+        
+        <div className="relative z-10 flex flex-col lg:flex-row gap-12 items-center lg:items-start">
+          <div className="flex-shrink-0 bg-white/10 p-6 rounded-3xl backdrop-blur-xl border border-white/20 shadow-xl">
+            <Sparkles size={48} className="text-yellow-400 animate-pulse" />
+          </div>
+          
           <div className="flex-grow">
-            <h3 className="text-2xl font-bold mb-2">Architect's Tactical Suggestions</h3>
+            <div className="flex flex-col md:flex-row md:items-end gap-4 mb-8">
+              <h3 className="text-4xl font-black tracking-tight">Architect's Tactical Suggestions</h3>
+              <div className="bg-white/20 px-4 py-1 rounded-full backdrop-blur-md border border-white/10">
+                <span className="text-xs font-black uppercase tracking-widest text-indigo-100">Live Optimization</span>
+              </div>
+            </div>
             
             {/* Advice List */}
             {analysisData.advice && analysisData.advice.length > 0 && (
-              <div className="mb-6 space-y-2">
+              <div className="mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
                 {analysisData.advice.map((tip: string, idx: number) => (
-                  <div key={idx} className="flex gap-2 items-start bg-indigo-500/30 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
-                    <TrendingUp size={16} className="mt-1 flex-shrink-0" />
-                    <p className="text-sm font-medium">{tip}</p>
+                  <div key={idx} className="flex gap-4 items-start bg-white/10 p-5 rounded-[1.5rem] border border-white/10 backdrop-blur-sm hover:bg-white/15 transition-all">
+                    <div className="bg-white/20 p-2 rounded-xl mt-0.5">
+                      <TrendingUp size={18} className="text-indigo-100" />
+                    </div>
+                    <p className="text-sm font-bold leading-relaxed text-indigo-50">{tip}</p>
                   </div>
                 ))}
               </div>
             )}
 
-            <p className="text-indigo-100 mb-6 font-medium max-w-2xl">
-              Based on your team's current composition, we've identified key gaps in your coverage. 
-              Adding one of these Pokémon would significantly improve your tactical balance.
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+            <div className="mb-6 flex items-center justify-between">
+              <p className="text-indigo-100 font-bold max-w-2xl text-lg">
+                Recommended Strategic Recruits
+              </p>
+              {team.length >= 6 && (
+                <span className="bg-amber-400/20 text-amber-200 text-[10px] font-black px-3 py-1 rounded-full border border-amber-400/30 uppercase tracking-tighter">
+                  Team Full: Swap Mode Active
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
               {analysisData.suggestions?.map((p: any) => (
-                <div key={p.id} className="bg-white/10 hover:bg-white/20 transition-all rounded-2xl p-4 flex flex-col items-center border border-white/10 backdrop-blur-sm group">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-white/40 blur-2xl rounded-full scale-0 group-hover:scale-100 transition-transform duration-500"></div>
-                    <img src={p.sprite_url} alt={p.name} className="w-20 h-20 object-contain mb-3 relative z-10 drop-shadow-lg" />
+                <div key={p.id} className="bg-white rounded-3xl p-6 flex flex-col items-center border border-white/10 shadow-xl group hover:scale-[1.02] transition-all relative overflow-hidden">
+                  <div className="absolute top-4 right-4 z-20">
+                    <button 
+                      onClick={() => {
+                        if (team.length >= 6) {
+                          setSwappingFor(p);
+                        } else {
+                          addToTeam(p);
+                        }
+                      }}
+                      className={`p-2.5 rounded-2xl shadow-lg transition-all hover:scale-110 active:scale-95 ${
+                        team.length >= 6 
+                          ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-200' 
+                          : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200'
+                      }`}
+                      title={team.length >= 6 ? "Swap Member" : "Add to Team"}
+                    >
+                      {team.length >= 6 ? <ArrowLeftRight size={18} /> : <Sparkles size={18} />}
+                    </button>
                   </div>
-                  <span className="text-sm font-bold capitalize truncate w-full text-center">{p.name}</span>
-                  <div className="flex gap-1 mt-2">
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/50 uppercase font-bold">{p.type1}</span>
+                  
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 bg-indigo-50 rounded-full scale-110 group-hover:scale-125 transition-transform duration-500 opacity-50"></div>
+                    <img src={p.sprite_url} alt={p.name} className="w-24 h-24 object-contain relative z-10 drop-shadow-xl group-hover:rotate-6 transition-transform" />
+                  </div>
+                  
+                  <div className="text-center w-full relative z-10">
+                    <span className="text-[10px] font-black px-2 py-0.5 bg-slate-100 text-slate-500 rounded-lg uppercase tracking-tighter mb-2 inline-block">
+                      {p.role}
+                    </span>
+                    <h4 className="text-lg font-black text-slate-800 capitalize mb-3 truncate">{p.name}</h4>
+                    
+                    <div className="flex flex-col gap-2">
+                      {p.reasoning.map((reason: string, i: number) => (
+                        <div key={i} className="flex items-center gap-1.5 justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                          <span className="text-[10px] font-bold text-slate-500 leading-none">
+                            {reason}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}
