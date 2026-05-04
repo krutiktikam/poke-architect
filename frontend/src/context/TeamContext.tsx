@@ -64,9 +64,14 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const replaceInTeam = (newPokemon: Pokemon, oldPokemonId: number) => {
+    console.log(`Attempting to swap: replacing ID ${oldPokemonId} with ${newPokemon.name} (ID ${newPokemon.id})`);
+    
     setTeam(prev => {
+      console.log('Current team IDs:', prev.map(p => p.id));
+      
       // 1. Check if new pokemon is already in team (other than the one being replaced)
       if (prev.some(p => p.id === newPokemon.id && p.id !== oldPokemonId)) {
+        console.warn('Swap blocked: New pokemon already in team');
         return prev;
       }
 
@@ -79,7 +84,16 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return prev;
       }
 
-      return prev.map(p => p.id === oldPokemonId ? newPokemon : p);
+      const newTeam = prev.map(p => p.id === oldPokemonId ? newPokemon : p);
+      
+      // Check if replacement actually happened
+      if (JSON.stringify(newTeam) === JSON.stringify(prev)) {
+        console.error(`Swap failed: ID ${oldPokemonId} not found in team!`);
+      } else {
+        console.log('Swap successful');
+      }
+      
+      return newTeam;
     });
   };
 
