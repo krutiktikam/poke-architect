@@ -13,7 +13,7 @@ import CertificateCard from '../components/CertificateCard';
 import { API_BASE_URL } from '../config';
 
 const Analysis = () => {
-  const { team, targetGen, setTargetGen, addToTeam, removeFromTeam } = useTeam();
+  const { team, targetGen, setTargetGen, addToTeam, replaceInTeam } = useTeam();
   const { user } = useAuth();
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -30,24 +30,6 @@ const Analysis = () => {
       setAnalysisData(null);
     }
   }, [team, targetGen]);
-
-  const handleExport = async () => {
-    if (!certificateRef.current) return;
-    
-    setExporting(true);
-    try {
-      const dataUrl = await toPng(certificateRef.current, { cacheBust: true });
-      const link = document.createElement('a');
-      link.download = `poke-architect-team-${new Date().getTime()}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error('Export failed:', err);
-      alert('Failed to export certificate. Please try again.');
-    } finally {
-      setExporting(false);
-    }
-  };
 
   const fetchAnalysis = async () => {
     setLoading(true);
@@ -66,8 +48,7 @@ const Analysis = () => {
   };
 
   const handleSwap = (newPokemon: any, oldPokemonId: number) => {
-    removeFromTeam(oldPokemonId);
-    addToTeam(newPokemon);
+    replaceInTeam(newPokemon, oldPokemonId);
     setSwappingFor(null);
   };
 

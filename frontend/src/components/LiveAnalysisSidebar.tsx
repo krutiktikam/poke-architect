@@ -9,7 +9,7 @@ import { useTeam } from '../context/TeamContext';
 import { API_BASE_URL } from '../config';
 
 const LiveAnalysisSidebar = () => {
-  const { team, targetGen, addToTeam, removeFromTeam } = useTeam();
+  const { team, targetGen, addToTeam, replaceInTeam } = useTeam();
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [swappingFor, setSwappingFor] = useState<any>(null);
@@ -37,8 +37,7 @@ const LiveAnalysisSidebar = () => {
   };
 
   const handleSwap = (newPokemon: any, oldPokemonId: number) => {
-    removeFromTeam(oldPokemonId);
-    addToTeam(newPokemon);
+    replaceInTeam(newPokemon, oldPokemonId);
     setSwappingFor(null);
   };
 

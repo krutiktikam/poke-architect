@@ -5,6 +5,7 @@ interface TeamContextType {
   team: Pokemon[];
   addToTeam: (pokemon: Pokemon) => void;
   removeFromTeam: (id: number) => void;
+  replaceInTeam: (newPokemon: Pokemon, oldPokemonId: number) => void;
   clearTeam: () => void;
   loadTeam: (team: Pokemon[]) => void;
   targetGen: number;
@@ -41,23 +42,45 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [targetGen]);
 
   const addToTeam = (pokemon: Pokemon) => {
-    if (team.length >= 6) return;
-    if (team.find(p => p.id === pokemon.id)) return;
-    
-    // Constraint: Only one legendary/mythical per team
-    const isNewLegendary = pokemon.is_legendary || pokemon.is_mythical;
-    const hasLegendary = team.some(p => p.is_legendary || p.is_mythical);
-    
-    if (isNewLegendary && hasLegendary) {
-      alert('Strategic Constraint: Only one Legendary or Mythical Pokémon is allowed per team to maintain competitive balance.');
-      return;
-    }
+    setTeam(prev => {
+      if (prev.length >= 6) return prev;
+      if (prev.find(p => p.id === pokemon.id)) return prev;
+      
+      // Constraint: Only one legendary/mythical per team
+      const isNewLegendary = pokemon.is_legendary || pokemon.is_mythical;
+      const hasLegendary = prev.some(p => p.is_legendary || p.is_mythical);
+      
+      if (isNewLegendary && hasLegendary) {
+        alert('Strategic Constraint: Only one Legendary or Mythical Pokémon is allowed per team to maintain competitive balance.');
+        return prev;
+      }
 
-    setTeam([...team, pokemon]);
+      return [...prev, pokemon];
+    });
   };
 
   const removeFromTeam = (id: number) => {
-    setTeam(team.filter(p => p.id !== id));
+    setTeam(prev => prev.filter(p => p.id !== id));
+  };
+
+  const replaceInTeam = (newPokemon: Pokemon, oldPokemonId: number) => {
+    setTeam(prev => {
+      // 1. Check if new pokemon is already in team (other than the one being replaced)
+      if (prev.some(p => p.id === newPokemon.id && p.id !== oldPokemonId)) {
+        return prev;
+      }
+
+      // 2. Legendary constraint check
+      const isNewLegendary = newPokemon.is_legendary || newPokemon.is_mythical;
+      const otherLegendary = prev.find(p => (p.is_legendary || p.is_mythical) && p.id !== oldPokemonId);
+      
+      if (isNewLegendary && otherLegendary) {
+        alert('Strategic Constraint: Only one Legendary or Mythical Pokémon is allowed per team.');
+        return prev;
+      }
+
+      return prev.map(p => p.id === oldPokemonId ? newPokemon : p);
+    });
   };
 
   const clearTeam = () => {
@@ -69,7 +92,7 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <TeamContext.Provider value={{ team, addToTeam, removeFromTeam, clearTeam, loadTeam, targetGen, setTargetGen }}>
+    <TeamContext.Provider value={{ team, addToTeam, removeFromTeam, replaceInTeam, clearTeam, loadTeam, targetGen, setTargetGen }}>
       {children}
     </TeamContext.Provider>
   );
