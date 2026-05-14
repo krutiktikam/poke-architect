@@ -1,63 +1,29 @@
 # PokéArchitect 🏛️
 
-**PokéArchitect** is a professional full-stack Pokémon Team Builder designed for the modern web. It allows trainers to curate teams, analyze their structural strengths and weaknesses, and optimize their composition using a sleek, responsive interface.
+**PokéArchitect** is a professional full-stack **AI/ML & Data Analytics** platform for Pokémon competitive strategy. It combines modern web development with data-driven insights to help trainers build mathematically optimized teams.
 
-## 🚀 Features
+## 🚀 Key Features
 
+- **AI-Powered Role Discovery**: Uses **K-Means Clustering** to automatically categorize 1025+ Pokémon into strategic archetypes (e.g., Physical Sweepers, Bulky Tanks).
+- **Similarity-Based Recommendations**: A recommendation engine powered by **Cosine Similarity** to suggest statistical alternatives to team members.
+- **Deep Meta-Analytics**: Interactive dashboards (Radar, Line, and Bar charts) visualizing "Power Creep" trends and population distributions across 9 generations.
 - **Decoupled Architecture**: High-performance FastAPI (Python) backend paired with a responsive Vite/React frontend.
-- **Data Engineering (ETL)**: A custom data pipeline that extracts data from PokéAPI, transforms it for efficiency, and loads it into a local SQLite database.
-- **Team Analysis**: Real-time visualization of team base stats (Radar Chart) and type coverage (Weakness/Resistance analysis).
-- **Advanced Filtering**: Search and filter the catalog by name or type instantly.
-- **AI-Lite Suggestions**: Algorithmic member suggestions to cover gaps in your team's type coverage.
-- **Modern UI**: Styled with Tailwind CSS v4, featuring a responsive "Team Dock" for a seamless mobile experience.
+- **Professional Data Pipeline**: Custom ETL process for automated data extraction, cleaning, and model training.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS, Recharts, Lucide-React.
-- **Backend**: FastAPI, SQLAlchemy, Pydantic, Uvicorn.
-- **Database**: SQLite (managed via SQLAlchemy).
-- **Data Source**: [PokéAPI](https://pokeapi.co/).
+- **AI/ML**: Scikit-Learn (K-Means, Cosine Similarity), Pandas, StandardScaler.
+- **Analytics**: Recharts (D3-based React charts).
+- **Frontend**: React, TypeScript, Vite, Tailwind CSS.
+- **Backend**: FastAPI, SQLAlchemy, PostgreSQL (Supabase).
+- **Security**: Google OAuth 2.0, JWT.
 
 ## 🚦 Getting Started
+For detailed setup and to run the AI/ML pipeline, see:
+👉 **[STARTUP.md](./STARTUP.md)**
 
-### 1. Prerequisites
-- Python 3.10+
-- Node.js 18+
-
-### 2. Setup
-```bash
-# Initialize Python virtual environment
-python -m venv venv
-.\venv\Scripts\activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Run the ETL pipeline to populate the database
-python scripts/etl_pipeline.py
-
-# Install Frontend dependencies
-cd frontend
-npm install
-cd ..
-```
-
-### 3. Run the Application
-Use the provided `start.py` script to launch both the backend and frontend simultaneously:
-```bash
-python start.py
-```
-
-- **Frontend**: [http://localhost:5173](http://localhost:5173)
-- **Backend API**: [http://localhost:8000](http://localhost:8000)
-
-## 📁 Project Structure
-
-- `backend/`: FastAPI application logic and database models.
-- `frontend/`: React SPA built with Vite.
-- `scripts/`: ETL pipeline and data scripts.
-- `pokemon.db`: Local SQLite database (generated after running ETL).
-- `start.py`: Utility script to run the full stack.
+To track the project roadmap and recent updates, see:
+👉 **[PROGRESS.md](./PROGRESS.md)**
 
 ---
-Built with ❤️ for a professional portfolio.
+Built as a high-impact AIML & Full-Stack Portfolio project.

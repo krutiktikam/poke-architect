@@ -45,6 +45,7 @@ class Pokemon(Base):
     generation = Column(Integer)
     is_legendary = Column(Boolean, default=False)
     is_mythical = Column(Boolean, default=False)
+    role = Column(String, nullable=True)
 
 class TypeEfficacy(Base) :
     __tablename__ = "type_efficacy"
@@ -52,3 +53,8 @@ class TypeEfficacy(Base) :
     damage_type = Column(String, primary_key=True)
     target_type = Column(String, primary_key=True)
     damage_factor = Column(Float)
+
+class PokemonSimilarity(Base):
+    __tablename__ = "pokemon_similarity"
+    pokemon_id = Column(Integer, primary_key=True)
+    similar_ids = Column(Text) # JSON list of IDs

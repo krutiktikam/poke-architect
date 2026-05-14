@@ -5,10 +5,11 @@ from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from .database import engine, get_db, Base
-from .models import Pokemon, TypeEfficacy
+from .models import Pokemon, TypeEfficacy, PokemonSimilarity
 from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse
 from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score, calculate_win_probability
 from . import auth, teams
+import json
 
 # Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
@@ -95,6 +96,19 @@ def get_single_pokemon(pokemon_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Pokémon not found")
     return pokemon
 
+@app.get("/api/pokemon/{pokemon_id}/similar", response_model=List[PokemonBase])
+def get_similar_pokemon(pokemon_id: int, db: Session = Depends(get_db)):
+    similarity = db.query(PokemonSimilarity).filter(PokemonSimilarity.pokemon_id == pokemon_id).first()
+    if not similarity:
+        return []
+    
+    similar_ids = json.loads(similarity.similar_ids)
+    pokemon = db.query(Pokemon).filter(Pokemon.id.in_(similar_ids)).all()
+    
+    # Sort them according to the similarity list to maintain order of similarity
+    pokemon_map = {p.id: p for p in pokemon}
+    return [pokemon_map[i] for i in similar_ids if i in pokemon_map]
+
 @app.post("/api/compare-teams", response_model=TeamComparisonResponse)
 def compare_teams(
     team_a_ids: List[int],
@@ -179,6 +193,39 @@ def analyze_team(
         "advice": advice,
         "archetype": archetype,
         "health_score": health_score
+    }
+
+from sqlalchemy import func
+...
+@app.get("/api/analytics/global")
+def get_global_analytics(db: Session = Depends(get_db)):
+    # 1. Role Distribution
+    role_counts = db.query(Pokemon.role, func.count(Pokemon.id)).group_by(Pokemon.role).all()
+    role_dist = [{"name": r[0] or "Unknown", "value": r[1]} for r in role_counts]
+    
+    # 2. Stats by Generation
+    gen_stats = db.query(
+        Pokemon.generation,
+        func.avg(Pokemon.attack).label("avg_atk"),
+        func.avg(Pokemon.speed).label("avg_spe"),
+        func.avg(Pokemon.hp).label("avg_hp")
+    ).group_by(Pokemon.generation).all()
+    
+    gen_trends = [{
+        "generation": f"Gen {g[0]}",
+        "attack": round(float(g[1]), 1),
+        "speed": round(float(g[2]), 1),
+        "hp": round(float(g[3]), 1)
+    } for g in gen_stats]
+    
+    # 3. Type Distribution
+    t1_counts = db.query(Pokemon.type1, func.count(Pokemon.id)).group_by(Pokemon.type1).all()
+    type_dist = [{"type": t[0], "count": t[1]} for t in t1_counts]
+    
+    return {
+        "role_distribution": role_dist,
+        "generation_trends": gen_trends,
+        "type_distribution": type_dist
     }
 
 if __name__ == "__main__":

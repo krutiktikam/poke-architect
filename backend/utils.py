@@ -47,21 +47,6 @@ def calculate_type_coverage(pokemon_list: List[Pokemon], efficacy_map: Dict[str,
                 
     return coverage
 
-def determine_pokemon_role(p: Pokemon) -> str:
-    stats = {
-        "hp": p.hp or 0, "atk": p.attack or 0, "def": p.defense or 0,
-        "spa": p.special_attack or 0, "spd": p.special_defense or 0, "spe": p.speed or 0
-    }
-    
-    if stats["spe"] > 100 and stats["atk"] > 100: return "Physical Sweeper"
-    if stats["spe"] > 100 and stats["spa"] > 100: return "Special Sweeper"
-    if stats["hp"] > 90 and stats["def"] > 90: return "Physical Wall"
-    if stats["hp"] > 90 and stats["spd"] > 90: return "Special Wall"
-    if stats["spe"] > 120: return "Speed Specialist"
-    if (stats["atk"] > 90 or stats["spa"] > 90) and (stats["hp"] > 80): return "Bulky Tank"
-    
-    return "Balanced"
-
 def suggest_pokemon(current_team: List[Pokemon], all_pokemon: List[Pokemon], efficacy_map: Dict[str, Dict[str, float]]) -> List[Dict]:
     if not current_team:
         return []
@@ -136,7 +121,7 @@ def suggest_pokemon(current_team: List[Pokemon], all_pokemon: List[Pokemon], eff
         if countered_types:
             reasoning.append(f"Offensive counter to {', '.join(countered_types[:2])}")
         
-        role = determine_pokemon_role(p)
+        role = p.role or "Balanced"
         total_score = (defensive_score * 2.0) + stat_score + speed_bonus + offensive_bonus
         
         if total_score > 20: # Only suggest if actually helpful

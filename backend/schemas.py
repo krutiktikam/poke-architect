@@ -17,6 +17,7 @@ class PokemonBase(BaseModel):
     generation: int
     is_legendary: bool = False
     is_mythical: bool = False
+    role: Optional[str] = None
 
     class Config:
         from_attributes = True
