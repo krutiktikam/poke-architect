@@ -1,68 +1,102 @@
 import pandas as pd
-import sqlite3
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import os
+import sys
 import json
+from sqlalchemy import text
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import StandardScaler
 
-# 1. Load Data
-DB_PATH = "pokemon.db"
-conn = sqlite3.connect(DB_PATH)
-df = pd.read_sql_query("SELECT * FROM pokemon", conn)
+# Add parent directory to path to import backend modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from backend.database import engine, SessionLocal
+from backend.models import Pokemon, PokemonSimilarity
 
-# 2. Feature Engineering for Similarity
-# Stats features
-stats_features = ['hp', 'attack', 'defense', 'special_attack', 'special_defense', 'speed']
-X_stats = df[stats_features].fillna(0)
-
-# Normalize stats
-scaler = StandardScaler()
-X_stats_scaled = scaler.fit_transform(X_stats)
-
-# Type features (One-Hot Encoding)
-# We handle type1 and type2 by creating a combined "is_type_X" for all types
-all_types = pd.concat([df['type1'], df['type2'].dropna()]).unique()
-type_matrix = pd.DataFrame(0, index=df.index, columns=all_types)
-
-for idx, row in df.iterrows():
-    type_matrix.loc[idx, row['type1']] = 1
-    if row['type2']:
-        type_matrix.loc[idx, row['type2']] = 1
-
-# Combine Stats and Types
-X_combined = pd.concat([pd.DataFrame(X_stats_scaled), type_matrix.reset_index(drop=True)], axis=1)
-
-# 3. Compute Similarity
-similarity_matrix = cosine_similarity(X_combined)
-
-# 4. Extract Top 5 Similar Pokemon for each
-similarity_results = []
-for idx, row in enumerate(similarity_matrix):
-    # Get indices of top 6 (including self)
-    similar_indices = row.argsort()[-6:-1][::-1] 
-    similar_ids = df.iloc[similar_indices]['id'].tolist()
+def compute_similarities():
+    print("🚀 AI: Computing Pokémon similarity matrix...")
     
-    similarity_results.append((
-        int(df.iloc[idx]['id']),
-        json.dumps(similar_ids)
-    ))
+    # 1. Load Data from DB
+    db = SessionLocal()
+    try:
+        # Load pokemon into a DataFrame
+        query = db.query(Pokemon)
+        pokemon_list = query.all()
+        
+        if not pokemon_list:
+            print("ERROR: No Pokémon found in database to compute similarities.")
+            return
 
-# 5. Save to Database
-cursor = conn.cursor()
-cursor.execute("DROP TABLE IF EXISTS pokemon_similarity")
-cursor.execute('''
-    CREATE TABLE pokemon_similarity (
-        pokemon_id INTEGER PRIMARY KEY,
-        similar_ids TEXT
-    )
-''')
+        data = []
+        for p in pokemon_list:
+            data.append({
+                'id': p.id,
+                'hp': p.hp or 0,
+                'attack': p.attack or 0,
+                'defense': p.defense or 0,
+                'special_attack': p.special_attack or 0,
+                'special_defense': p.special_defense or 0,
+                'speed': p.speed or 0,
+                'type1': p.type1,
+                'type2': p.type2
+            })
+        
+        df = pd.DataFrame(data)
 
-cursor.executemany(
-    "INSERT INTO pokemon_similarity (pokemon_id, similar_ids) VALUES (?, ?)",
-    similarity_results
-)
+        # 2. Feature Engineering
+        # Stats features
+        stats_features = ['hp', 'attack', 'defense', 'special_attack', 'special_defense', 'speed']
+        X_stats = df[stats_features]
 
-conn.commit()
-conn.close()
+        # Normalize stats
+        scaler = StandardScaler()
+        X_stats_scaled = scaler.fit_transform(X_stats)
 
-print("Similarity matrix computed and saved to database!")
+        # Type features (One-Hot Encoding)
+        # Get all unique types
+        all_types = list(set(df['type1'].tolist() + df['type2'].dropna().tolist()))
+        type_matrix = pd.DataFrame(0, index=df.index, columns=all_types)
+
+        for idx, row in df.iterrows():
+            type_matrix.loc[idx, row['type1']] = 1
+            if row['type2']:
+                type_matrix.loc[idx, row['type2']] = 1
+
+        # Combine Stats and Types (Stats carry more weight in this heuristic)
+        X_combined = pd.concat([pd.DataFrame(X_stats_scaled), type_matrix.reset_index(drop=True)], axis=1)
+
+        # 3. Compute Similarity
+        print("AI: Calculating cosine similarity...")
+        similarity_matrix = cosine_similarity(X_combined)
+
+        # 4. Extract Top 5 Similar Pokemon for each
+        similarity_results = []
+        for idx, row in enumerate(similarity_matrix):
+            # Get indices of top 6 (including self)
+            # argsort sorts ascending, so we take the last 6
+            similar_indices = row.argsort()[-6:-1][::-1] 
+            similar_ids = df.iloc[similar_indices]['id'].tolist()
+            
+            similarity_results.append({
+                "pokemon_id": int(df.iloc[idx]['id']),
+                "similar_ids": json.dumps([int(sid) for sid in similar_ids])
+            })
+
+        # 5. Save to Database
+        print(f"AI: Saving {len(similarity_results)} similarity records to database...")
+        
+        with engine.begin() as conn:
+            # Clear existing similarities
+            conn.execute(text("DELETE FROM pokemon_similarity"))
+            
+            # Bulk insert
+            conn.execute(
+                text("INSERT INTO pokemon_similarity (pokemon_id, similar_ids) VALUES (:pokemon_id, :similar_ids)"),
+                similarity_results
+            )
+
+        print("✅ AI: Similarity matrix computed and saved!")
+
+    finally:
+        db.close()
+
+if __name__ == "__main__":
+    compute_similarities()
