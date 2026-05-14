@@ -29,22 +29,48 @@ origins = [
     "https://poke-architect.vercel.app",
 ]
 
+# Support additional origins from environment variables
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS")
+if allowed_origins_env:
+    if allowed_origins_env == "*":
+        # We'll handle wildcard via regex to allow credentials
+        pass
+    else:
+        origins.extend([o.strip() for o in allowed_origins_env.split(",")])
+
 frontend_url = os.getenv("FRONTEND_URL")
 if frontend_url:
-    # Allow comma-separated strings for multiple production origins
-    if "," in frontend_url:
-        origins.extend([u.strip() for u in frontend_url.split(",")])
-    else:
-        origins.append(frontend_url)
+    origins.extend([u.strip() for u in frontend_url.split(",")])
+
+# Remove duplicates and trailing slashes
+final_origins = list(set([o.rstrip("/") for o in origins if o and o != "*"]))
+
+# If ALLOWED_ORIGINS is * or origins contains *, use a broad regex
+allow_all = (allowed_origins_env == "*") or ("*" in origins)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_origin_regex=r"https://poke-architect-.*\.vercel\.app",
+    allow_origins=final_origins,
+    allow_origin_regex=r".*" if allow_all else r"https://poke-architect-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
+
+# Global exception handler to ensure we return JSON even on crashes
+# and to help debug 500 errors
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    import traceback
+    print(f"GLOBAL ERROR: {str(exc)}")
+    print(traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error", "error": str(exc)},
+    )
+
+from fastapi.responses import JSONResponse
 
 app.include_router(auth.router)
 app.include_router(teams.router)

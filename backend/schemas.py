@@ -6,15 +6,15 @@ class PokemonBase(BaseModel):
     name: str
     type1: str
     type2: Optional[str] = None
-    hp: int
-    attack: int
-    defense: int
-    special_attack: int
-    special_defense: int
-    speed: int
+    hp: Optional[int] = 0
+    attack: Optional[int] = 0
+    defense: Optional[int] = 0
+    special_attack: Optional[int] = 0
+    special_defense: Optional[int] = 0
+    speed: Optional[int] = 0
     sprite_url: Optional[str] = None
-    region: str
-    generation: int
+    region: Optional[str] = "Unknown"
+    generation: Optional[int] = 0
     is_legendary: bool = False
     is_mythical: bool = False
     role: Optional[str] = None
