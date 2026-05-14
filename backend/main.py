@@ -12,19 +12,29 @@ from . import auth, teams
 import json
 from fastapi.responses import JSONResponse
 
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
+
 app = FastAPI(title="Pokémon Team Architect API")
 
-# Configure CORS - Extremely permissive but compatible with credentials
+# Robust CORS Configuration
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://poke-architect.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https?://.*", # Allow everything including localhost and vercel
+    allow_origins=origins,
+    allow_origin_regex=r"https://poke-architect-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"]
 )
 
-# Session Middleware required for OAuth
+# Session Middleware
 app.add_middleware(
     SessionMiddleware, 
     secret_key=os.getenv("SECRET_KEY", "your-session-secret-change-it")
@@ -32,23 +42,52 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
+    print("BOOT: Application starting up...")
     try:
         # Create tables if they don't exist
-        print("BOOT: Initializing database tables...")
+        print("BOOT: Syncing database schema...")
         Base.metadata.create_all(bind=engine)
-        print("BOOT: Database initialization complete.")
+        print("BOOT: Database schema sync complete.")
     except Exception as e:
-        print(f"BOOT ERROR: Database initialization failed: {e}")
+        print(f"BOOT ERROR: Database sync failed: {e}")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
     import traceback
-    print(f"GLOBAL ERROR: {str(exc)}")
+    error_msg = str(exc)
+    print(f"GLOBAL ERROR: {error_msg}")
     print(traceback.format_exc())
-    return JSONResponse(
+    
+    response = JSONResponse(
         status_code=500,
-        content={"detail": "Internal Server Error", "error": str(exc)},
+        content={
+            "detail": "Internal Server Error", 
+            "error": error_msg,
+            "type": type(exc).__name__
+        },
     )
+    
+    # MANUALLY add CORS headers to error responses to prevent "No Access-Control-Allow-Origin"
+    origin = request.headers.get("origin")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        
+    return response
+
+@app.get("/api/health")
+def health_check(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "ok", "database": "connected", "engine": engine.name}
+    except Exception as e:
+        return {"status": "error", "database": str(e)}
+
+@app.get("/api/test-cors")
+def test_cors():
+    return {"message": "CORS is working if you can see this"}
 
 app.include_router(auth.router)
 app.include_router(teams.router)
