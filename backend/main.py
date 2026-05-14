@@ -44,9 +44,28 @@ app.add_middleware(
 async def startup_event():
     print("BOOT: Application starting up...")
     try:
-        # Create tables if they don't exist
+        # 1. Create tables if they don't exist
         print("BOOT: Syncing database schema...")
         Base.metadata.create_all(bind=engine)
+        
+        # 2. Manually add 'role' column if it's missing (Base.metadata.create_all doesn't add columns)
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            # Check if role column exists
+            result = conn.execute(text("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name='pokemon' AND column_name='role';
+            """))
+            
+            if not result.fetchone():
+                print("BOOT: Column 'role' is missing. Adding it now...")
+                conn.execute(text("ALTER TABLE pokemon ADD COLUMN role VARCHAR;"))
+                conn.commit()
+                print("BOOT: Successfully added 'role' column.")
+            else:
+                print("BOOT: 'role' column verified.")
+                
         print("BOOT: Database schema sync complete.")
     except Exception as e:
         print(f"BOOT ERROR: Database sync failed: {e}")
