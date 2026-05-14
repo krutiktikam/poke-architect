@@ -393,7 +393,7 @@ const Analysis = () => {
                     <p className="text-sm font-bold leading-relaxed text-slate-300">{tip}</p>
                   </motion.div>
                 ))}
-                {(!analysisData?.advice || analysisData.advice.length === 0) && (
+                {(!analysisData?.advice || analysisData?.advice?.length === 0) && (
                   <p className="text-slate-500 italic text-sm">No strategic advice available for this composition.</p>
                 )}
               </div>
