@@ -108,14 +108,20 @@ def get_pokemon(
     type: Optional[str] = None,
     generation: Optional[int] = None
 ):
-    query = db.query(Pokemon)
-    if search:
-        query = query.filter(Pokemon.name.ilike(f"%{search}%"))
-    if type:
-        query = query.filter((Pokemon.type1 == type) | (Pokemon.type2 == type))
-    if generation:
-        query = query.filter(Pokemon.generation == generation)
-    return query.limit(limit).all()
+    try:
+        query = db.query(Pokemon)
+        if search:
+            query = query.filter(Pokemon.name.ilike(f"%{search}%"))
+        if type:
+            query = query.filter((Pokemon.type1 == type) | (Pokemon.type2 == type))
+        if generation:
+            query = query.filter(Pokemon.generation == generation)
+        return query.limit(limit).all()
+    except Exception as e:
+        import traceback
+        print(f"POKEMON ROUTE ERROR: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
 
 @app.get("/api/pokemon/batch", response_model=List[PokemonBase])
 def get_pokemon_batch(
