@@ -66,6 +66,30 @@ async def startup_event():
             else:
                 print("BOOT: 'role' column verified.")
                 
+        # 3. Check if ML/AI data needs initialization
+        db = SessionLocal()
+        try:
+            p_count = db.query(Pokemon).count()
+            if p_count > 0:
+                # Check for roles
+                null_roles = db.query(Pokemon).filter(Pokemon.role == None).count()
+                if null_roles > 0:
+                    print(f"BOOT: Detected {null_roles} Pokémon without roles. Initializing ML training...")
+                    from scripts.train_role_model import train_roles
+                    train_roles()
+                
+                # Check for similarities
+                sim_count = db.query(PokemonSimilarity).count()
+                if sim_count == 0:
+                    print("BOOT: AI Similarity table is empty. Initializing computation...")
+                    from scripts.compute_similarity.py import compute_similarities # Error in filename? Fixed in next line
+                    from scripts.compute_similarity import compute_similarities
+                    compute_similarities()
+            else:
+                print("BOOT: Database is empty. Skipping ML/AI initialization. Please run seeding.")
+        finally:
+            db.close()
+                
         print("BOOT: Database schema sync complete.")
     except Exception as e:
         print(f"BOOT ERROR: Database sync failed: {e}")
