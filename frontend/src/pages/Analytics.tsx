@@ -68,7 +68,7 @@ const Analytics = () => {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {data.role_distribution.map((entry: any, index: number) => (
+                  {data.role_distribution.map((_: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -126,7 +126,7 @@ const Analytics = () => {
                 contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
               />
               <Bar dataKey="count" radius={[10, 10, 0, 0]}>
-                {data.type_distribution.map((entry: any, index: number) => (
+                {data.type_distribution.map((_: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Bar>

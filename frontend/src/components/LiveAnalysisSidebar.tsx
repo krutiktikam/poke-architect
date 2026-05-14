@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TrendingUp, ShieldAlert, Sparkles, Loader2, Info, ArrowLeftRight, X, ChevronRight, Target } from 'lucide-react';
+import { TrendingUp, ShieldAlert, Sparkles, Loader2, ArrowLeftRight, X, ChevronRight, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
@@ -154,7 +154,7 @@ const LiveAnalysisSidebar = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={coverageData} layout="vertical" margin={{ left: -10, top: 0, bottom: 0, right: 20 }}>
                   <XAxis type="number" hide />
-                  <YAxis dataKey="type" type="category" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontWeight: 900, textTransform: 'uppercase' }} width={60} />
+                  <YAxis dataKey="type" type="category" tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9, fontWeight: 900 }} width={60} />
                   <Tooltip 
                     cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                     contentStyle={{ backgroundColor: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}

@@ -18,15 +18,15 @@ const Analysis = () => {
   const { team, targetGen, setTargetGen, addToTeam, replaceInTeam } = useTeam();
   const { user } = useAuth();
   const [analysisData, setAnalysisData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [, setLoading] = useState(false);
+  const [, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   
   // Smart Swap State
   const [swappingFor, setSwappingFor] = useState<any>(null);
   const [previewSwap, setPreviewSwap] = useState<{ suggestion: any, targetId: number } | null>(null);
   const [projectedData, setProjectedData] = useState<any>(null);
-  const [projectedLoading, setProjectedLoading] = useState(false);
+  const [, setProjectedLoading] = useState(false);
   
   const certificateRef = useRef<HTMLDivElement>(null);
 
@@ -104,10 +104,9 @@ const Analysis = () => {
   };
 
   // Heuristic to find the best replacement for a suggestion
-  const getBestReplacementId = (suggestion: any) => {
+  const getBestReplacementId = (_suggestion: any) => {
     if (team.length === 0) return null;
     // Simple heuristic: replace the member with the lowest BST or highest shared weakness
-    // For now, let's just default to the first one or allow user to pick
     return team[0].id;
   };
 
@@ -257,12 +256,12 @@ const Analysis = () => {
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={statsData}>
                 <PolarGrid stroke="rgba(0,0,0,0.05)" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 900, textTransform: 'uppercase' }} />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 900 }} />
                 <PolarRadiusAxis domain={[0, 150]} tick={false} axisLine={false} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', border: 'none', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
                 />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px', textTransform: 'uppercase' }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px' }} />
                 <Radar
                   name="Current Base"
                   dataKey="Current"
@@ -310,14 +309,14 @@ const Analysis = () => {
                 <YAxis 
                   dataKey="type" 
                   type="category" 
-                  tick={{ fill: '#64748b', fontSize: 10, fontWeight: 900, textTransform: 'uppercase' }}
+                  tick={{ fill: '#64748b', fontSize: 10, fontWeight: 900 }}
                   width={60}
                 />
                 <Tooltip 
                   cursor={{ fill: 'rgba(0,0,0,0.02)' }}
                   contentStyle={{ backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', border: 'none', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
                 />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px', textTransform: 'uppercase' }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px' }} />
                 <Bar dataKey="Current" radius={[0, 10, 10, 0]} barSize={projectedData ? 8 : 16}>
                   {coverageData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.Current > 0 ? '#ef4444' : '#10b981'} fillOpacity={0.8} />

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Filter, Loader2, Save, Globe, Lock, Cpu, Sparkles } from 'lucide-react';
+import { Search, Filter, Loader2, Save, Globe, Lock, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PokemonCard from '../components/PokemonCard';
 import LiveAnalysisSidebar from '../components/LiveAnalysisSidebar';
@@ -47,6 +47,28 @@ const Builder = () => {
       console.error('Error fetching pokemon:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveTeam = async () => {
+    if (!teamName) {
+      alert('Please enter a team name');
+      return;
+    }
+    setSaving(true);
+    try {
+      await axios.post(`${API_BASE_URL}/teams`, {
+        name: teamName,
+        pokemon_ids: team.map(p => p.id),
+        is_public: isPublic
+      });
+      alert('Team saved successfully!');
+      setTeamName('');
+    } catch (error) {
+      console.error('Error saving team:', error);
+      alert('Failed to save team.');
+    } finally {
+      setSaving(false);
     }
   };
 
