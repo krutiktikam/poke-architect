@@ -172,6 +172,18 @@ const Analysis = () => {
     );
   }
 
+  if (!analysisData) {
+    return (
+      <div className="container mx-auto px-6 py-32 flex flex-col items-center justify-center text-center relative">
+        <div className="absolute inset-0 bg-indigo-500/5 blur-[120px] rounded-full" />
+        <div className="relative z-10">
+          <Loader2 className="w-16 h-16 text-indigo-500 animate-spin mx-auto mb-6" />
+          <p className="text-slate-500 font-black uppercase tracking-widest text-sm animate-pulse">Running Deep Analytics...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-6 py-12 relative">
       {/* Background Decor */}
