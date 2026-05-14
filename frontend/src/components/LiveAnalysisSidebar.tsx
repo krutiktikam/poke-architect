@@ -172,7 +172,7 @@ const LiveAnalysisSidebar = () => {
 
           {/* Archetype & Advice */}
           <AnimatePresence mode="wait">
-            {analysisData && analysisData.advice && analysisData.advice.length > 0 && (
+            {analysisData?.advice && analysisData.advice.length > 0 && (
               <motion.section 
                 key={analysisData.archetype}
                 initial={{ opacity: 0, x: 20 }}

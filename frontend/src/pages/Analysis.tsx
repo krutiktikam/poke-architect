@@ -379,7 +379,7 @@ const Analysis = () => {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                {analysisData.advice?.map((tip: string, idx: number) => (
+                {analysisData?.advice?.map((tip: string, idx: number) => (
                   <motion.div 
                     key={idx} 
                     initial={{ opacity: 0, x: -20 }}
@@ -393,6 +393,9 @@ const Analysis = () => {
                     <p className="text-sm font-bold leading-relaxed text-slate-300">{tip}</p>
                   </motion.div>
                 ))}
+                {(!analysisData?.advice || analysisData.advice.length === 0) && (
+                  <p className="text-slate-500 italic text-sm">No strategic advice available for this composition.</p>
+                )}
               </div>
             </div>
           </div>
