@@ -172,7 +172,7 @@ const LiveAnalysisSidebar = () => {
 
           {/* Archetype & Advice */}
           <AnimatePresence mode="wait">
-            {analysisData && (
+            {analysisData && analysisData.advice && analysisData.advice.length > 0 && (
               <motion.section 
                 key={analysisData.archetype}
                 initial={{ opacity: 0, x: 20 }}
@@ -184,7 +184,7 @@ const LiveAnalysisSidebar = () => {
                 </div>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                  <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">{analysisData.archetype} Detected</span>
+                  <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">{analysisData.archetype || 'Analyzing'} Detected</span>
                 </div>
                 <p className="text-sm text-slate-300 leading-relaxed font-medium italic">
                   "{analysisData.advice[0]}"
