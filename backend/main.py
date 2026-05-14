@@ -12,48 +12,33 @@ from . import auth, teams
 import json
 from fastapi.responses import JSONResponse
 
-# Create tables if they don't exist
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Pokémon Team Architect API")
 
-# Configure origins
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://poke-architect.vercel.app",
-]
-
-# Support additional origins from environment variables
-allowed_origins_env = os.getenv("ALLOWED_ORIGINS")
-if allowed_origins_env:
-    if allowed_origins_env == "*":
-        pass 
-    else:
-        origins.extend([o.strip() for o in allowed_origins_env.split(",")])
-
-frontend_url = os.getenv("FRONTEND_URL")
-if frontend_url:
-    origins.extend([u.strip() for u in frontend_url.split(",")])
-
-final_origins = list(set([o.rstrip("/") for o in origins if o and o != "*"]))
-allow_all = (allowed_origins_env == "*") or ("*" in origins)
-
-# Robust Middleware Configuration
-app.add_middleware(
-    SessionMiddleware, 
-    secret_key=os.getenv("SECRET_KEY", "your-session-secret-change-it")
-)
-
+# Configure CORS - Extremely permissive but compatible with credentials
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=final_origins if not allow_all else [],
-    allow_origin_regex=r".*" if allow_all else r"https://poke-architect-.*\.vercel\.app",
+    allow_origin_regex=r"https?://.*", # Allow everything including localhost and vercel
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"]
 )
+
+# Session Middleware required for OAuth
+app.add_middleware(
+    SessionMiddleware, 
+    secret_key=os.getenv("SECRET_KEY", "your-session-secret-change-it")
+)
+
+@app.on_event("startup")
+async def startup_event():
+    try:
+        # Create tables if they don't exist
+        print("BOOT: Initializing database tables...")
+        Base.metadata.create_all(bind=engine)
+        print("BOOT: Database initialization complete.")
+    except Exception as e:
+        print(f"BOOT ERROR: Database initialization failed: {e}")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
