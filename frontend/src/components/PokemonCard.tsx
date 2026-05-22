@@ -39,104 +39,94 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
   return (
     <motion.div 
       layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
-      className={`relative bg-white rounded-2xl shadow-sm hover:shadow-xl hover:${typeStyle.glow} transition-all duration-300 border overflow-hidden flex flex-col group ${
-        isLegendary ? 'border-amber-200 ring-1 ring-amber-100/50' : 'border-slate-100'
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ y: -8, transition: { duration: 0.3 } }}
+      className={`relative glass-card rounded-[28px] overflow-hidden flex flex-col group ${
+        isLegendary ? 'ring-1 ring-amber-500/30' : 'ring-1 ring-white/5'
       }`}
     >
-      {/* Visual Accent for Legendary */}
-      {isLegendary && (
-        <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 via-transparent to-transparent pointer-events-none" />
-      )}
-
       {/* Sprite Container */}
-      <div className={`p-4 flex justify-center items-center relative h-48 overflow-hidden ${
-        isLegendary ? 'bg-gradient-to-br from-amber-50 to-orange-50/30' : 'bg-slate-50/50'
-      }`}>
-        {/* Type Background Glow */}
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 ${typeStyle.bg}`} />
+      <div className={`p-6 flex justify-center items-center relative h-44 overflow-hidden bg-gradient-to-b from-white/[0.03] to-transparent`}>
+        {/* Type Background Glow (Hover) */}
+        <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-700 ${typeStyle.bg}`} />
         
         <motion.img 
           src={pokemon.sprite_url} 
           alt={pokemon.name} 
-          whileHover={{ scale: 1.15, rotate: 2 }}
-          transition={{ type: "spring", stiffness: 300 }}
-          className="w-40 h-40 object-contain relative z-10 drop-shadow-md"
+          whileHover={{ scale: 1.1, rotate: 3 }}
+          transition={{ type: "spring", stiffness: 200 }}
+          className="w-32 h-32 object-contain relative z-10 drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] group-hover:drop-shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all"
         />
         
-        <div className="absolute top-3 left-3 flex flex-col gap-1">
-          <span className="text-slate-400 text-[10px] font-mono font-bold tracking-tighter opacity-50 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-4 left-4 flex flex-col gap-0.5">
+          <span className="text-white/20 text-[9px] font-black tracking-[0.2em]">
             #{String(pokemon.id).padStart(4, '0')}
           </span>
           {pokemon.generation && (
-            <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
-              G{pokemon.generation}
+            <span className="text-[8px] font-black text-indigo-500/50 uppercase tracking-[0.2em]">
+              GEN {pokemon.generation}
             </span>
           )}
         </div>
 
         {isLegendary && (
-          <div className="absolute top-3 right-3 bg-amber-400 text-white p-1.5 rounded-xl shadow-lg border border-amber-300 animate-pulse" title={pokemon.is_mythical ? 'Mythical' : 'Legendary'}>
-            <Crown size={14} className="fill-current" />
+          <div className="absolute top-4 right-4 bg-amber-500/10 text-amber-500 p-1.5 rounded-xl border border-amber-500/20 backdrop-blur-md shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+            <Crown size={12} className="fill-current" />
           </div>
         )}
       </div>
       
       {/* Content */}
-      <div className="p-5 flex flex-col flex-grow relative z-10 bg-white">
-        <div className="mb-3">
-          <h3 className="text-xl font-black text-slate-800 capitalize leading-tight flex items-center gap-2">
+      <div className="p-5 flex flex-col flex-grow relative z-10">
+        <div className="mb-4">
+          <h3 className="text-lg font-black text-white capitalize leading-tight mb-1 group-hover:text-indigo-300 transition-colors">
             {pokemon.name}
           </h3>
-          {isLegendary && (
-            <div className="flex items-center gap-1 mt-1">
-              <Zap size={10} className="text-amber-500 fill-amber-500" />
-              <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">
-                {pokemon.is_mythical ? 'Mythical Class' : 'Legendary Class'}
-              </span>
-            </div>
-          )}
-        </div>
-        
-        <div className="flex gap-2 mb-6">
-          <span className={`${typeStyle.bg} ${typeStyle.text} text-[10px] px-2.5 py-1 rounded-lg uppercase font-black tracking-wider shadow-sm`}>
-            {pokemon.type1}
-          </span>
-          {pokemon.type2 && (
-            <span className={`${typeColors[pokemon.type2.toLowerCase()]?.bg || 'bg-slate-400'} text-white text-[10px] px-2.5 py-1 rounded-lg uppercase font-black tracking-wider shadow-sm`}>
-              {pokemon.type2}
+          <div className="flex gap-1.5">
+            <span className={`text-[8px] px-2 py-0.5 rounded-md uppercase font-black tracking-widest bg-white/5 border border-white/5 text-white/40 group-hover:text-white/70 transition-colors`}>
+              {pokemon.type1}
             </span>
-          )}
+            {pokemon.type2 && (
+              <span className={`text-[8px] px-2 py-0.5 rounded-md uppercase font-black tracking-widest bg-white/5 border border-white/5 text-white/40 group-hover:text-white/70 transition-colors`}>
+                {pokemon.type2}
+              </span>
+            )}
+          </div>
         </div>
 
-        <div className="mt-auto grid grid-cols-[1fr_auto] gap-2">
+        <div className="mt-auto flex gap-2">
           <button 
             onClick={() => onAdd(pokemon)}
             disabled={isAdded || (disabled && isLegendary)}
-            className={`relative overflow-hidden flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+            className={`flex-grow flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-[10px] tracking-[0.2em] transition-all duration-300 overflow-hidden relative ${
               isAdded 
-              ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200' 
+              ? 'bg-white/5 text-white/20 cursor-not-allowed' 
               : (disabled && isLegendary)
-                ? 'bg-slate-50 text-slate-300 cursor-not-allowed border border-dashed border-slate-200'
-                : 'bg-slate-900 text-white hover:bg-indigo-600 shadow-md active:scale-95 group/btn'
+                ? 'bg-white/5 text-white/10 cursor-not-allowed border border-dashed border-white/10'
+                : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20 active:scale-95 group/btn'
             }`}
           >
             {isAdded ? (
-              <span className="flex items-center gap-1.5"><Zap size={14} /> IN TEAM</span>
+              'IN ROSTER'
             ) : (disabled && isLegendary) ? (
               'LIMIT REACHED'
             ) : (
               <>
-                <Plus size={18} className="group-hover/btn:rotate-90 transition-transform" /> 
-                ADD TO TEAM
+                <Plus size={14} className="group-hover/btn:rotate-90 transition-transform" /> 
+                INITIALIZE
               </>
+            )}
+            
+            {!isAdded && !(disabled && isLegendary) && (
+              <motion.div 
+                className="absolute inset-0 bg-white/10 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 skew-x-12"
+              />
             )}
           </button>
           
-          <button className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all border border-transparent hover:border-indigo-100">
-            <Info size={20} />
+          <button className="p-3 bg-white/5 hover:bg-white/10 text-white/30 hover:text-white rounded-2xl transition-all border border-white/5 group/info">
+            <Info size={16} />
           </button>
         </div>
       </div>

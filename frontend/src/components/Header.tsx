@@ -19,31 +19,28 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <header className="bg-slate-950 text-white border-b border-white/5 sticky top-0 z-50 backdrop-blur-md bg-slate-950/90">
-      {/* Top Accent Line */}
-      <div className="h-1 w-full bg-gradient-to-r from-indigo-600 via-yellow-400 to-indigo-600" />
-      
-      <div className="container mx-auto px-4 h-20 flex justify-between items-center relative">
+    <header className="sticky top-0 z-50 bg-[#0f111a]/60 backdrop-blur-xl border-b border-white/[0.05]">
+      <div className="container mx-auto px-4 h-20 flex justify-between items-center">
         {/* Logo Section */}
         <Link to="/" className="flex items-center gap-3 group">
           <div className="relative">
-            <Shield className="text-yellow-400 w-9 h-9 relative z-10" />
+            <Shield className="text-indigo-500 w-8 h-8 relative z-10 group-hover:scale-110 transition-transform" />
             <motion.div 
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ repeat: Infinity, duration: 3 }}
-              className="absolute inset-0 bg-yellow-400/20 blur-xl rounded-full" 
+              animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.4, 0.2] }}
+              transition={{ repeat: Infinity, duration: 4 }}
+              className="absolute inset-0 bg-indigo-500/30 blur-xl rounded-full" 
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-xl font-black tracking-tighter m-0 leading-none">
-              POKÉ<span className="text-yellow-400">ARCHITECT</span>
+            <h1 className="text-xl font-black tracking-tighter m-0 leading-none text-white">
+              POKÉ<span className="text-indigo-500">ARCHITECT</span>
             </h1>
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">System v4.2.0</span>
+            <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em]">Neural Interface v5.0</span>
           </div>
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden xl:flex items-center gap-1 bg-white/5 p-1.5 rounded-2xl border border-white/5 shadow-inner">
+        <nav className="hidden xl:flex items-center gap-2 bg-white/[0.02] p-1.5 rounded-2xl border border-white/[0.05]">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path || (item.path === '/builder' && location.pathname === '/');
@@ -54,19 +51,19 @@ const Header: React.FC = () => {
                 className="relative group"
               >
                 <div
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all ${
                     isActive 
                       ? 'text-white' 
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      : 'text-slate-500 hover:text-slate-300'
                   }`}
                 >
-                  <Icon size={16} />
+                  <Icon size={14} className={isActive ? 'text-indigo-400' : ''} />
                   <span>{item.name}</span>
                 </div>
                 {isActive && (
                   <motion.div 
                     layoutId="nav-active"
-                    className="absolute inset-0 bg-indigo-600 rounded-xl -z-10 shadow-lg shadow-indigo-500/20"
+                    className="absolute inset-0 bg-white/[0.05] rounded-xl -z-10 nav-active-glow border border-white/5"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
@@ -77,54 +74,43 @@ const Header: React.FC = () => {
 
         {/* Auth Section */}
         <div className="flex items-center gap-4">
-          <div className="w-px h-8 bg-white/10 mx-2 hidden sm:block"></div>
-
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
               <Link 
                 to="/profile"
-                className={`flex items-center gap-3 bg-white/5 px-4 py-2 rounded-2xl border transition-all group ${
+                className={`flex items-center gap-3 bg-white/[0.02] px-4 py-2 rounded-2xl border transition-all group ${
                   location.pathname === '/profile' 
-                    ? 'border-indigo-500 bg-indigo-500/10' 
-                    : 'border-white/5 hover:border-white/20'
+                    ? 'border-indigo-500/50 bg-indigo-500/5' 
+                    : 'border-white/5 hover:border-white/10'
                 }`}
               >
                 {user?.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.name} className="w-7 h-7 rounded-lg border border-white/20 group-hover:scale-110 transition-transform" />
+                  <img src={user.avatar_url} alt={user.name} className="w-6 h-6 rounded-lg border border-white/10 group-hover:scale-110 transition-transform" />
                 ) : (
-                  <div className="p-1.5 bg-slate-800 rounded-lg">
-                    <User size={16} className="text-slate-400" />
-                  </div>
+                  <User size={14} className="text-slate-500" />
                 )}
-                <div className="flex flex-col items-start leading-none hidden lg:flex">
-                  <span className="text-xs font-black text-white">{user?.name}</span>
-                  <span className="text-[9px] font-bold text-slate-500 uppercase">Pro Member</span>
-                </div>
+                <span className="text-[10px] font-black text-white hidden lg:block tracking-widest">{user?.name?.toUpperCase()}</span>
               </Link>
               <button 
                 onClick={logout}
-                className="p-2.5 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-all border border-transparent hover:border-red-400/20"
-                title="Logout"
+                className="p-2.5 text-slate-600 hover:text-red-400 transition-all"
               >
-                <LogOut size={20} />
+                <LogOut size={18} />
               </button>
             </div>
           ) : (
             <button 
               onClick={login}
-              className="group relative flex items-center gap-2 bg-yellow-400 text-slate-950 px-6 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-yellow-300 transition-all shadow-lg active:scale-95 overflow-hidden"
+              className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
             >
-              <motion.div 
-                className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12"
-              />
-              <LogIn size={18} />
-              <span>Login</span>
+              <LogIn size={14} />
+              <span>Connect</span>
             </button>
           )}
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="xl:hidden p-2 text-slate-400 hover:text-white"
+            className="xl:hidden p-2 text-slate-500 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

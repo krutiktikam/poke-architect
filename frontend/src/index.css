@@ -1,14 +1,27 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --bg-deep: #0f111a;
+    --aura-purple: #7c3aed;
+    --aura-indigo: #4f46e5;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+  }
+
   body {
-    @apply selection:bg-indigo-500 selection:text-white;
+    @apply bg-[#0f111a] text-slate-200 selection:bg-indigo-500/30 selection:text-white antialiased overflow-x-hidden;
+    background-image: 
+      radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(79, 70, 229, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(15, 17, 26, 1) 0%, rgba(10, 11, 16, 1) 100%);
+    background-attachment: fixed;
   }
 
   /* Custom Thin Scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   ::-webkit-scrollbar-track {
@@ -16,34 +29,48 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 rounded-full hover:bg-indigo-400 transition-colors;
-  }
-
-  .dark ::-webkit-scrollbar-thumb {
-    @apply bg-slate-800 hover:bg-indigo-600;
+    @apply bg-white/10 rounded-full hover:bg-indigo-500/50 transition-colors;
   }
 
   /* Glassmorphism Utilities */
   .glass-panel {
-    @apply bg-white/60 backdrop-blur-xl border border-white shadow-2xl shadow-slate-200/50;
+    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
   }
 
-  .glass-panel-dark {
-    @apply bg-slate-950/40 backdrop-blur-2xl border border-white/5 shadow-2xl;
+  .glass-card {
+    @apply bg-white/[0.02] backdrop-blur-md border border-white/[0.05] hover:border-white/[0.12] transition-all duration-500;
+  }
+
+  .aura-glow {
+    @apply relative after:absolute after:inset-0 after:bg-indigo-500/20 after:blur-[100px] after:-z-10;
   }
 }
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-10px) scale(1.02); }
+  100% { transform: translateY(0px) scale(1); }
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 8s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Tab Active Indicator */
+.nav-active-glow {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
 }
