@@ -42,14 +42,14 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
-      className={`relative glass-card rounded-[28px] overflow-hidden flex flex-col group ${
-        isLegendary ? 'ring-1 ring-amber-500/30' : 'ring-1 ring-white/5'
+      className={`relative glass-card rounded-[32px] overflow-hidden flex flex-col group ${
+        isLegendary ? 'ring-1 ring-amber-500/20' : 'ring-1 ring-white/5'
       }`}
     >
       {/* Sprite Container */}
-      <div className={`p-6 flex justify-center items-center relative h-44 overflow-hidden bg-gradient-to-b from-white/[0.03] to-transparent`}>
+      <div className={`p-6 flex justify-center items-center relative h-44 overflow-hidden bg-white/[0.01]`}>
         {/* Type Background Glow (Hover) */}
-        <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-700 ${typeStyle.bg}`} />
+        <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 ${typeStyle.bg}`} />
         
         <motion.img 
           src={pokemon.sprite_url} 
@@ -131,6 +131,11 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
         </div>
       </div>
     </motion.div>
+  );
+};
+
+export default PokemonCard;
+.div>
   );
 };
 

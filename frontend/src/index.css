@@ -32,13 +32,17 @@
     @apply bg-white/10 rounded-full hover:bg-indigo-500/50 transition-colors;
   }
 
-  /* Glassmorphism Utilities */
+  /* Glassmorphism Utilities - Frosted Glass v2 */
   .glass-panel {
-    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+    @apply bg-white/[0.01] backdrop-blur-[24px] border border-white/[0.1] shadow-[0_8px_32px_0_rgba(0,0,0,0.4)];
   }
 
   .glass-card {
-    @apply bg-white/[0.02] backdrop-blur-md border border-white/[0.05] hover:border-white/[0.12] transition-all duration-500;
+    @apply bg-white/[0.03] backdrop-blur-[16px] border border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.05] transition-all duration-500;
+  }
+
+  .glass-stroke {
+    @apply border border-white/[0.12];
   }
 
   .aura-glow {

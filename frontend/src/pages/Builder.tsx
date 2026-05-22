@@ -68,7 +68,7 @@ const Builder = () => {
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col lg:flex-row gap-4 mb-10 glass-panel p-5 rounded-[28px]"
+            className="flex flex-col lg:flex-row gap-4 mb-10 glass-panel p-5 rounded-[36px]"
           >
             <div className="flex-grow relative group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5 group-focus-within:text-indigo-400 transition-colors" />
