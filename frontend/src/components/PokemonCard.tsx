@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Info, Crown, Zap } from 'lucide-react';
+import { Plus, Info, Crown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Pokemon } from '../types';
 

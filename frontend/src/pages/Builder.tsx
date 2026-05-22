@@ -1,27 +1,21 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Filter, Loader2, Save, Globe, Lock, Cpu } from 'lucide-react';
+import { Search, Filter, Loader2, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PokemonCard from '../components/PokemonCard';
 import LiveAnalysisSidebar from '../components/LiveAnalysisSidebar';
 import { useTeam } from '../context/TeamContext';
-import { useAuth } from '../context/AuthContext';
 import type { Pokemon } from '../types';
 
 import { API_BASE_URL } from '../config';
 
 const Builder = () => {
   const { team, addToTeam } = useTeam();
-  const { isAuthenticated } = useAuth();
   const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedGen, setSelectedGen] = useState<string>('');
-  
-  const [saving, setSaving] = useState(false);
-  const [teamName, setTeamName] = useState('');
-  const [isPublic, setIsPublic] = useState(true);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -47,28 +41,6 @@ const Builder = () => {
       console.error('Error fetching pokemon:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSaveTeam = async () => {
-    if (!teamName) {
-      alert('Please enter a team name');
-      return;
-    }
-    setSaving(true);
-    try {
-      await axios.post(`${API_BASE_URL}/teams`, {
-        name: teamName,
-        pokemon_ids: team.map(p => p.id),
-        is_public: isPublic
-      });
-      alert('Team saved successfully!');
-      setTeamName('');
-    } catch (error) {
-      console.error('Error saving team:', error);
-      alert('Failed to save team.');
-    } finally {
-      setSaving(false);
     }
   };
 

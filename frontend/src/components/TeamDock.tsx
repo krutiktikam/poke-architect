@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Pokemon } from '../types';
-import { X, Trophy, ChevronRight } from 'lucide-react';
+import { X, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 

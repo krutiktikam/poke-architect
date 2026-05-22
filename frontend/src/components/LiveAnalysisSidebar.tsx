@@ -154,7 +154,7 @@ const LiveAnalysisSidebar = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={coverageData} layout="vertical" margin={{ left: -10, top: 0, bottom: 0, right: 20 }}>
                   <XAxis type="number" hide />
-                  <YAxis dataKey="type" type="category" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 8, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }} width={60} />
+                  <YAxis dataKey="type" type="category" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 8, fontWeight: 900, letterSpacing: '0.1em' }} width={60} />
                   <Tooltip 
                     cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                     contentStyle={{ backgroundColor: '#0f111a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
