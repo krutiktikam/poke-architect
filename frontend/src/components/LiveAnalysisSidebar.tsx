@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TrendingUp, ShieldAlert, Sparkles, Loader2, ArrowLeftRight, X, ChevronRight, Target } from 'lucide-react';
+import { Sparkles, Loader2, ArrowLeftRight, X, ChevronRight, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
