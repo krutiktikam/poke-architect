@@ -78,7 +78,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
       </div>
       
       {/* Content */}
-      <div className="p-5 flex flex-col flex-grow relative z-10">
+      <div className="p-5 flex flex-col flex-grow relative z-10 bg-transparent">
         <div className="mb-4">
           <h3 className="text-lg font-black text-white capitalize leading-tight mb-1 group-hover:text-indigo-300 transition-colors">
             {pokemon.name}
@@ -131,11 +131,6 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
         </div>
       </div>
     </motion.div>
-  );
-};
-
-export default PokemonCard;
-.div>
   );
 };
 
