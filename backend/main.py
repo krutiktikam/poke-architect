@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from .database import engine, get_db, Base
+from .database import engine, get_db, Base, SessionLocal
 from .models import Pokemon, TypeEfficacy, PokemonSimilarity
 from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse
 from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score, calculate_win_probability
@@ -12,7 +12,6 @@ from . import auth, teams
 import json
 from fastapi.responses import JSONResponse
 
-from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 app = FastAPI(title="Pokémon Team Architect API")
@@ -51,29 +50,34 @@ async def startup_event():
         # 2. Database-agnostic column check and addition
         from sqlalchemy import inspect, text
         inspector = inspect(engine)
-        columns = [c['name'] for c in inspector.get_columns('pokemon')]
+        
+        # Get columns for 'pokemon' table
+        try:
+            columns_info = inspector.get_columns('pokemon')
+            columns = [c['name'] for c in columns_info]
+            print(f"BOOT: Detected columns: {columns}")
+        except Exception as e:
+            print(f"BOOT WARN: Could not inspect columns: {e}. Attempting manual sync...")
+            columns = []
         
         with engine.connect() as conn:
-            # Check for 'role'
-            if 'role' not in columns:
-                print("BOOT: Column 'role' is missing. Adding it now...")
-                conn.execute(text("ALTER TABLE pokemon ADD COLUMN role VARCHAR;"))
-                conn.commit()
-                print("BOOT: Successfully added 'role' column.")
-            
-            # Check for 'tier'
-            if 'tier' not in columns:
-                print("BOOT: Column 'tier' is missing. Adding it now...")
-                conn.execute(text("ALTER TABLE pokemon ADD COLUMN tier VARCHAR DEFAULT 'N/A';"))
-                conn.commit()
-                print("BOOT: Successfully added 'tier' column.")
+            # Helper to add column if missing
+            def add_column_if_missing(col_name, col_type):
+                if col_name not in columns:
+                    print(f"BOOT: Column '{col_name}' is missing. Adding it now...")
+                    try:
+                        conn.execute(text(f"ALTER TABLE pokemon ADD COLUMN {col_name} {col_type};"))
+                        conn.commit()
+                        print(f"BOOT: Successfully added '{col_name}' column.")
+                    except Exception as e:
+                        if "already exists" in str(e).lower() or "duplicate" in str(e).lower():
+                            print(f"BOOT: Column '{col_name}' already exists (ignoring duplicate error).")
+                        else:
+                            print(f"BOOT ERROR: Failed to add '{col_name}': {e}")
 
-            # Check for 'usage_rate'
-            if 'usage_rate' not in columns:
-                print("BOOT: Column 'usage_rate' is missing. Adding it now...")
-                conn.execute(text("ALTER TABLE pokemon ADD COLUMN usage_rate FLOAT DEFAULT 0.0;"))
-                conn.commit()
-                print("BOOT: Successfully added 'usage_rate' column.")
+            add_column_if_missing('role', 'VARCHAR')
+            add_column_if_missing('tier', "VARCHAR DEFAULT 'N/A'")
+            add_column_if_missing('usage_rate', 'FLOAT DEFAULT 0.0')
                 
         # 3. Check if ML/AI data needs initialization
         db = SessionLocal()
