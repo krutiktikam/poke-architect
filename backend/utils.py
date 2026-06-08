@@ -39,11 +39,15 @@ def calculate_type_coverage(pokemon_list: List[Pokemon], efficacy_map: Dict[str,
                 factor = efficacy_map.get(atk_type, {}).get(def_type, 1.0)
                 multiplier *= factor
             
-            # log or track the multiplier for this pokemon
-            if multiplier > 1.0:
-                coverage[atk_type] += 1.0 # Team has a weakness
-            elif multiplier < 1.0:
-                coverage[atk_type] -= 1.0 # Team has a resistance
+            # Weighted scoring for team coverage
+            if multiplier >= 4.0:
+                coverage[atk_type] += 2.0 # Critical weakness
+            elif multiplier >= 2.0:
+                coverage[atk_type] += 1.0 # Standard weakness
+            elif multiplier == 0.0:
+                coverage[atk_type] -= 1.5 # Immunity is very valuable
+            elif multiplier <= 0.5:
+                coverage[atk_type] -= 1.0 # Standard resistance
                 
     return coverage
 

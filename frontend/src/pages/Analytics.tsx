@@ -7,7 +7,12 @@ import {
 } from 'recharts';
 import { API_BASE_URL } from '../config';
 
-const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6'];
+const COLORS = [
+  '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', 
+  '#10b981', '#06b6d4', '#3b82f6', '#2dd4bf', '#fb7185',
+  '#a855f7', '#fb923c', '#4ade80', '#60a5fa', '#f472b6',
+  '#22c55e', '#eab308', '#ef4444'
+];
 
 const Analytics = () => {
   const [data, setData] = useState<any>(null);
@@ -114,13 +119,14 @@ const Analytics = () => {
       <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm">
         <div className="flex items-center gap-3 mb-8">
           <BarChart2 className="text-emerald-500" />
-          <h3 className="text-xl font-bold text-slate-800">Primary Type Population</h3>
+          <h3 className="text-xl font-bold text-slate-800">Global Type Population (Primary + Secondary)</h3>
         </div>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.type_distribution}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis dataKey="type" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 700}} />
-              <YAxis axisLine={false} tickLine={false} hide />
+              <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 11, fontWeight: 700}} />
               <Tooltip 
                 cursor={{fill: '#f8fafc'}}
                 contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}

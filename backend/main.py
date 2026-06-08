@@ -82,7 +82,6 @@ async def startup_event():
                 sim_count = db.query(PokemonSimilarity).count()
                 if sim_count == 0:
                     print("BOOT: AI Similarity table is empty. Initializing computation...")
-                    from scripts.compute_similarity.py import compute_similarities # Error in filename? Fixed in next line
                     from scripts.compute_similarity import compute_similarities
                     compute_similarities()
             else:
@@ -295,13 +294,13 @@ def get_global_analytics(db: Session = Depends(get_db)):
     role_counts = db.query(Pokemon.role, func.count(Pokemon.id)).group_by(Pokemon.role).all()
     role_dist = [{"name": r[0] or "Unknown", "value": r[1]} for r in role_counts]
     
-    # 2. Stats by Generation
+    # 2. Stats by Generation (Ordered)
     gen_stats = db.query(
         Pokemon.generation,
         func.avg(Pokemon.attack).label("avg_atk"),
         func.avg(Pokemon.speed).label("avg_spe"),
         func.avg(Pokemon.hp).label("avg_hp")
-    ).group_by(Pokemon.generation).all()
+    ).group_by(Pokemon.generation).order_by(Pokemon.generation).all()
     
     gen_trends = [{
         "generation": f"Gen {g[0]}",
@@ -310,9 +309,18 @@ def get_global_analytics(db: Session = Depends(get_db)):
         "hp": round(float(g[3]), 1)
     } for g in gen_stats]
     
-    # 3. Type Distribution
+    # 3. Comprehensive Type Distribution (Counting both Type 1 and Type 2)
     t1_counts = db.query(Pokemon.type1, func.count(Pokemon.id)).group_by(Pokemon.type1).all()
-    type_dist = [{"type": t[0], "count": t[1]} for t in t1_counts]
+    t2_counts = db.query(Pokemon.type2, func.count(Pokemon.id)).filter(Pokemon.type2 != None).group_by(Pokemon.type2).all()
+    
+    # Merge counts
+    merged_counts = {}
+    for t_name, count in t1_counts:
+        merged_counts[t_name] = merged_counts.get(t_name, 0) + count
+    for t_name, count in t2_counts:
+        merged_counts[t_name] = merged_counts.get(t_name, 0) + count
+        
+    type_dist = [{"type": t, "count": c} for t, c in sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)]
     
     return {
         "role_distribution": role_dist,

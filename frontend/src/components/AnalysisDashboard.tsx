@@ -16,13 +16,15 @@ interface AnalysisDashboardProps {
 const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, analysisData, team }) => {
   if (!isOpen) return null;
 
+  const teamSize = team.length || 1; // Prevent division by zero
+
   const statsData = [
-    { subject: 'HP', A: analysisData.total_stats.hp / team.length, fullMark: 150 },
-    { subject: 'Attack', A: analysisData.total_stats.attack / team.length, fullMark: 150 },
-    { subject: 'Defense', A: analysisData.total_stats.defense / team.length, fullMark: 150 },
-    { subject: 'Sp. Atk', A: analysisData.total_stats.special_attack / team.length, fullMark: 150 },
-    { subject: 'Sp. Def', A: analysisData.total_stats.special_defense / team.length, fullMark: 150 },
-    { subject: 'Speed', A: analysisData.total_stats.speed / team.length, fullMark: 150 },
+    { subject: 'HP', A: (analysisData.total_stats.hp || 0) / teamSize, fullMark: 150 },
+    { subject: 'Attack', A: (analysisData.total_stats.attack || 0) / teamSize, fullMark: 150 },
+    { subject: 'Defense', A: (analysisData.total_stats.defense || 0) / teamSize, fullMark: 150 },
+    { subject: 'Sp. Atk', A: (analysisData.total_stats.special_attack || 0) / teamSize, fullMark: 150 },
+    { subject: 'Sp. Def', A: (analysisData.total_stats.special_defense || 0) / teamSize, fullMark: 150 },
+    { subject: 'Speed', A: (analysisData.total_stats.speed || 0) / teamSize, fullMark: 150 },
   ];
 
   const coverageData = Object.entries(analysisData.type_coverage)
