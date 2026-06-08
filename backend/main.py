@@ -290,11 +290,7 @@ from sqlalchemy import func
 
 @app.get("/api/analytics/global")
 def get_global_analytics(db: Session = Depends(get_db)):
-    # 1. Role Distribution
-    role_counts = db.query(Pokemon.role, func.count(Pokemon.id)).group_by(Pokemon.role).all()
-    role_dist = [{"name": r[0] or "Unknown", "value": r[1]} for r in role_counts]
-    
-    # 2. Stats by Generation (Ordered)
+    # 1. Stats by Generation (Ordered)
     gen_stats = db.query(
         Pokemon.generation,
         func.avg(Pokemon.attack).label("avg_atk"),
@@ -309,7 +305,7 @@ def get_global_analytics(db: Session = Depends(get_db)):
         "hp": round(float(g[3]), 1)
     } for g in gen_stats]
     
-    # 3. Comprehensive Type Distribution (Counting both Type 1 and Type 2)
+    # 2. Comprehensive Type Distribution (Counting both Type 1 and Type 2)
     t1_counts = db.query(Pokemon.type1, func.count(Pokemon.id)).group_by(Pokemon.type1).all()
     t2_counts = db.query(Pokemon.type2, func.count(Pokemon.id)).filter(Pokemon.type2 != None).group_by(Pokemon.type2).all()
     
@@ -322,10 +318,21 @@ def get_global_analytics(db: Session = Depends(get_db)):
         
     type_dist = [{"type": t, "count": c} for t, c in sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)]
     
+    # 3. Individual Pokémon Stats for Scatter Plot
+    all_p = db.query(Pokemon).all()
+    pokemon_stats = [{
+        "name": p.name,
+        "type1": p.type1,
+        "type2": p.type2,
+        "avg_stat": round(((p.hp or 0) + (p.attack or 0) + (p.defense or 0) + 
+                          (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0)) / 6, 1),
+        "generation": p.generation
+    } for p in all_p]
+    
     return {
-        "role_distribution": role_dist,
         "generation_trends": gen_trends,
-        "type_distribution": type_dist
+        "type_distribution": type_dist,
+        "pokemon_stats": pokemon_stats
     }
 
 if __name__ == "__main__":
