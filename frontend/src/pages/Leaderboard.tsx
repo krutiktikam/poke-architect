@@ -74,7 +74,7 @@ const Leaderboard = () => {
               {/* Rank Badge */}
               <div className="flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-3xl bg-white/[0.02] border border-white/5 relative">
                 {RankIcon && <RankIcon className={`absolute -top-4 -left-4 ${rankColor} drop-shadow-[0_0_10px_currentColor]`} size={28} />}
-                <span className={`text-3xl font-black ${isTop3 ? 'text-white' : 'text-slate-600'}`}>
+                <span className={`text-3xl font-black ${isTop3 ? 'text-white' : 'text-slate-400'}`}>
                   {String(index + 1).padStart(2, '0')}
                 </span>
               </div>
@@ -85,7 +85,7 @@ const Leaderboard = () => {
                   <h3 className="text-2xl font-black text-white tracking-tight group-hover:text-indigo-400 transition-colors">
                     {team.name}
                   </h3>
-                  <div className="flex items-center justify-center md:justify-start gap-1.5 text-slate-500 text-[10px] font-black uppercase tracking-widest bg-white/5 px-3 py-1 rounded-xl w-fit mx-auto md:mx-0 border border-white/5">
+                  <div className="flex items-center justify-center md:justify-start gap-1.5 text-slate-400 text-[10px] font-black uppercase tracking-widest bg-white/5 px-3 py-1 rounded-xl w-fit mx-auto md:mx-0 border border-white/5">
                     <User size={12} />
                     {team.owner}
                   </div>

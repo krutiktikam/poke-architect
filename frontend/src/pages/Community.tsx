@@ -68,7 +68,7 @@ const Community = () => {
           <Users size={28} />
         </div>
         <div>
-          <h1 className="text-3xl font-black text-slate-800">Community Showcase</h1>
+          <h1 className="text-3xl font-black text-white">Community Showcase</h1>
           <p className="text-slate-500 font-medium">Top-rated teams from architects worldwide</p>
         </div>
       </div>
@@ -81,7 +81,7 @@ const Community = () => {
         </div>
       ) : teams.length === 0 ? (
         <div className="bg-white rounded-3xl p-20 text-center border border-slate-100 shadow-sm">
-          <MessageSquare className="w-16 h-16 text-slate-200 mx-auto mb-6" />
+          <MessageSquare className="w-16 h-16 text-slate-300 mx-auto mb-6" />
           <h2 className="text-2xl font-bold text-slate-800 mb-2">The arena is quiet...</h2>
           <p className="text-slate-500">Be the first to share a public team from the Builder!</p>
         </div>

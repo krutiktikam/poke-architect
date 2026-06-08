@@ -77,7 +77,7 @@ const Pokedex = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-12 text-center">
-        <h1 className="text-4xl font-extrabold text-slate-900 mb-2">The Grand PokéDex</h1>
+        <h1 className="text-4xl font-extrabold text-white mb-2">The Grand PokéDex</h1>
         <p className="text-slate-500 italic">Exploring {pokemonList.length}+ species across 9 regions</p>
       </div>
 

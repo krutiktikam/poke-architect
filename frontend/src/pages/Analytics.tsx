@@ -90,7 +90,7 @@ const Analytics = () => {
             <Activity size={32} />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-slate-800 tracking-tight">Global Meta-Analytics</h1>
+            <h1 className="text-4xl font-black text-white tracking-tight">Global Meta-Analytics</h1>
             <p className="text-slate-500 font-medium text-lg">Uncovering patterns across all 1025+ Pokémon</p>
           </div>
         </div>
@@ -103,7 +103,7 @@ const Analytics = () => {
             className="bg-transparent border-none text-slate-600 font-bold focus:ring-0 cursor-pointer capitalize pr-8"
           >
             {ALL_TYPES.map(t => (
-              <option key={t} value={t}>{t === 'all' ? 'All Types' : t}</option>
+              <option key={t} value={t} className="bg-white text-slate-900">{t === 'all' ? 'All Types' : t}</option>
             ))}
           </select>
         </div>
