@@ -18,6 +18,8 @@ class PokemonBase(BaseModel):
     is_legendary: bool = False
     is_mythical: bool = False
     role: Optional[str] = None
+    tier: Optional[str] = "N/A"
+    usage_rate: Optional[float] = 0.0
 
     class Config:
         from_attributes = True

@@ -80,8 +80,13 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
       {/* Content */}
       <div className="p-5 flex flex-col flex-grow relative z-10 bg-transparent">
         <div className="mb-4">
-          <h3 className="text-lg font-black text-white capitalize leading-tight mb-1 group-hover:text-indigo-300 transition-colors">
+          <h3 className="text-lg font-black text-white capitalize leading-tight mb-1 group-hover:text-indigo-300 transition-colors flex items-center justify-between">
             {pokemon.name}
+            {pokemon.tier && pokemon.tier !== 'N/A' && (
+              <span className="text-[7px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 uppercase font-black">
+                {pokemon.tier}
+              </span>
+            )}
           </h3>
           <div className="flex gap-1.5">
             <span className={`text-[8px] px-2 py-0.5 rounded-md uppercase font-black tracking-widest bg-white/5 border border-white/5 text-white/40 group-hover:text-white/70 transition-colors`}>

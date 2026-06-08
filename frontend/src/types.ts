@@ -14,4 +14,7 @@ export type Pokemon = {
   generation: number;
   is_legendary?: boolean;
   is_mythical?: boolean;
+  role?: string;
+  tier?: string;
+  usage_rate?: number;
 };

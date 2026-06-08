@@ -46,6 +46,8 @@ class Pokemon(Base):
     is_legendary = Column(Boolean, default=False)
     is_mythical = Column(Boolean, default=False)
     role = Column(String, nullable=True)
+    tier = Column(String, nullable=True, default="N/A")
+    usage_rate = Column(Float, nullable=True, default=0.0)
 
 class TypeEfficacy(Base) :
     __tablename__ = "type_efficacy"

@@ -113,7 +113,12 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
               {analysisData.suggestions?.map((p: any) => (
-                <div key={p.id} className="bg-white rounded-lg p-3 border border-indigo-100 flex flex-col items-center">
+                <div key={p.id} className="bg-white rounded-lg p-3 border border-indigo-100 flex flex-col items-center relative group">
+                  {p.tier && p.tier !== 'N/A' && (
+                    <span className="absolute top-1 right-1 text-[6px] px-1 py-0.5 rounded-full bg-indigo-100 text-indigo-600 font-black">
+                      {p.tier}
+                    </span>
+                  )}
                   <img src={p.sprite_url} alt={p.name} className="w-16 h-16 object-contain mb-2" />
                   <span className="text-xs font-bold text-slate-800 capitalize truncate w-full text-center">{p.name}</span>
                 </div>

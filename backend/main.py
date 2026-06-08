@@ -48,23 +48,32 @@ async def startup_event():
         print("BOOT: Syncing database schema...")
         Base.metadata.create_all(bind=engine)
         
-        # 2. Manually add 'role' column if it's missing (Base.metadata.create_all doesn't add columns)
-        from sqlalchemy import text
+        # 2. Database-agnostic column check and addition
+        from sqlalchemy import inspect, text
+        inspector = inspect(engine)
+        columns = [c['name'] for c in inspector.get_columns('pokemon')]
+        
         with engine.connect() as conn:
-            # Check if role column exists
-            result = conn.execute(text("""
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_name='pokemon' AND column_name='role';
-            """))
-            
-            if not result.fetchone():
+            # Check for 'role'
+            if 'role' not in columns:
                 print("BOOT: Column 'role' is missing. Adding it now...")
                 conn.execute(text("ALTER TABLE pokemon ADD COLUMN role VARCHAR;"))
                 conn.commit()
                 print("BOOT: Successfully added 'role' column.")
-            else:
-                print("BOOT: 'role' column verified.")
+            
+            # Check for 'tier'
+            if 'tier' not in columns:
+                print("BOOT: Column 'tier' is missing. Adding it now...")
+                conn.execute(text("ALTER TABLE pokemon ADD COLUMN tier VARCHAR DEFAULT 'N/A';"))
+                conn.commit()
+                print("BOOT: Successfully added 'tier' column.")
+
+            # Check for 'usage_rate'
+            if 'usage_rate' not in columns:
+                print("BOOT: Column 'usage_rate' is missing. Adding it now...")
+                conn.execute(text("ALTER TABLE pokemon ADD COLUMN usage_rate FLOAT DEFAULT 0.0;"))
+                conn.commit()
+                print("BOOT: Successfully added 'usage_rate' column.")
                 
         # 3. Check if ML/AI data needs initialization
         db = SessionLocal()
@@ -84,6 +93,13 @@ async def startup_event():
                     print("BOOT: AI Similarity table is empty. Initializing computation...")
                     from scripts.compute_similarity import compute_similarities
                     compute_similarities()
+
+                # Check for tiers
+                na_tiers = db.query(Pokemon).filter(Pokemon.tier == 'N/A').count()
+                if na_tiers > 1000: # If almost all are N/A
+                    print("BOOT: Meta-Intelligence (Tiers) is missing. Initializing update...")
+                    from scripts.update_meta_data import update_meta_data
+                    update_meta_data()
             else:
                 print("BOOT: Database is empty. Skipping ML/AI initialization. Please run seeding.")
         finally:
@@ -91,7 +107,9 @@ async def startup_event():
                 
         print("BOOT: Database schema sync complete.")
     except Exception as e:
+        import traceback
         print(f"BOOT ERROR: Database sync failed: {e}")
+        print(traceback.format_exc())
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):

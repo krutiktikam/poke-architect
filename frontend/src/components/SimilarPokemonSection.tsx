@@ -132,9 +132,16 @@ const SimilarPokemonSection: React.FC<SimilarPokemonSectionProps> = ({ currentTe
                   </div>
                   
                   <div className="flex flex-col gap-1 mb-4">
-                    <span className="text-[9px] font-black px-2.5 py-1 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/20 uppercase tracking-widest inline-block mx-auto">
-                      {p.role || 'Balanced'}
-                    </span>
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <span className="text-[9px] font-black px-2.5 py-1 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/20 uppercase tracking-widest inline-block">
+                        {p.role || 'Balanced'}
+                      </span>
+                      {p.tier && p.tier !== 'N/A' && (
+                        <span className="text-[9px] font-black px-2.5 py-1 bg-white/5 text-white/60 rounded-lg border border-white/10 uppercase tracking-widest inline-block">
+                          {p.tier}
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-xl font-black text-white capitalize tracking-tight truncate w-full">{p.name}</h4>
                   </div>
                   
