@@ -39,6 +39,13 @@ This file tracks the evolution of PokéArchitect, specifically focusing on its t
 
 ## 📅 Log
 
+### 2026-06-08 (Analytics Optimization)
+- Refined **Type Distribution** logic to include secondary types for 100% data accuracy.
+- Ordered **Generation Trends** chronologically to fix visual jaggedness in the power creep chart.
+- Enhanced **Team Synergy Heuristics** to account for 4x weaknesses and immunities.
+- Hardened **Analysis Dashboard** with safety guards to prevent NaN errors on incomplete teams.
+- Expanded visualization color palette for better type-specific readability.
+
 ### 2026-05-11 (The ML Pivot)
 - Created `scripts/train_role_model.py` (K-Means Clustering).
 - Created `scripts/compute_similarity.py` (Cosine Similarity).
