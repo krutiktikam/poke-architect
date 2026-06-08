@@ -143,7 +143,7 @@ const Analytics = () => {
                 <ZAxis type="number" range={[50, 400]} />
                 <Tooltip content={<CustomTooltip />} />
                 <Scatter name="Pokemon" data={scatterData} fill="#6366f1">
-                  {scatterData.map((entry, index) => (
+                  {scatterData.map((_, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} fillOpacity={0.6} />
                   ))}
                 </Scatter>
