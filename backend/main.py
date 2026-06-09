@@ -19,22 +19,34 @@ app = FastAPI(title="Pokémon Team Architect API")
 # Robust CORS Configuration
 env_origins = os.getenv("ALLOWED_ORIGINS", "")
 origins = [o.strip() for o in env_origins.split(",") if o.strip()]
-if not origins:
-    origins = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://poke-architect.vercel.app",
-    ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_origin_regex=r"https://poke-architect-.*\.vercel\.app",
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"]
-)
+# If "*" is in origins, we use allow_origin_regex to bypass FastAPI's credential restriction
+if "*" in origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origin_regex=".*",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"]
+    )
+else:
+    if not origins:
+        origins = [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "https://poke-architect.vercel.app",
+        ]
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_origin_regex=r"https://poke-architect-.*\.vercel\.app",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["*"]
+    )
 
 # Session Middleware
 app.add_middleware(
