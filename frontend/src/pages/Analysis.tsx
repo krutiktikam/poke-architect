@@ -14,7 +14,7 @@ import CertificateCard from '../components/CertificateCard';
 import { API_BASE_URL } from '../config';
 
 const Analysis = () => {
-  const { team, targetGen, setTargetGen, addToTeam, replaceInTeam } = useTeam();
+  const { team, targetGen, setTargetGen, replaceInTeam } = useTeam();
   const { user } = useAuth();
   const [analysisData, setAnalysisData] = useState<any>(null);
   const [, setLoading] = useState(false);
@@ -198,7 +198,7 @@ const Analysis = () => {
           </div>
           <div>
             <div className="flex items-center gap-3 mb-1">
-              <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Deep Analytics</h1>
+              <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Deep Analytics</h1>
               <AnimatePresence mode="wait">
                 {analysisData?.health_score && (
                   <motion.span 
@@ -218,10 +218,10 @@ const Analysis = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-4">
-          <div className="bg-white/60 backdrop-blur-md p-1.5 rounded-2xl border border-white shadow-xl shadow-slate-200/50 flex items-center gap-3">
+          <div className="bg-white/5 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-xl flex items-center gap-3">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-3">Target Epoch:</span>
             <select 
-              className="bg-slate-950 text-white rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+              className="bg-slate-950 text-white rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer border border-white/10"
               value={targetGen}
               onChange={(e) => setTargetGen(parseInt(e.target.value))}
             >
@@ -234,7 +234,7 @@ const Analysis = () => {
           <button 
             onClick={handleExport}
             disabled={exporting}
-            className="group flex items-center gap-3 bg-slate-950 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-2xl shadow-indigo-950/20 disabled:opacity-50 active:scale-95"
+            className="group flex items-center gap-3 bg-white text-slate-950 px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all shadow-2xl shadow-white/5 disabled:opacity-50 active:scale-95"
           >
             {exporting ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} className="group-hover:-translate-y-1 transition-transform" />}
             Export Blueprint
@@ -248,17 +248,17 @@ const Analysis = () => {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 border border-white shadow-2xl shadow-slate-200/50 flex flex-col"
+          className="bg-[#161927] backdrop-blur-xl rounded-[3rem] p-10 border border-white/10 shadow-2xl flex flex-col"
         >
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-3">
-              <Activity className="text-indigo-600 w-6 h-6" />
-              <h3 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Stat Distribution</h3>
+              <Activity className="text-indigo-400 w-6 h-6" />
+              <h3 className="text-2xl font-black text-white tracking-tight uppercase">Stat Distribution</h3>
             </div>
             {projectedData && (
-              <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100">
-                <div className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
-                <span className="text-[10px] font-black text-indigo-600 uppercase">Comparison Live</span>
+              <div className="flex items-center gap-2 bg-indigo-500/10 px-3 py-1 rounded-lg border border-indigo-500/20">
+                <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+                <span className="text-[10px] font-black text-indigo-400 uppercase">Comparison Live</span>
               </div>
             )}
           </div>
@@ -266,13 +266,14 @@ const Analysis = () => {
           <div className="w-full h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={statsData}>
-                <PolarGrid stroke="rgba(0,0,0,0.05)" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 900 }} />
+                <PolarGrid stroke="rgba(255,255,255,0.05)" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 900 }} />
                 <PolarRadiusAxis domain={[0, 150]} tick={false} axisLine={false} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', border: 'none', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+                  contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }}
+                  itemStyle={{ color: '#fff', fontWeight: 'bold' }}
                 />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px' }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px', color: '#94a3b8' }} />
                 <Radar
                   name="Current Base"
                   dataKey="Current"
@@ -302,11 +303,11 @@ const Analysis = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/60 backdrop-blur-xl rounded-[3rem] p-10 border border-white shadow-2xl shadow-slate-200/50 flex flex-col"
+          className="bg-[#161927] backdrop-blur-xl rounded-[3rem] p-10 border border-white/10 shadow-2xl flex flex-col"
         >
           <div className="flex items-center gap-3 mb-8">
-            <ShieldAlert size={28} className="text-slate-800" />
-            <h3 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Vulnerability Matrix</h3>
+            <ShieldAlert size={28} className="text-indigo-400" />
+            <h3 className="text-2xl font-black text-white tracking-tight uppercase">Vulnerability Matrix</h3>
           </div>
           <div className="w-full h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -320,14 +321,14 @@ const Analysis = () => {
                 <YAxis 
                   dataKey="type" 
                   type="category" 
-                  tick={{ fill: '#64748b', fontSize: 10, fontWeight: 900 }}
+                  tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }}
                   width={60}
                 />
                 <Tooltip 
-                  cursor={{ fill: 'rgba(0,0,0,0.02)' }}
-                  contentStyle={{ backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', border: 'none', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
+                  cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                  contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '16px', color: '#fff' }}
                 />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px' }} />
+                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontWeight: 900, fontSize: '10px', color: '#94a3b8' }} />
                 <Bar dataKey="Current" radius={[0, 10, 10, 0]} barSize={projectedData ? 8 : 16}>
                   {coverageData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.Current > 0 ? '#ef4444' : '#10b981'} fillOpacity={0.8} />
