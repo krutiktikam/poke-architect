@@ -89,11 +89,11 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
             )}
           </h3>
           <div className="flex gap-1.5">
-            <span className={`text-[8px] px-2 py-0.5 rounded-md uppercase font-black tracking-widest bg-white/5 border border-white/5 text-white/40 group-hover:text-white/70 transition-colors`}>
+            <span className={`text-[8px] px-2 py-0.5 rounded-md uppercase font-black tracking-widest bg-white/5 border border-white/5 text-slate-400 group-hover:text-white transition-colors`}>
               {pokemon.type1}
             </span>
             {pokemon.type2 && (
-              <span className={`text-[8px] px-2 py-0.5 rounded-md uppercase font-black tracking-widest bg-white/5 border border-white/5 text-white/40 group-hover:text-white/70 transition-colors`}>
+              <span className={`text-[8px] px-2 py-0.5 rounded-md uppercase font-black tracking-widest bg-white/5 border border-white/5 text-slate-400 group-hover:text-white transition-colors`}>
                 {pokemon.type2}
               </span>
             )}

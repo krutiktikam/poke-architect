@@ -33,40 +33,43 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
     .sort((a, b) => b.score - a.score);
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
-        <div className="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white z-10 text-slate-900">
-          <div className="flex items-center gap-3">
-            <div className="bg-indigo-100 p-2 rounded-lg text-indigo-600">
-              <TrendingUp size={24} />
+    <div className="fixed inset-0 bg-[#0f111a]/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+      <div className="bg-[#161927] border border-white/10 rounded-[40px] w-full max-w-6xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col custom-scrollbar">
+        <div className="p-8 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#161927]/90 backdrop-blur-md z-10">
+          <div className="flex items-center gap-4">
+            <div className="bg-indigo-500/20 p-3 rounded-2xl text-indigo-400">
+              <TrendingUp size={28} />
             </div>
-            <h2 className="text-2xl font-bold text-slate-800 m-0">Team Analysis</h2>
+            <div>
+              <h2 className="text-3xl font-black text-white tracking-tight m-0 uppercase">Sync Analysis</h2>
+              <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Real-time team performance metrics</p>
+            </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-slate-400 hover:text-white border border-white/5"
           >
-            <X size={24} className="text-slate-400" />
+            <X size={24} />
           </button>
         </div>
 
-        <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Radar Chart for Stats */}
-          <div className="bg-slate-50 rounded-xl p-6 flex flex-col items-center">
-            <h3 className="text-lg font-bold text-slate-700 mb-4 self-start">Average Base Stats</h3>
+          <div className="bg-white/[0.02] border border-white/5 rounded-[32px] p-8 flex flex-col items-center">
+            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-8 self-start">Average Base Stats</h3>
             <div className="w-full h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={statsData}>
-                  <PolarGrid stroke="#cbd5e1" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }} />
+                  <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900, letterSpacing: '0.1em' }} />
                   <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
                   <Radar
                     name="Team Average"
                     dataKey="A"
-                    stroke="#4f46e5"
-                    strokeWidth={3}
+                    stroke="#6366f1"
+                    strokeWidth={4}
                     fill="#6366f1"
-                    fillOpacity={0.5}
+                    fillOpacity={0.3}
                   />
                 </RadarChart>
               </ResponsiveContainer>
@@ -74,10 +77,10 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
           </div>
 
           {/* Type Weakness/Resistance Bar Chart */}
-          <div className="bg-slate-50 rounded-xl p-6 flex flex-col">
-            <div className="flex items-center gap-2 mb-4">
-              <ShieldAlert size={20} className="text-slate-700" />
-              <h3 className="text-lg font-bold text-slate-700 m-0">Type Vulnerabilities</h3>
+          <div className="bg-white/[0.02] border border-white/5 rounded-[32px] p-8 flex flex-col">
+            <div className="flex items-center gap-3 mb-8">
+              <ShieldAlert size={20} className="text-indigo-400" />
+              <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] m-0">Type Vulnerabilities</h3>
             </div>
             <div className="w-full h-80">
               <ResponsiveContainer width="100%" height="100%">
@@ -90,12 +93,15 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
                   <YAxis 
                     dataKey="type" 
                     type="category" 
-                    tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }}
+                    tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900, letterSpacing: '0.1em' }}
+                    width={80}
                   />
                   <Tooltip 
-                    cursor={{fill: '#f1f5f9'}}
+                    contentStyle={{ backgroundColor: '#1e293b', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '16px', color: '#fff' }}
+                    itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                    cursor={{fill: 'rgba(255,255,255,0.05)'}}
                   />
-                  <Bar dataKey="score" radius={[0, 4, 4, 0]}>
+                  <Bar dataKey="score" radius={[0, 8, 8, 0]}>
                     {coverageData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.score > 0 ? '#ef4444' : '#22c55e'} />
                     ))}
@@ -105,22 +111,29 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
             </div>
           </div>
           
-          {/* AI Suggestions */}
-          <div className="lg:col-span-2 bg-indigo-50 rounded-xl p-6 border border-indigo-100">
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles size={20} className="text-indigo-600" />
-              <h3 className="text-lg font-bold text-indigo-900 m-0">Suggested Additions</h3>
+          {/* Tactical Suggestions */}
+          <div className="lg:col-span-2 bg-indigo-500/5 rounded-[32px] p-8 border border-indigo-500/20">
+            <div className="flex items-center gap-3 mb-8">
+              <Sparkles size={24} className="text-indigo-400" />
+              <div>
+                <h3 className="text-lg font-black text-white uppercase tracking-wider m-0">Recommended Additions</h3>
+                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Tactical reinforcement suggestions</p>
+              </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
               {analysisData.suggestions?.map((p: any) => (
-                <div key={p.id} className="bg-white rounded-lg p-3 border border-indigo-100 flex flex-col items-center relative group">
+                <div key={p.id} className="bg-white/[0.03] hover:bg-white/[0.08] transition-all rounded-3xl p-5 border border-white/5 flex flex-col items-center relative group cursor-help">
                   {p.tier && p.tier !== 'N/A' && (
-                    <span className="absolute top-1 right-1 text-[6px] px-1 py-0.5 rounded-full bg-indigo-100 text-indigo-600 font-black">
+                    <span className="absolute top-3 right-3 text-[7px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 uppercase font-black">
                       {p.tier}
                     </span>
                   )}
-                  <img src={p.sprite_url} alt={p.name} className="w-16 h-16 object-contain mb-2" />
-                  <span className="text-xs font-bold text-slate-800 capitalize truncate w-full text-center">{p.name}</span>
+                  <img src={p.sprite_url} alt={p.name} className="w-20 h-20 object-contain mb-3 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-black text-white uppercase tracking-wider truncate w-full text-center">{p.name}</span>
+                  <div className="flex gap-1 mt-2">
+                    <span className="text-[7px] font-bold text-slate-500 uppercase">{p.type1}</span>
+                    {p.type2 && <span className="text-[7px] font-bold text-slate-500 uppercase">/ {p.type2}</span>}
+                  </div>
                 </div>
               ))}
             </div>

@@ -5,7 +5,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from .database import engine, get_db, Base, SessionLocal
-from .models import Pokemon, TypeEfficacy, PokemonSimilarity
+from .models import Pokemon, TypeEfficacy
 from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse
 from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score, calculate_win_probability
 from . import auth, teams
@@ -105,10 +105,6 @@ async def startup_event():
                 if null_roles > 0:
                     print(f"BOOT INFO: {null_roles} Pokémon missing roles. Run 'train_role_model.py' to fix.")
                 
-                sim_count = db.query(PokemonSimilarity).count()
-                if sim_count == 0:
-                    print("BOOT INFO: Similarity table empty. Run 'compute_similarity.py' to fix.")
-
                 na_tiers = db.query(Pokemon).filter(Pokemon.tier == 'N/A').count()
                 if na_tiers > 1000: 
                     print("BOOT INFO: Meta-Intelligence (Tiers) missing. Run 'update_meta_data.py' to fix.")
@@ -214,19 +210,6 @@ def get_single_pokemon(pokemon_id: int, db: Session = Depends(get_db)):
     if not pokemon:
         raise HTTPException(status_code=404, detail="Pokémon not found")
     return pokemon
-
-@app.get("/api/pokemon/{pokemon_id}/similar", response_model=List[PokemonBase])
-def get_similar_pokemon(pokemon_id: int, db: Session = Depends(get_db)):
-    similarity = db.query(PokemonSimilarity).filter(PokemonSimilarity.pokemon_id == pokemon_id).first()
-    if not similarity:
-        return []
-    
-    similar_ids = json.loads(similarity.similar_ids)
-    pokemon = db.query(Pokemon).filter(Pokemon.id.in_(similar_ids)).all()
-    
-    # Sort them according to the similarity list to maintain order of similarity
-    pokemon_map = {p.id: p for p in pokemon}
-    return [pokemon_map[i] for i in similar_ids if i in pokemon_map]
 
 @app.post("/api/compare-teams", response_model=TeamComparisonResponse)
 def compare_teams(

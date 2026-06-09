@@ -1,33 +1,10 @@
-import joblib
 import os
-import numpy as np
 from typing import List, Dict
 from .models import Pokemon, TypeEfficacy
-
-# ML Model Loading
-MODEL_DIR = os.path.join(os.path.dirname(__file__), "models", "ml")
-WIN_MODEL_PATH = os.path.join(MODEL_DIR, "win_predictor.joblib")
-SCALER_PATH = os.path.join(MODEL_DIR, "scaler.joblib")
-
-win_predictor = None
-win_scaler = None
 
 def get_tier_weight(tier):
     weights = {"Uber": 5, "OU": 4, "UU": 3, "RU": 2, "NU": 1, "PU": 0.5, "N/A": 0}
     return weights.get(tier, 0)
-
-def load_win_model():
-    global win_predictor, win_scaler
-    if os.path.exists(WIN_MODEL_PATH) and os.path.exists(SCALER_PATH):
-        try:
-            win_predictor = joblib.load(WIN_MODEL_PATH)
-            win_scaler = joblib.load(SCALER_PATH)
-            print("AI: Win-Probability model loaded successfully.")
-        except Exception as e:
-            print(f"AI ERROR: Failed to load win model: {e}")
-
-# Initial load
-load_win_model()
 
 ALL_TYPES = [
     "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison", "ground", 
@@ -223,7 +200,7 @@ def calculate_health_score(pokemon_list: List[Pokemon], coverage: Dict[str, floa
     return "D"
 
 def calculate_win_probability(team_a: List[Pokemon], team_b: List[Pokemon], efficacy_map: Dict[str, Dict[str, float]]) -> float:
-    """Returns probability (0.0 to 1.0) that Team A wins against Team B using ML model."""
+    """Returns probability (0.0 to 1.0) that Team A wins against Team B using a heuristic model."""
     if not team_a or not team_b:
         return 0.5
         
@@ -257,24 +234,7 @@ def calculate_win_probability(team_a: List[Pokemon], team_b: List[Pokemon], effi
             if damage_a_to_b > damage_b_to_a: type_score_a += 1
             elif damage_b_to_a > damage_a_to_b: type_score_b += 1
 
-    # ML Inference
-    if win_predictor and win_scaler:
-        features = np.array([[
-            bst_a / bst_b if bst_b > 0 else 1.0,
-            spe_a - spe_b,
-            type_score_a - type_score_b,
-            meta_a - meta_b
-        ]])
-        
-        try:
-            features_scaled = win_scaler.transform(features)
-            # predict_proba returns [prob_0, prob_1]
-            prob = win_predictor.predict_proba(features_scaled)[0][1]
-            return float(prob)
-        except Exception as e:
-            print(f"AI ERROR: Inference failed: {e}")
-
-    # Fallback to heuristic if ML fails or not loaded
+    # Heuristic-based win probability
     score_a = (bst_a / 3000) * 0.4 + (spe_a / 100) * 0.1 + (type_score_a / 36) * 0.3 + (meta_a / 30) * 0.2
     score_b = (bst_b / 3000) * 0.4 + (spe_b / 100) * 0.1 + (type_score_b / 36) * 0.3 + (meta_b / 30) * 0.2
     
