@@ -17,11 +17,14 @@ from sqlalchemy import text
 app = FastAPI(title="Pokémon Team Architect API")
 
 # Robust CORS Configuration
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://poke-architect.vercel.app",
-]
+env_origins = os.getenv("ALLOWED_ORIGINS", "")
+origins = [o.strip() for o in env_origins.split(",") if o.strip()]
+if not origins:
+    origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://poke-architect.vercel.app",
+    ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -79,40 +82,31 @@ async def startup_event():
             add_column_if_missing('tier', "VARCHAR DEFAULT 'N/A'")
             add_column_if_missing('usage_rate', 'FLOAT DEFAULT 0.0')
                 
-        # 3. Check if ML/AI data needs initialization
+        # 3. Inform about data state (don't auto-train/compute to save memory)
         db = SessionLocal()
         try:
             p_count = db.query(Pokemon).count()
-            if p_count > 0:
-                # Check for roles
+            if p_count == 0:
+                print("BOOT: Database is empty. Please run seeding scripts manually.")
+            else:
                 null_roles = db.query(Pokemon).filter(Pokemon.role == None).count()
                 if null_roles > 0:
-                    print(f"BOOT: Detected {null_roles} Pokémon without roles. Initializing ML training...")
-                    from scripts.train_role_model import train_roles
-                    train_roles()
+                    print(f"BOOT INFO: {null_roles} Pokémon missing roles. Run 'train_role_model.py' to fix.")
                 
-                # Check for similarities
                 sim_count = db.query(PokemonSimilarity).count()
                 if sim_count == 0:
-                    print("BOOT: AI Similarity table is empty. Initializing computation...")
-                    from scripts.compute_similarity import compute_similarities
-                    compute_similarities()
+                    print("BOOT INFO: Similarity table empty. Run 'compute_similarity.py' to fix.")
 
-                # Check for tiers
                 na_tiers = db.query(Pokemon).filter(Pokemon.tier == 'N/A').count()
-                if na_tiers > 1000: # If almost all are N/A
-                    print("BOOT: Meta-Intelligence (Tiers) is missing. Initializing update...")
-                    from scripts.update_meta_data import update_meta_data
-                    update_meta_data()
-            else:
-                print("BOOT: Database is empty. Skipping ML/AI initialization. Please run seeding.")
+                if na_tiers > 1000: 
+                    print("BOOT INFO: Meta-Intelligence (Tiers) missing. Run 'update_meta_data.py' to fix.")
         finally:
             db.close()
                 
-        print("BOOT: Database schema sync complete.")
+        print("BOOT: Application ready.")
     except Exception as e:
         import traceback
-        print(f"BOOT ERROR: Database sync failed: {e}")
+        print(f"BOOT ERROR: Startup failed: {e}")
         print(traceback.format_exc())
 
 @app.exception_handler(Exception)
