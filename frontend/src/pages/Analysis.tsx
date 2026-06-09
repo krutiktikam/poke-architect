@@ -10,7 +10,6 @@ import {
 import { useTeam } from '../context/TeamContext';
 import { useAuth } from '../context/AuthContext';
 import CertificateCard from '../components/CertificateCard';
-import SimilarPokemonSection from '../components/SimilarPokemonSection';
 
 import { API_BASE_URL } from '../config';
 
@@ -346,16 +345,6 @@ const Analysis = () => {
           </div>
         </motion.div>
       </div>
-
-      {/* Similarity Analytics Section */}
-      <SimilarPokemonSection 
-        currentTeam={team}
-        onAdd={addToTeam}
-        onSwap={(p) => {
-          setPreviewSwap({ suggestion: p, targetId: team[0].id });
-        }}
-        isFull={team.length >= 6}
-      />
 
       {/* Tactical Suggestions Section */}
       <div className="bg-slate-950 rounded-[4rem] p-10 md:p-16 text-white shadow-[0_40px_100px_-20px_rgba(79,70,229,0.3)] relative overflow-hidden">
