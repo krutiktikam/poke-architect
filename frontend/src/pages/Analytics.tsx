@@ -233,7 +233,7 @@ const Analytics = () => {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.type_distribution}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="type" axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontWeight: 800, textTransform: 'uppercase'}} />
+              <XAxis dataKey="type" axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontWeight: 800}} tickFormatter={(val) => val.toUpperCase()} />
               <YAxis axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontWeight: 800}} />
               <Tooltip 
                 cursor={{fill: 'rgba(255,255,255,0.02)'}}
