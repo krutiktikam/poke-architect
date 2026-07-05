@@ -23,7 +23,7 @@ const AppContent = () => {
   return (
     <div className="min-h-screen pb-32">
       {/* Background Aura Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 hidden md:block">
         <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse-glow" />
         <div className="absolute top-[20%] -right-[10%] w-[35%] h-[35%] bg-purple-600/10 blur-[120px] rounded-full animate-pulse-glow" style={{ animationDelay: '-2s' }} />
         <div className="absolute -bottom-[10%] left-[20%] w-[30%] h-[30%] bg-blue-600/5 blur-[100px] rounded-full animate-pulse-glow" style={{ animationDelay: '-1s' }} />

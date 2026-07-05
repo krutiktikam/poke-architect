@@ -25,11 +25,7 @@ const Header: React.FC = () => {
         <Link to="/" className="flex items-center gap-3 group">
           <div className="relative">
             <Shield className="text-indigo-500 w-8 h-8 relative z-10 group-hover:scale-110 transition-transform" />
-            <motion.div 
-              animate={{ scale: [1, 1.4, 1], opacity: [0.2, 0.4, 0.2] }}
-              transition={{ repeat: Infinity, duration: 4 }}
-              className="absolute inset-0 bg-indigo-500/30 blur-xl rounded-full" 
-            />
+            <div className="absolute inset-0 bg-indigo-500/30 blur-xl rounded-full animate-pulse-glow" />
           </div>
           <div className="flex flex-col">
             <h1 className="text-xl font-black tracking-tighter m-0 leading-none text-white">
@@ -122,9 +118,10 @@ const Header: React.FC = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="xl:hidden bg-slate-900 border-t border-white/5 overflow-hidden"
           >
             <div className="grid grid-cols-2 p-4 gap-2">

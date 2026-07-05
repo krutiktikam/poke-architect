@@ -3,6 +3,8 @@ import time
 import sys
 import os
 
+sys.stdout.reconfigure(encoding='utf-8')
+
 def start_backend():
     print("🚀 Starting FastAPI Backend...")
     return subprocess.Popen(

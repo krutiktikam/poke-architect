@@ -345,7 +345,81 @@ def get_global_analytics(db: Session = Depends(get_db)):
         "type_distribution": type_dist,
         "pokemon_stats": pokemon_stats
     }
+from fastapi.responses import Response
+import csv
+import io
+
+@app.get("/api/analytics/export/pokemon")
+def export_pokemon_csv(db: Session = Depends(get_db)):
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    writer.writerow([
+        "id", "name", "type1", "type2", "hp", "attack", "defense", 
+        "special_attack", "special_defense", "speed", "bst", 
+        "generation", "region", "is_legendary", "is_mythical", 
+        "role", "tier", "usage_rate"
+    ])
+    
+    pokemon_list = db.query(Pokemon).all()
+    for p in pokemon_list:
+        bst = (p.hp or 0) + (p.attack or 0) + (p.defense or 0) + \
+              (p.special_attack or 0) + (p.special_defense or 0) + (p.speed or 0)
+        writer.writerow([
+            p.id, p.name, p.type1, p.type2 or "", p.hp, p.attack, p.defense,
+            p.special_attack, p.special_defense, p.speed, bst,
+            p.generation, p.region or "", p.is_legendary, p.is_mythical,
+            p.role or "", p.tier or "N/A", p.usage_rate or 0.0
+        ])
+        
+    return Response(
+        content=output.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=pokemon_data.csv"}
+    )
+
+@app.get("/api/analytics/export/teams")
+def export_teams_csv(db: Session = Depends(get_db)):
+    from .models import SavedTeam, User
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    writer.writerow([
+        "team_id", "team_name", "user_id", "user_name", "created_at",
+        "pokemon_1", "pokemon_2", "pokemon_3", "pokemon_4", "pokemon_5", "pokemon_6"
+    ])
+    
+    teams_list = db.query(SavedTeam).all()
+    all_p = db.query(Pokemon.id, Pokemon.name).all()
+    p_map = {p[0]: p[1] for p in all_p}
+    
+    for t in teams_list:
+        user_name = "Anonymous"
+        if t.user_id:
+            user_obj = db.query(User).filter(User.id == t.user_id).first()
+            if user_obj:
+                user_name = user_obj.name
+                
+        try:
+            p_ids = json.loads(t.team_data) if t.team_data else []
+        except Exception:
+            p_ids = []
+            
+        p_names = [p_map.get(pid, "") for pid in p_ids]
+        p_names += [""] * (6 - len(p_names))
+        
+        writer.writerow([
+            t.id, t.name or "Unnamed Team", t.user_id or "", user_name, t.created_at,
+            p_names[0], p_names[1], p_names[2], p_names[3], p_names[4], p_names[5]
+        ])
+        
+    return Response(
+        content=output.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=teams_data.csv"}
+    )
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
