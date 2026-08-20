@@ -57,6 +57,30 @@ def calculate_type_coverage(pokemon_list: List[Pokemon], efficacy_map: Dict[str,
     return coverage
 
 def suggest_pokemon(current_team: List[Pokemon], all_pokemon: List[Pokemon], efficacy_map: Dict[str, Dict[str, float]]) -> List[Dict]:
+    # Try ML recommender first
+    try:
+        from .ml_recommender import team_recommender
+        if team_recommender.is_trained:
+            ml_suggestions = team_recommender.suggest_pokemon_for_team(
+                current_team, all_pokemon, efficacy_map, top_n=5
+            )
+            suggestions = []
+            for sug in ml_suggestions:
+                p = sug["pokemon"]
+                suggestions.append({
+                    "id": p.id, "name": p.name, "type1": p.type1, "type2": p.type2,
+                    "hp": p.hp, "attack": p.attack, "defense": p.defense,
+                    "special_attack": p.special_attack, "special_defense": p.special_defense,
+                    "speed": p.speed, "sprite_url": p.sprite_url, "region": p.region,
+                    "generation": p.generation, "is_legendary": p.is_legendary, "is_mythical": p.is_mythical,
+                    "reasoning": sug["reasoning"], "role": p.role or "Balanced",
+                    "score": sug["score"]
+                })
+            return suggestions
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(f"ML recommender failed, falling back to heuristic: {e}")
     if not current_team:
         return []
     

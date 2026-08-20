@@ -132,7 +132,7 @@ const LiveAnalysisSidebar = () => {
               <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Statistical Matrix</span>
               <div className="flex-grow h-px bg-white/5" />
             </div>
-            <div className="w-full h-64 bg-white/[0.02] rounded-3xl p-4 border border-white/5 group">
+            <div className="w-full min-h-[64px] h-64 bg-white/[0.02] rounded-3xl p-4 border border-white/5 group">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="75%" data={statsData}>
                   <PolarGrid stroke="rgba(255,255,255,0.03)" />

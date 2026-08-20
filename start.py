@@ -7,8 +7,10 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 def start_backend():
     print("🚀 Starting FastAPI Backend...")
+    # Use Render's PORT env var if available, otherwise default to 8000
+    port = os.getenv("PORT", "8000")
     return subprocess.Popen(
-        [sys.executable, "-m", "uvicorn", "backend.main:app", "--reload", "--port", "8000"],
+        [sys.executable, "-m", "uvicorn", "backend.main:app", "--reload", "--host", "0.0.0.0", "--port", port],
         cwd=os.getcwd()
     )
 

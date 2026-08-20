@@ -1,0 +1,118 @@
+PokéArchitect Debug Summary
+===========================
+
+This file collects the most common runtime errors seen when running PokéArchitect
+locally or in production, along with their root causes and recommended fixes.
+
+----------------------------------------------------------------------
+1️⃣ Chart size errors (Recharts)
+----------------------------------------------------------------------
+Symptoms (browser console):
+  - "The width(-1) and height(-1) of chart should be greater than 0 ..."
+  - Charts appear blank or missing; other UI works.
+
+Cause:
+  Recharts measures the container element via offsetWidth/offsetHeight.
+  If the container has zero height/width at mount time (e.g., hidden by
+  CSS, inside a collapsed panel, or rendered before layout finishes),
+  Recharts aborts with negative dimensions.
+
+Fixes:
+  • Ensure every chart wrapper has an explicit non‑zero height.
+        Example (Tailwind):
+            <div className="w-full h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                    {/* chart */}
+                </ResponsiveContainer>
+            </div>
+  • If the chart is inside a tab, accordion, modal, or conditional render,
+    either:
+      - Render the chart unconditionally but hide it via opacity/visibility,
+        keeping the DOM node layout‑valid, OR
+      - Wait until the container becomes visible before mounting the chart
+        (use a state flag set in useEffect after first paint).
+  • For responsive layouts, you can use aspect‑ratio utilities:
+        <div className="w-full aspect-w-16 aspect-h-9">
+            <ResponsiveContainer width="100%" height="100%">
+                {/* chart */}
+            </ResponsiveContainer>
+        </div>
+  • As a last resort, force a re‑measure by changing the React key on the
+    <ResponsiveContainer> when you know the size may have changed.
+
+----------------------------------------------------------------------
+2️⃣ CORS / 503 Service Unavailable errors
+----------------------------------------------------------------------
+Symptoms (browser console / Network tab):
+  - "Access to XMLHttpRequest at 'https://...' from origin '...' has been blocked by CORS policy:
+    No 'Access-Control-Allow-Origin' header is present on the requested resource."
+  - Often accompanied by "(failed) net::ERR_FAILED" or "503 (Service Unavailable)".
+  - The API endpoints (/api/team-analysis, /api/pokemon, ...) never return data.
+
+Cause:
+  The browser’s pre‑flight request never reaches the FastAPI application
+  because the back‑end returns HTTP 503 (or fails to start) before the CORS
+  middleware can attach the required headers. Common reasons:
+    - Render free‑tier dyno sleeping (cold start) → brief 503 until the container wakes.
+    - Missing or incorrect PORT environment variable → uvicorn binds to 8000
+      while Render expects $PORT.
+    - Missing required env vars (DATABASE_URL, SECRET_KEY, etc.) → app crashes on start.
+    - CORS allow‑list does not contain the front‑end origin (or missing wildcard).
+
+Fixes:
+  1. Verify the back‑end is running:
+        - Open Render dashboard → Service “poke-architect-api”.
+        - Status must be “Running”. If “Crashed”/“Errored”, inspect the Logs tab.
+  2. Check the start command:
+        - In Render’s “Build & Run” settings or in start.py, the uvicorn call must read
+          the PORT from the environment:
+                port = int(os.getenv("PORT", "8000"))
+                uvicorn.run(app, host="0.0.0.0", port=port)
+        - Locally, the default 8000 works.
+  3. Ensure required env vars are set in Render:
+        - DATABASE_URL (Render provides a Postgres URL; remember to replace
+          postgres:// with postgresql:// if needed and add ?sslmode=require).
+        - SECRET_KEY (any random string).
+        - GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_REDIRECT_URI / FRONTEND_URL.
+        - ALLOWED_ORIGINS – either a comma‑separated list or "*". For safety,
+          include your Vercel URL:
+                ALLOWED_ORIGINS=https://poke-architect.vercel.app
+          (or use "*" to allow any origin when credentials are not required).
+  4. Verify CORS middleware logs:
+        - On startup the backend now logs:
+              INFO: CORS allowed origins: [...]   (or "*")
+          Look for this line in the Render logs.
+  5. Test manually:
+        $ curl -I -H "Origin: https://poke-architect.vercel.app" \
+          https://poke-architect-api.onrender.com/api/health
+        You should see:
+          Access-Control-Allow-Origin: https://poke-architect.vercel.app
+          Access-Control-Allow-Credentials: true
+          HTTP/2 200
+  6. Prevent sleeping (optional):
+        - Add a cron job or GitHub Action that GETs /api/health every 5 minutes.
+        - Or upgrade to a paid Render plan to avoid dyno sleep.
+
+----------------------------------------------------------------------
+General debugging tips
+----------------------------------------------------------------------
+- Back‑end logs (Render → Logs) are the first place to look for tracebacks.
+- Front‑end console shows the symptoms; the Network tab shows the exact status code.
+- Enable more verbose logging in main.py by changing:
+        logging.basicConfig(level=logging.INFO)
+    to level=logging.DEBUG if you need deeper insight.
+- The ML recommender logs warnings if it falls back to the heuristic;
+  check the backend logs for “ML recommender failed, falling back to heuristic”.
+- If you modify the database schema locally, remember to run the migration
+  scripts (seed_database.py, update_meta_data.py) or delete pokemon.db to
+  force a rebuild.
+
+----------------------------------------------------------------------
+Contact
+----------------------------------------------------------------------
+If you encounter an error not listed here, please capture:
+  - Full console output (including stack trace).
+  - Network request/response (Headers, Payload, Status).
+  - Render backend logs around the time of the error.
+  - Any relevant environment variables (hide secrets).
+  Then open an issue or contact the maintainer.

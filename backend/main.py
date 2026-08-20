@@ -31,6 +31,7 @@ if "*" in origins:
         expose_headers=["*"]
     )
 else:
+    # If the list is empty we use a sensible default that includes the deployed Vercel site and localhost.
     if not origins:
         origins = [
             "http://localhost:5173",
@@ -47,6 +48,9 @@ else:
         allow_headers=["*"],
         expose_headers=["*"]
     )
+
+# Log the final list of allowed origins – useful for debugging startup.
+logger.info(f"CORS allowed origins: {origins if origins else '*'}")
 
 # Session Middleware
 app.add_middleware(
