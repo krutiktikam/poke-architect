@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
+import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
 import { TeamProvider } from './context/TeamContext';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
@@ -50,6 +51,9 @@ const AppContent = () => {
         onRemove={removeFromTeam} 
         onAnalyze={() => {}} 
       />
+
+      {/* Vercel Web Analytics */}
+      <VercelAnalytics />
     </div>
   );
 };
