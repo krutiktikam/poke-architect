@@ -1,4 +1,6 @@
 import os
+import logging
+from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
@@ -11,8 +13,10 @@ from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemo
 from . import auth, teams
 import json
 from fastapi.responses import JSONResponse
-
 from sqlalchemy import text
+
+load_dotenv(override=True)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Pokémon Team Architect API")
 

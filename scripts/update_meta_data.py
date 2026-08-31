@@ -1,12 +1,18 @@
 import requests
 import os
 import sys
-from sqlalchemy import text
+from dotenv import load_dotenv
+
+if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # Add parent directory to path to import backend modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+load_dotenv(override=True)
+
 from backend.database import SessionLocal
 from backend.models import Pokemon
+from sqlalchemy import text
 
 TIERS = {
     "gen9ubers": "Uber",
@@ -43,7 +49,15 @@ def update_meta_data():
                 pokemon_usage = data.get('pokemon', {})
                 
                 for name, stats in pokemon_usage.items():
-                    usage = stats.get('usage', 0.0) * 100 # Convert to percentage
+                    usage_val = stats.get('usage', 0.0)
+                    if isinstance(usage_val, dict):
+                        usage_num = usage_val.get('weighted', usage_val.get('raw', 0.0))
+                    elif isinstance(usage_val, (int, float)):
+                        usage_num = float(usage_val)
+                    else:
+                        usage_num = 0.0
+                        
+                    usage = usage_num * 100 # Convert to percentage
                     
                     # Try to find the pokemon by name (case-insensitive)
                     # Note: Smogon names might have suffixes like '-Mega' or '-Gmax'

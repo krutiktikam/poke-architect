@@ -2,12 +2,50 @@ import requests
 import sys
 import os
 import time
+from dotenv import load_dotenv
+
+if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # Add parent directory to path to import backend modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+load_dotenv(override=True)
 
+import json
 from backend.database import SessionLocal, engine, Base
-from backend.models import Pokemon, TypeEfficacy
+from backend.models import Pokemon, TypeEfficacy, User, SavedTeam
+
+def seed_sample_teams(db):
+    if db.query(SavedTeam).count() == 0:
+        demo_user = db.query(User).filter(User.email == "architect@poke.ai").first()
+        if not demo_user:
+            demo_user = User(
+                email="architect@poke.ai",
+                name="Red (Champion)",
+                google_id="demo-user-red",
+                avatar_url="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+            )
+            db.add(demo_user)
+            db.commit()
+            db.refresh(demo_user)
+            
+        sample_teams = [
+            {"name": "Gen 9 Meta Balance", "pokemon_ids": [984, 1000, 987, 887, 1002, 1003]},
+            {"name": "Kanto Elite Roster", "pokemon_ids": [3, 6, 9, 25, 130, 149]},
+            {"name": "Hyper Offense Sweep", "pokemon_ids": [445, 212, 130, 887, 637, 984]},
+            {"name": "Bulky Stall Synergy", "pokemon_ids": [748, 980, 242, 227, 472, 130]}
+        ]
+        
+        for st in sample_teams:
+            team = SavedTeam(
+                user_id=demo_user.id,
+                name=st["name"],
+                team_data=json.dumps(st["pokemon_ids"]),
+                is_public=True
+            )
+            db.add(team)
+        db.commit()
+        print("Sample community teams seeded successfully.")
 
 def get_generation_and_region(pokemon_id):
     if 1 <= pokemon_id <= 151:
@@ -128,6 +166,10 @@ def seed_data(limit=1025):
                 print(f"Error with type {type_name}: {e}")
         
         print("Type efficacy data seeded.")
+        
+        # Seed initial public community teams
+        seed_sample_teams(db)
+        
         print("Database Seeding Complete!")
 
     finally:
