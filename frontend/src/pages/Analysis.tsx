@@ -264,7 +264,7 @@ const Analysis = () => {
           </div>
           
           <div className="w-full h-[450px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={statsData}>
                 <PolarGrid stroke="rgba(255,255,255,0.05)" />
                 <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 900 }} />
@@ -310,7 +310,7 @@ const Analysis = () => {
             <h3 className="text-2xl font-black text-white tracking-tight uppercase">Vulnerability Matrix</h3>
           </div>
           <div className="w-full h-[450px]">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <BarChart
                 data={coverageData}
                 layout="vertical"

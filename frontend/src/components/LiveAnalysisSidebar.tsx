@@ -133,7 +133,7 @@ const LiveAnalysisSidebar = () => {
               <div className="flex-grow h-px bg-white/5" />
             </div>
             <div className="w-full min-h-[64px] h-64 bg-white/[0.02] rounded-3xl p-4 border border-white/5 group">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <RadarChart cx="50%" cy="50%" outerRadius="75%" data={statsData}>
                   <PolarGrid stroke="rgba(255,255,255,0.03)" />
                   <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 9, fontWeight: 900, letterSpacing: '0.1em' }} />
@@ -151,7 +151,7 @@ const LiveAnalysisSidebar = () => {
               <div className="flex-grow h-px bg-white/5" />
             </div>
             <div className="w-full h-64 bg-white/[0.02] rounded-3xl p-4 border border-white/5 overflow-hidden">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <BarChart data={coverageData} layout="vertical" margin={{ left: -10, top: 0, bottom: 0, right: 20 }}>
                   <XAxis type="number" hide />
                   <YAxis dataKey="type" type="category" tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 8, fontWeight: 900, letterSpacing: '0.1em' }} width={60} />

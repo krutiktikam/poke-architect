@@ -74,7 +74,7 @@ const CompareModal: React.FC<CompareModalProps> = ({
               <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
                 <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 text-center">Relative Power Scales</h3>
                 <div className="w-full h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                     <RadarChart cx="50%" cy="50%" outerRadius="80%" data={statsData}>
                       <PolarGrid stroke="#cbd5e1" />
                       <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 12, fontWeight: 700 }} />

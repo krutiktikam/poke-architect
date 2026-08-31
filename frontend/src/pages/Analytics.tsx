@@ -157,7 +157,7 @@ const Analytics = () => {
             <h3 className="text-xl font-black text-white uppercase tracking-tight">Average Base Stat Ranking</h3>
           </div>
           <div className="min-h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                 <XAxis 
@@ -203,7 +203,7 @@ const Analytics = () => {
             <h3 className="text-xl font-black text-white uppercase tracking-tight">The Power Creep: Stats by Gen</h3>
           </div>
           <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
               <LineChart data={data.generation_trends}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="generation" axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontWeight: 800}} />
@@ -230,7 +230,7 @@ const Analytics = () => {
           <h3 className="text-xl font-black text-white uppercase tracking-tight">Global Type Population</h3>
         </div>
         <div className="h-[400px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <BarChart data={data.type_distribution}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="type" axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.4)', fontSize: 10, fontWeight: 800}} tickFormatter={(val) => val.toUpperCase()} />

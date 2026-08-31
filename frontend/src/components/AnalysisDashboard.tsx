@@ -58,7 +58,7 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
           <div className="bg-white/[0.02] border border-white/5 rounded-[32px] p-8 flex flex-col items-center">
             <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-8 self-start">Average Base Stats</h3>
             <div className="w-full h-80">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={statsData}>
                   <PolarGrid stroke="rgba(255,255,255,0.1)" />
                   <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900, letterSpacing: '0.1em' }} />
@@ -83,7 +83,7 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
               <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] m-0">Type Vulnerabilities</h3>
             </div>
             <div className="w-full h-80">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                 <BarChart
                   data={coverageData}
                   layout="vertical"
