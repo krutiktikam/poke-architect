@@ -101,6 +101,16 @@ async def startup_event():
             add_column_if_missing('role', 'VARCHAR')
             add_column_if_missing('tier', "VARCHAR DEFAULT 'N/A'")
             add_column_if_missing('usage_rate', 'FLOAT DEFAULT 0.0')
+
+            # Sync PostgreSQL auto-increment sequences if on PostgreSQL
+            if engine.name == 'postgresql':
+                try:
+                    conn.execute(text("SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));"))
+                    conn.execute(text("SELECT setval('saved_teams_id_seq', COALESCE((SELECT MAX(id) FROM saved_teams), 1));"))
+                    conn.commit()
+                    print("BOOT: PostgreSQL primary key sequences synchronized.")
+                except Exception as seq_err:
+                    print(f"BOOT WARN: Sequence sync note: {seq_err}")
                 
         # 3. Inform about data state (don't auto-train/compute to save memory)
         db = SessionLocal()
