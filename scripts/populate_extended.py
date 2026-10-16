@@ -529,18 +529,26 @@ def populate_items(
         items_csv, required_columns=["id", "identifier", "category_id"]
     )
 
+    seen_names: Dict[str, int] = dict(
+        session.execute(select(Item.name, Item.id)).all()
+    )
+
     items_to_upsert = []
     for r in item_rows:
         if not r.get("id") or not r.get("identifier"):
             continue
         item_id = int(r["id"])  # type: ignore[arg-type]
-        cat_id = int(r["category_id"]) if r.get("category_id") else None
+        cat_id = _parse_fk(r.get("category_id"))
         if cat_id and cat_id not in valid_category_ids:
             if orphan_counts is not None:
                 orphan_counts["item: missing category_id"] += 1
             cat_id = None
 
         name = r["identifier"].replace("-", " ").title()  # type: ignore[union-attr]
+        if name in seen_names and seen_names[name] != item_id:
+            name = f"{name} ({item_id})"
+        seen_names[name] = item_id
+
         items_to_upsert.append(
             {
                 "id": item_id,
