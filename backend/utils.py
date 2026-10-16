@@ -1,5 +1,6 @@
 import os
 from typing import List, Dict
+from sqlalchemy.orm import Session
 from .models import Pokemon, TypeEfficacy
 
 def get_tier_weight(tier):
@@ -303,3 +304,171 @@ def generate_tactical_advice(coverage: Dict[str, float]) -> List[str]:
         advice.append("Your team is fairly balanced, but watch out for specific dual-type threats.")
         
     return advice
+
+
+def evaluate_stab(team: List[Dict], db: Session) -> List[str]:
+    """
+    Evaluate STAB (Same Type Attack Bonus) for each Pokémon's selected moves.
+    Flags any Pokémon whose selected offensive moves do not match at least one of its elemental types (Missing STAB).
+    """
+    warnings = []
+    for pokemon_dict in team:
+        pokemon_name = pokemon_dict.get('name', 'Unknown')
+        pokemon_id = pokemon_dict.get('id')
+
+        if not pokemon_id:
+            continue
+
+        # Get the actual Pokemon object from DB to access types
+        pokemon = db.query(Pokemon).filter(Pokemon.id == pokemon_id).first()
+        if not pokemon:
+            continue
+
+        pokemon_types = [pokemon.type1.lower()]
+        if pokemon.type2:
+            pokemon_types.append(pokemon.type2.lower())
+
+        selected_moves = pokemon_dict.get('selectedMoves', [])
+        move_ids = [m for m in selected_moves if m is not None]
+
+        if not move_ids:
+            continue  # No moves selected, skip STAB check
+
+        # Check each selected move for STAB
+        stab_found = False
+        for move_id in move_ids:
+            move = db.query(Move).filter(Move.id == move_id).first()
+            if move and move.type.lower() in pokemon_types:
+                stab_found = True
+                break
+
+        if not stab_found and move_ids:
+            warnings.append(f"{pokemon_name}: Missing STAB - none of your selected moves match your Pokémon's types")
+
+    return warnings
+
+
+def evaluate_stat_optimization(team: List[Dict], db: Session) -> List[str]:
+    """
+    Flags if a Pokémon is equipped with a Physical damage move but its base Special Attack
+    is significantly higher (and vice versa). You will need to query the `Move` table to check the `damage_class`.
+    """
+    warnings = []
+    for pokemon_dict in team:
+        pokemon_name = pokemon_dict.get('name', 'Unknown')
+        pokemon_id = pokemon_dict.get('id')
+
+        if not pokemon_id:
+            continue
+
+        # Get the actual Pokemon object from DB to access stats
+        pokemon = db.query(Pokemon).filter(Pokemon.id == pokemon_id).first()
+        if not pokemon:
+            continue
+
+        base_atk = pokemon.attack or 0
+        base_spa = pokemon.special_attack or 0
+
+        selected_moves = pokemon_dict.get('selectedMoves', [])
+        move_ids = [m for m in selected_moves if m is not None]
+
+        if not move_ids:
+            continue
+
+        # Count physical vs special moves
+        physical_moves = 0
+        special_moves = 0
+
+        for move_id in move_ids:
+            move = db.query(Move).filter(Move.id == move_id).first()
+            if move:
+                if move.damage_class == 'physical':
+                    physical_moves += 1
+                elif move.damage_class == 'special':
+                    special_moves += 1
+
+        total_offensive_moves = physical_moves + special_moves
+        if total_offensive_moves == 0:
+            continue
+
+        # Check for significant stat/move mismatch
+        # If Special Attack is at least 50% higher than Attack, expect mostly special moves
+        if base_spa > base_atk * 1.5 and physical_moves > special_moves:
+            warnings.append(f"{pokemon_name}: High Special Attack ({base_spa}) but using mostly Physical moves ({physical_moves}/{total_offensive_moves})")
+        # If Attack is at least 50% higher than Special Attack, expect mostly physical moves
+        elif base_atk > base_spa * 1.5 and special_moves > physical_moves:
+            warnings.append(f"{pokemon_name}: High Attack ({base_atk}) but using mostly Special moves ({special_moves}/{total_offensive_moves})")
+
+    return warnings
+
+
+def evaluate_offensive_coverage(team: List[Dict], db: Session) -> List[str]:
+    """
+    Cross-references the types of all equipped attacking moves against the global type chart
+    to identify what defensive typing the opponent could have that this team CANNOT hit
+    for super-effective damage.
+    """
+    warnings = []
+    if not team:
+        return warnings
+
+    ALL_TYPES = [
+        "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison", "ground",
+        "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy"
+    ]
+
+    # Collect all move IDs from team
+    all_move_ids = []
+    for pokemon_dict in team:
+        selected_moves = pokemon_dict.get('selectedMoves', [])
+        move_ids = [m for m in selected_moves if m is not None]
+        all_move_ids.extend(move_ids)
+
+    if not all_move_ids:
+        return warnings  # No moves selected
+
+    # Get all moves with their types
+    moves = db.query(Move).filter(Move.id.in_(all_move_ids)).all()
+    move_type_map = {move.id: move.type.lower() for move in moves}
+
+    # Get efficacy map for type checking
+    efficacies = db.query(TypeEfficacy).all()
+    eff_map = {}
+    for e in efficacies:
+        if e.damage_type not in eff_map:
+            eff_map[e.damage_type] = {}
+        eff_map[e.damage_type][e.target_type] = e.damage_factor
+
+    # Calculate what types our team can hit super-effectively (2x or more)
+    super_effective_against = set()
+    for move_id in all_move_ids:
+        move_type = move_type_map.get(move_id)
+        if not move_type:
+            continue
+
+        # Check what types this move is super effective against
+        for target_type in ALL_TYPES:
+            multiplier = eff_map.get(move_type, {}).get(target_type, 1.0)
+            if multiplier >= 2.0:
+                super_effective_against.add(target_type)
+
+    # Find types that resist all our attacks (0.5x or less)
+    resisted_types = []
+    for target_type in ALL_TYPES:
+        # Check if this type resists ALL our attacking moves (all moves do 0.5x or less damage)
+        all_resisted = True
+        for move_id in all_move_ids:
+            move_type = move_type_map.get(move_id)
+            if not move_type:
+                continue
+            multiplier = eff_map.get(move_type, {}).get(target_type, 1.0)
+            if multiplier > 0.5:  # If any move does more than 0.5x damage, it's not fully resisted
+                all_resisted = False
+                break
+        if all_resisted:
+            resisted_types.append(target_type)
+
+    if resisted_types:
+        warnings.append(f"Your team cannot hit {', '.join(resisted_types)} types for super-effective damage. Consider adding moves that cover these types.")
+
+    return warnings

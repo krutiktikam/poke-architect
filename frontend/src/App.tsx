@@ -13,7 +13,12 @@ import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
 import Analytics from './pages/Analytics';
 import AuthCallback from './pages/AuthCallback';
+import Compendium from './pages/Compendium';
 import { useTeam } from './context/TeamContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Create a client instance
+const queryClient = new QueryClient();
 
 axios.defaults.withCredentials = true;
 
@@ -31,7 +36,7 @@ const AppContent = () => {
       </div>
 
       <Header />
-      
+
       <main className="relative z-10">
         <Routes>
           <Route path="/" element={<Builder />} />
@@ -43,13 +48,14 @@ const AppContent = () => {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/compendium" element={<Compendium />} />
         </Routes>
       </main>
 
-      <TeamDock 
-        team={team} 
-        onRemove={removeFromTeam} 
-        onAnalyze={() => {}} 
+      <TeamDock
+        team={team}
+        onRemove={removeFromTeam}
+        onAnalyze={() => {}}
       />
 
       {/* Vercel Web Analytics */}
@@ -62,9 +68,11 @@ function App() {
   return (
     <AuthProvider>
       <TeamProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            <AppContent />
+          </Router>
+        </QueryClientProvider>
       </TeamProvider>
     </AuthProvider>
   );

@@ -26,7 +26,7 @@ const LiveAnalysisSidebar = () => {
   const fetchAnalysis = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`${API_BASE_URL}/team-analysis`, team.map(p => p.id), {
+      const response = await axios.post(`${API_BASE_URL}/team-analysis`, { pokemon: team }, {
         params: { target_generation: targetGen }
       });
       setAnalysisData(response.data);

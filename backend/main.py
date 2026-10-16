@@ -7,10 +7,11 @@ from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from .database import engine, get_db, Base, SessionLocal
-from .models import Pokemon, TypeEfficacy
-from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse
+from .models import Pokemon, TypeEfficacy, Move, Nature, PokemonMove, Ability, Item, PokemonAbility
+from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse, MoveBase, NatureBase, PokemonMoveBase, AbilityResponse, PokemonAbilityBase, ItemResponse, TeamAnalysisRequest
 from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score, calculate_win_probability
 from . import auth, teams
+from .routers import compendium
 import json
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -66,9 +67,8 @@ app.add_middleware(
 async def startup_event():
     print("BOOT: Application starting up...")
     try:
-        # 1. Create tables if they don't exist
-        print("BOOT: Syncing database schema...")
-        Base.metadata.create_all(bind=engine)
+        # 1. Database schema is managed via Alembic migrations
+        print("BOOT: Database startup check...")
         
         # 2. Database-agnostic column check and addition
         from sqlalchemy import inspect, text
@@ -175,6 +175,7 @@ def test_cors():
 
 app.include_router(auth.router)
 app.include_router(teams.router)
+app.include_router(compendium.router)
 
 @app.get("/")
 def read_root():
@@ -272,18 +273,20 @@ def compare_teams(
 
 @app.post("/api/team-analysis", response_model=TeamAnalysisResponse)
 def analyze_team(
-    pokemon_ids: List[int], 
+    request: TeamAnalysisRequest,
     db: Session = Depends(get_db),
     target_generation: Optional[int] = Query(None)
 ):
-    if not pokemon_ids:
+    if not request.pokemon:
         return {"total_stats": {}, "type_coverage": {}, "suggestions": [], "advice": [], "archetype": "None", "health_score": "F"}
-    
-    if len(pokemon_ids) > 6:
+
+    if len(request.pokemon) > 6:
         raise HTTPException(status_code=400, detail="Team can have max 6 Pokémon")
-    
-    team = db.query(Pokemon).filter(Pokemon.id.in_(pokemon_ids)).all()
-    
+
+    # Convert request data to Pokemon objects for existing functions
+    pokemon_ids = [p.id for p in request.pokemon if p.id is not None]
+    team = db.query(Pokemon).filter(Pokemon.id.in_(pokemon_ids)).all() if pokemon_ids else []
+
     # Pre-fetch efficacy map for logic
     efficacies = db.query(TypeEfficacy).all()
     eff_map = {}
@@ -291,21 +294,31 @@ def analyze_team(
         if e.damage_type not in eff_map:
             eff_map[e.damage_type] = {}
         eff_map[e.damage_type][e.target_type] = e.damage_factor
-        
+
     stats = calculate_team_stats(team)
     coverage = calculate_type_coverage(team, eff_map)
-    
-    # Contextual Suggestions
+
+    # Contextual Suggestions (using base Pokemon data)
     query = db.query(Pokemon)
     if target_generation:
         query = query.filter(Pokemon.generation <= target_generation)
-    
+
     all_p = query.limit(1025).all()
     suggestions = suggest_pokemon(team, all_p, eff_map)
     advice = generate_tactical_advice(coverage)
+
+    # Add new heuristic insights
+    stab_warnings = evaluate_stab([p.dict() for p in request.pokemon], db)
+    stat_warnings = evaluate_stat_optimization([p.dict() for p in request.pokemon], db)
+    coverage_warnings = evaluate_offensive_coverage([p.dict() for p in request.pokemon], db)
+
+    # Combine all warnings
+    all_warnings = stab_warnings + stat_warnings + coverage_warnings
+    advice.extend(all_warnings)
+
     archetype = detect_team_archetype(team)
     health_score = calculate_health_score(team, coverage)
-    
+
     return {
         "total_stats": stats,
         "type_coverage": coverage,

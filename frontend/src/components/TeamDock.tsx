@@ -12,12 +12,12 @@ interface TeamDockProps {
 
 const TeamDock: React.FC<TeamDockProps> = ({ team, onRemove }) => {
   return (
-    <motion.div 
+    <motion.div
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-4xl z-40"
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-[480px] z-40"
     >
-      <div className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)] rounded-[32px] p-3 md:p-4 overflow-hidden relative">
+      <div className="bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)] rounded-[36px] p-4 md:p-6 overflow-hidden relative">
         {/* Subtle Inner Glow */}
         <div className="absolute inset-0 bg-gradient-to-t from-indigo-500/5 to-transparent pointer-events-none" />
         
