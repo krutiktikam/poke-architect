@@ -437,6 +437,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/moves": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Moves */
+        get: operations["get_moves_api_moves_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/moves/{id_or_name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Move */
+        get: operations["get_move_api_moves__id_or_name__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/natures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Natures */
+        get: operations["get_natures_api_natures_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/natures/{id_or_name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Nature */
+        get: operations["get_nature_api_natures__id_or_name__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -887,6 +955,33 @@ export interface components {
             /** Offset */
             offset: number;
         };
+        /** MoveBase */
+        MoveBase: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Type */
+            type: string;
+            /** Power */
+            power?: number | null;
+            /** Accuracy */
+            accuracy?: number | null;
+            /** Pp */
+            pp?: number | null;
+            /**
+             * Priority
+             * @default 0
+             */
+            priority: number | null;
+            /**
+             * Damage Class
+             * @default status
+             */
+            damage_class: string | null;
+            /** Effect Chance */
+            effect_chance?: number | null;
+        };
         /** NamedRef */
         NamedRef: {
             /** Id */
@@ -895,6 +990,17 @@ export interface components {
             name?: string | null;
             /** Identifier */
             identifier?: string | null;
+        };
+        /** NatureBase */
+        NatureBase: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Decreased Stat */
+            decreased_stat?: string | null;
+            /** Increased Stat */
+            increased_stat?: string | null;
         };
         /** PocketCategorySchema */
         PocketCategorySchema: {
@@ -1923,6 +2029,148 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DataVersionResponse"];
+                };
+            };
+        };
+    };
+    get_moves_api_moves_get: {
+        parameters: {
+            query?: {
+                /** @description Page size */
+                limit?: number;
+                /** @description Offset for pagination */
+                offset?: number;
+                /** @description Alias for offset */
+                skip?: number | null;
+                /** @description Filter by move type */
+                type?: string | null;
+                /** @description Filter by damage class */
+                damage_class?: string | null;
+                /** @description Filter by move name */
+                search?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MoveBase"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_move_api_moves__id_or_name__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id_or_name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MoveBase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_natures_api_natures_get: {
+        parameters: {
+            query?: {
+                /** @description Page size */
+                limit?: number;
+                /** @description Offset for pagination */
+                offset?: number;
+                /** @description Alias for offset */
+                skip?: number | null;
+                /** @description Filter by nature name */
+                search?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NatureBase"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_nature_api_natures__id_or_name__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id_or_name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NatureBase"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

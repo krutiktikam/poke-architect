@@ -4,6 +4,7 @@ import { Package } from 'lucide-react';
 import { useTeam } from '../../context/useTeam';
 import type { TeamMember } from '../../context/TeamContext';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 
 const ItemBagDrawer = React.lazy(() => import('../Items/ItemBagDrawer'));
 
@@ -21,7 +22,7 @@ const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
   >({
     queryKey: ['moves'],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/moves`, {
+      const res = await axios.get(`${API_BASE_URL}/moves`, {
         params: { limit: 1000 }
       });
       return res.data;
@@ -33,7 +34,7 @@ const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
   >({
     queryKey: ['items'],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/items`, {
+      const res = await axios.get(`${API_BASE_URL}/items`, {
         params: { limit: 1000 }
       });
       return res.data;
@@ -45,7 +46,7 @@ const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
   >({
     queryKey: ['abilities'],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/abilities`, {
+      const res = await axios.get(`${API_BASE_URL}/abilities`, {
         params: { limit: 1000 }
       });
       return res.data;
@@ -57,7 +58,7 @@ const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
   >({
     queryKey: ['natures'],
     queryFn: async () => {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/natures`, {
+      const res = await axios.get(`${API_BASE_URL}/natures`, {
         params: { limit: 1000 }
       });
       return res.data;

@@ -91,9 +91,9 @@ class MoveBase(BaseModel):
     type: str
     power: Optional[int] = None
     accuracy: Optional[int] = None
-    pp: int
-    priority: int
-    damage_class: str  # physical, special, status
+    pp: Optional[int] = None
+    priority: Optional[int] = 0
+    damage_class: Optional[str] = "status"  # physical, special, status
     effect_chance: Optional[int] = None
 
     class Config:

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../config';
 import {
   VERSION_STORAGE_KEY,
+  LEGACY_VERSION_STORAGE_KEY,
   VersionContextInstance,
   type GameVersion,
   type VersionContextType,
@@ -12,10 +13,19 @@ import {
 export const VersionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedVersionId, setSelectedVersionIdState] = useState<number | null>(() => {
     try {
-      const stored =
-        typeof localStorage !== 'undefined'
-          ? localStorage.getItem(VERSION_STORAGE_KEY) || localStorage.getItem('selectedVersionId')
-          : null;
+      if (typeof localStorage === 'undefined') return null;
+
+      let stored = localStorage.getItem(VERSION_STORAGE_KEY);
+      // Migrate legacy key if present on load
+      const legacy = localStorage.getItem(LEGACY_VERSION_STORAGE_KEY);
+      if (legacy !== null && legacy !== '') {
+        if (!stored) {
+          stored = legacy;
+          localStorage.setItem(VERSION_STORAGE_KEY, legacy);
+        }
+        localStorage.removeItem(LEGACY_VERSION_STORAGE_KEY);
+      }
+
       if (stored !== null && stored !== '') {
         const parsed = parseInt(stored, 10);
         return isNaN(parsed) ? null : parsed;
@@ -47,7 +57,7 @@ export const VersionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (versions.length > 0 && selectedVersionId !== null && effectiveVersionId === null) {
       try {
         localStorage.removeItem(VERSION_STORAGE_KEY);
-        localStorage.removeItem('selectedVersionId');
+        localStorage.removeItem(LEGACY_VERSION_STORAGE_KEY);
       } catch {
         // Ignore storage error
       }
@@ -59,11 +69,10 @@ export const VersionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       if (id === null) {
         localStorage.removeItem(VERSION_STORAGE_KEY);
-        localStorage.removeItem('selectedVersionId');
       } else {
         localStorage.setItem(VERSION_STORAGE_KEY, String(id));
-        localStorage.setItem('selectedVersionId', String(id));
       }
+      localStorage.removeItem(LEGACY_VERSION_STORAGE_KEY);
     } catch {
       // Ignore storage error
     }
@@ -93,14 +102,8 @@ export const VersionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setSelectedVersionId,
     versionsByGeneration,
     isPending,
-    error: error ?? null,
+    error,
   };
 
-  return (
-    <VersionContextInstance.Provider value={value}>
-      {children}
-    </VersionContextInstance.Provider>
-  );
+  return <VersionContextInstance.Provider value={value}>{children}</VersionContextInstance.Provider>;
 };
-
-export default VersionProvider;

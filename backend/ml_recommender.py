@@ -8,6 +8,7 @@ import joblib
 import os
 from typing import List, Dict, Tuple, Any
 from .models import Pokemon, SavedTeam, User, TypeEfficacy
+from .utils import ALL_TYPES
 from .database import SessionLocal
 import logging
 

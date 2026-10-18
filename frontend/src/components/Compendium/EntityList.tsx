@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 
 interface EntityListProps<T> {
   endpoint: string;
@@ -17,7 +18,7 @@ const EntityList = <T,>({ endpoint, renderItem, itemKey }: EntityListProps<T>) =
   const { data, isLoading, error } = useQuery<T[], Error>({
     queryKey: ['compendium', endpoint, search, page],
     queryFn: async () => {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/${endpoint}`, {
+      const response = await axios.get(`${API_BASE_URL}/${endpoint}`, {
         params: {
           skip: page * limit,
           limit,

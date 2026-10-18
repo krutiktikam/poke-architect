@@ -9,9 +9,20 @@ from typing import List, Optional
 from .database import engine, get_db, Base, SessionLocal
 from .models import Pokemon, TypeEfficacy, Move, Nature, PokemonMove, Ability, Item, PokemonAbility
 from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse, MoveBase, NatureBase, PokemonMoveBase, AbilityResponse, PokemonAbilityBase, ItemResponse, TeamAnalysisRequest
-from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score, calculate_win_probability
+from .utils import (
+    calculate_health_score,
+    calculate_team_stats,
+    calculate_type_coverage,
+    calculate_win_probability,
+    detect_team_archetype,
+    evaluate_offensive_coverage,
+    evaluate_stab,
+    evaluate_stat_optimization,
+    generate_tactical_advice,
+    suggest_pokemon,
+)
 from . import auth, teams
-from .routers import compendium, encounters, evolutions, locations, items_extended, meta
+from .routers import compendium, encounters, evolutions, locations, items_extended, meta, moves, natures
 from .http_cache import HttpCacheMiddleware
 import json
 from fastapi.responses import JSONResponse
@@ -185,6 +196,8 @@ app.include_router(encounters.router)
 app.include_router(evolutions.router)
 app.include_router(locations.router)
 app.include_router(meta.router)
+app.include_router(moves.router, prefix="/api")
+app.include_router(natures.router, prefix="/api")
 
 @app.get("/")
 def read_root():

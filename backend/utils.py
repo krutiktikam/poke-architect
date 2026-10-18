@@ -1,7 +1,7 @@
 import os
 from typing import List, Dict
 from sqlalchemy.orm import Session
-from .models import Pokemon, TypeEfficacy
+from .models import Move, Pokemon, TypeEfficacy
 
 def get_tier_weight(tier):
     weights = {"Uber": 5, "OU": 4, "UU": 3, "RU": 2, "NU": 1, "PU": 0.5, "N/A": 0}

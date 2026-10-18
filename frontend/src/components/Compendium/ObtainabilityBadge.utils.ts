@@ -16,7 +16,13 @@ export const computeObtainabilityStatus = (
   for (const loc of locations) {
     for (const area of loc.areas || []) {
       for (const enc of area.encounters || []) {
-        if (enc.chance === null || enc.method?.identifier === 'gift') {
+        if (
+          enc.chance === null ||
+          enc.chance === 0 ||
+          enc.method?.identifier === 'gift' ||
+          enc.method?.identifier === 'gift-egg' ||
+          enc.method?.identifier === 'static'
+        ) {
           hasGiftOrStatic = true;
         } else {
           hasWild = true;

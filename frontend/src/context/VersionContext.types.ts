@@ -20,5 +20,6 @@ export interface VersionContextType {
 }
 
 export const VERSION_STORAGE_KEY = 'poke_architect_selected_version_id';
+export const LEGACY_VERSION_STORAGE_KEY = 'selectedVersionId';
 
 export const VersionContextInstance = createContext<VersionContextType | undefined>(undefined);

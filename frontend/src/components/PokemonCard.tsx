@@ -3,6 +3,7 @@ import { Plus, Info, Crown, Settings2, Check, X, MapPin, Package } from 'lucide-
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 import { Sheet } from './ui/Sheet';
 import type { Pokemon } from '../types';
 
@@ -46,8 +47,6 @@ const typeColors: Record<string, { bg: string; text: string; glow: string }> = {
   fairy: { bg: 'bg-pink-300', text: 'text-pink-900', glow: 'shadow-pink-300/20' },
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disabled }) => {
   const [isConfiguring, setIsConfiguring] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
@@ -66,7 +65,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
   const { data: itemsData } = useQuery<Array<{ id: number; name: string }>>({
     queryKey: ['items-list'],
     queryFn: async () => {
-      const res = await axios.get(`${API_BASE_URL}/api/items`, { params: { limit: 500 } });
+      const res = await axios.get(`${API_BASE_URL}/items`, { params: { limit: 500 } });
       return res.data;
     },
     enabled: isConfiguring,
@@ -75,7 +74,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
   const { data: abilitiesData } = useQuery<Array<{ id: number; name: string }>>({
     queryKey: ['abilities-list'],
     queryFn: async () => {
-      const res = await axios.get(`${API_BASE_URL}/api/abilities`, { params: { limit: 500 } });
+      const res = await axios.get(`${API_BASE_URL}/abilities`, { params: { limit: 500 } });
       return res.data;
     },
     enabled: isConfiguring,
@@ -84,7 +83,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
   const { data: naturesData } = useQuery<Array<{ id: number; name: string }>>({
     queryKey: ['natures-list'],
     queryFn: async () => {
-      const res = await axios.get(`${API_BASE_URL}/api/natures`, { params: { limit: 100 } });
+      const res = await axios.get(`${API_BASE_URL}/natures`, { params: { limit: 100 } });
       return res.data;
     },
     enabled: isConfiguring,
@@ -93,7 +92,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
   const { data: movesData } = useQuery<Array<{ id: number; name: string }>>({
     queryKey: ['moves-list'],
     queryFn: async () => {
-      const res = await axios.get(`${API_BASE_URL}/api/moves`, { params: { limit: 1000 } });
+      const res = await axios.get(`${API_BASE_URL}/moves`, { params: { limit: 1000 } });
       return res.data;
     },
     enabled: isConfiguring,
