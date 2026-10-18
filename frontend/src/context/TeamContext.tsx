@@ -1,40 +1,50 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Pokemon } from '../types';
-
-interface TeamContextType {
-  team: Pokemon[];
-  addToTeam: (pokemon: Pokemon) => void;
-  removeFromTeam: (id: number) => void;
-  replaceInTeam: (newPokemon: Pokemon, oldPokemonId: number) => void;
-  clearTeam: () => void;
-  loadTeam: (team: Pokemon[]) => void;
-  targetGen: number;
-  setTargetGen: (gen: number) => void;
-}
-
-const TeamContext = createContext<TeamContextType | undefined>(undefined);
+import { TeamContext } from './TeamContext.types';
+import type { TeamMember, TeamContextType } from './TeamContext.types';
+export type { TeamMember, TeamContextType };
 
 export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [team, setTeam] = useState<Pokemon[]>([]);
-  const [targetGen, setTargetGen] = useState<number>(9); // Default to latest gen
-
-  useEffect(() => {
-    const savedTeam = localStorage.getItem('poke-team');
-    if (savedTeam) {
-      try {
-        setTeam(JSON.parse(savedTeam));
-      } catch (e) {
-        console.error('Failed to parse saved team', e);
+  const [team, setTeam] = useState<TeamMember[]>(() => {
+    try {
+      const savedTeam = typeof localStorage !== 'undefined' ? localStorage.getItem('poke-team') : null;
+      if (savedTeam) {
+        const parsed: TeamMember[] = JSON.parse(savedTeam);
+        parsed.forEach((member) => {
+          if (!member.selectedMoves) member.selectedMoves = [null, null, null, null];
+          else {
+            while (member.selectedMoves.length < 4) member.selectedMoves.push(null);
+            if (member.selectedMoves.length > 4) member.selectedMoves.length = 4;
+          }
+        });
+        return parsed;
       }
+    } catch (e) {
+      console.error('Failed to parse saved team', e);
     }
-    const savedGen = localStorage.getItem('poke-target-gen');
-    if (savedGen) {
-      setTargetGen(parseInt(savedGen));
+    return [];
+  });
+
+  const [targetGen, setTargetGen] = useState<number>(() => {
+    try {
+      const savedGen = typeof localStorage !== 'undefined' ? localStorage.getItem('poke-target-gen') : null;
+      if (savedGen) {
+        const parsed = parseInt(savedGen, 10);
+        if (!isNaN(parsed)) return parsed;
+      }
+    } catch {
+      // Ignore
     }
-  }, []);
+    return 9;
+  });
 
   useEffect(() => {
-    localStorage.setItem('poke-team', JSON.stringify(team));
+    // Prepare team for saving: ensure selectedMoves arrays exist
+    const toSave = team.map(member => ({
+      ...member,
+      selectedMoves: member.selectedMoves ?? [null, null, null, null]
+    }));
+    localStorage.setItem('poke-team', JSON.stringify(toSave));
   }, [team]);
 
   useEffect(() => {
@@ -45,17 +55,25 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setTeam(prev => {
       if (prev.length >= 6) return prev;
       if (prev.find(p => p.id === pokemon.id)) return prev;
-      
+
       // Constraint: Only one legendary/mythical per team
       const isNewLegendary = pokemon.is_legendary || pokemon.is_mythical;
       const hasLegendary = prev.some(p => p.is_legendary || p.is_mythical);
-      
+
       if (isNewLegendary && hasLegendary) {
         alert('Strategic Constraint: Only one Legendary or Mythical Pokémon is allowed per team to maintain competitive balance.');
         return prev;
       }
 
-      return [...prev, pokemon];
+      // Initialize selection slots
+      const newMember: TeamMember = {
+        ...pokemon,
+        selectedMoves: [null, null, null, null],
+        selectedItem: null,
+        selectedAbility: null,
+        selectedNature: null
+      };
+      return [...prev, newMember];
     });
   };
 
@@ -64,36 +82,32 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const replaceInTeam = (newPokemon: Pokemon, oldPokemonId: number) => {
-    console.log(`Attempting to swap: replacing ID ${oldPokemonId} with ${newPokemon.name} (ID ${newPokemon.id})`);
-    
     setTeam(prev => {
-      console.log('Current team IDs:', prev.map(p => p.id));
-      
       // 1. Check if new pokemon is already in team (other than the one being replaced)
       if (prev.some(p => p.id === newPokemon.id && p.id !== oldPokemonId)) {
-        console.warn('Swap blocked: New pokemon already in team');
         return prev;
       }
 
       // 2. Legendary constraint check
       const isNewLegendary = newPokemon.is_legendary || newPokemon.is_mythical;
       const otherLegendary = prev.find(p => (p.is_legendary || p.is_mythical) && p.id !== oldPokemonId);
-      
+
       if (isNewLegendary && otherLegendary) {
         alert('Strategic Constraint: Only one Legendary or Mythical Pokémon is allowed per team.');
         return prev;
       }
 
-      const newTeam = prev.map(p => p.id === oldPokemonId ? newPokemon : p);
-      
-      // Check if replacement actually happened
-      if (JSON.stringify(newTeam) === JSON.stringify(prev)) {
-        console.error(`Swap failed: ID ${oldPokemonId} not found in team!`);
-      } else {
-        console.log('Swap successful');
-      }
-      
-      return newTeam;
+      // Preserve selections from the old pokemon if any
+      const oldMember = prev.find(p => p.id === oldPokemonId);
+      const newMember: TeamMember = {
+        ...newPokemon,
+        selectedMoves: oldMember?.selectedMoves ?? [null, null, null, null],
+        selectedItem: oldMember?.selectedItem ?? null,
+        selectedAbility: oldMember?.selectedAbility ?? null,
+        selectedNature: oldMember?.selectedNature ?? null
+      };
+
+      return prev.map(p => p.id === oldPokemonId ? newMember : p);
     });
   };
 
@@ -101,21 +115,44 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setTeam([]);
   };
 
-  const loadTeam = (newTeam: Pokemon[]) => {
+  const loadTeam = (newTeam: TeamMember[]) => {
     setTeam(newTeam);
   };
 
+  const updateTeamMember = (pokemonId: number, updates: Partial<TeamMember>) => {
+    setTeam(prev => {
+      return prev.map(member => {
+        if (member.id === pokemonId) {
+          // Merge updates, ensuring arrays are handled correctly
+          const updated = { ...member, ...updates };
+          // Ensure selectedMoves is array of length 4 if provided
+          if (updated.selectedMoves !== undefined) {
+            // Ensure length 4
+            const moves = updated.selectedMoves;
+            while (moves.length < 4) moves.push(null);
+            if (moves.length > 4) moves.length = 4;
+            updated.selectedMoves = moves;
+          }
+          return updated;
+        }
+        return member;
+      });
+    });
+  };
+
   return (
-    <TeamContext.Provider value={{ team, addToTeam, removeFromTeam, replaceInTeam, clearTeam, loadTeam, targetGen, setTargetGen }}>
+    <TeamContext.Provider value={{
+      team,
+      addToTeam,
+      removeFromTeam,
+      replaceInTeam,
+      clearTeam,
+      loadTeam,
+      targetGen,
+      setTargetGen,
+      updateTeamMember
+    }}>
       {children}
     </TeamContext.Provider>
   );
-};
-
-export const useTeam = () => {
-  const context = useContext(TeamContext);
-  if (context === undefined) {
-    throw new Error('useTeam must be used within a TeamProvider');
-  }
-  return context;
 };

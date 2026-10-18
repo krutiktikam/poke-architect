@@ -1,0 +1,7 @@
+id,identifier,category_id,cost,fling_power,fling_effect_id
+1,master-ball,3,0,,
+2,ultra-ball,3,1200,,
+83,water-stone,3,2100,30,
+84,thunder-stone,3,2100,30,
+85,fire-stone,3,2100,30,
+126,cheri-berry,4,80,10,

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Trash2, Edit3, Loader2, Calendar, Globe, Lock, ShieldAlert, Search, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useTeam } from '../context/TeamContext';
+import { useTeam } from '../context/useTeam';
 import { API_BASE_URL } from '../config';
 
 interface SavedTeam {

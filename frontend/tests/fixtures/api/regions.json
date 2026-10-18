@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "identifier": "kanto",
+    "name": "Kanto"
+  },
+  {
+    "id": 2,
+    "identifier": "johto",
+    "name": "Johto"
+  },
+  {
+    "id": 3,
+    "identifier": "hoenn",
+    "name": "Hoenn"
+  },
+  {
+    "id": 4,
+    "identifier": "sinnoh",
+    "name": "Sinnoh"
+  },
+  {
+    "id": 5,
+    "identifier": "unova",
+    "name": "Unova"
+  },
+  {
+    "id": 6,
+    "identifier": "kalos",
+    "name": "Kalos"
+  },
+  {
+    "id": 7,
+    "identifier": "alola",
+    "name": "Alola"
+  },
+  {
+    "id": 8,
+    "identifier": "galar",
+    "name": "Galar"
+  },
+  {
+    "id": 9,
+    "identifier": "hisui",
+    "name": "Hisui"
+  },
+  {
+    "id": 10,
+    "identifier": "paldea",
+    "name": "Paldea"
+  },
+  {
+    "id": 11,
+    "identifier": "orre",
+    "name": "Orre"
+  }
+]

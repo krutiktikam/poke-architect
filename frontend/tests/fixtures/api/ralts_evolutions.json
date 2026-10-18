@@ -1,0 +1,123 @@
+{
+  "chain_id": 140,
+  "nodes": [
+    {
+      "species_id": 280,
+      "identifier": "ralts",
+      "name": "Ralts",
+      "pokemon_id": 280,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/280.png"
+    },
+    {
+      "species_id": 281,
+      "identifier": "kirlia",
+      "name": "Kirlia",
+      "pokemon_id": 281,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/281.png"
+    },
+    {
+      "species_id": 282,
+      "identifier": "gardevoir",
+      "name": "Gardevoir",
+      "pokemon_id": 282,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/282.png"
+    },
+    {
+      "species_id": 475,
+      "identifier": "gallade",
+      "name": "Gallade",
+      "pokemon_id": 475,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/475.png"
+    }
+  ],
+  "edges": [
+    {
+      "from_species_id": 280,
+      "to_species_id": 281,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": 20,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 281,
+      "to_species_id": 282,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": 30,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 281,
+      "to_species_id": 475,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 109,
+          "name": "Dawn Stone",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": 2,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    }
+  ]
+}

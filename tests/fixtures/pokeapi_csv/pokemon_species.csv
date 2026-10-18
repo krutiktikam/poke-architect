@@ -1,0 +1,6 @@
+id,identifier,generation_id,evolves_from_species_id,evolution_chain_id,color_id,shape_id,habitat_id,gender_rate,capture_rate,base_happiness,is_baby,hatch_counter,has_gender_differences,growth_rate_id,forms_switchable,is_legendary,is_mythical,order,conquest_order
+25,pikachu,1,,,8,8,2,4,190,70,0,10,1,2,0,0,0,25,25
+133,eevee,1,,67,8,8,2,1,45,70,0,35,0,2,0,0,0,133,133
+134,vaporeon,1,133,67,2,8,2,1,45,70,0,35,0,2,0,0,0,134,134
+135,jolteon,1,133,67,4,8,2,1,45,70,0,35,0,2,0,0,0,135,135
+136,flareon,1,133,67,7,8,2,1,45,70,0,35,0,2,0,0,0,136,136

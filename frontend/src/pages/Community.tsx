@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Users, Loader2, MessageSquare, ChevronRight, Zap } from 'lucide-react';
 import { API_BASE_URL } from '../config';
-import { useTeam } from '../context/TeamContext';
+import { useTeam } from '../context/useTeam';
 import CompareModal from '../components/CompareModal';
 import TeamSkeleton from '../components/TeamSkeleton';
 

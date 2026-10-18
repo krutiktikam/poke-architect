@@ -7,7 +7,7 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip, Cell, Legend
 } from 'recharts';
-import { useTeam } from '../context/TeamContext';
+import { useTeam } from '../context/useTeam';
 import { useAuth } from '../context/AuthContext';
 import CertificateCard from '../components/CertificateCard';
 
@@ -50,7 +50,7 @@ const Analysis = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(`${API_BASE_URL}/team-analysis`, team.map(p => p.id), {
+      const response = await axios.post(`${API_BASE_URL}/team-analysis`, { pokemon: team }, {
         params: { target_generation: targetGen }
       });
       setAnalysisData(response.data);
@@ -66,8 +66,10 @@ const Analysis = () => {
     if (!previewSwap) return;
     setProjectedLoading(true);
     try {
-      const projectedIds = team.map(p => p.id === previewSwap.targetId ? previewSwap.suggestion.id : p.id);
-      const response = await axios.post(`${API_BASE_URL}/team-analysis`, projectedIds, {
+      const projectedTeam = team.map(p =>
+        p.id === previewSwap.targetId ? { ...p, ...previewSwap.suggestion } : p
+      );
+      const response = await axios.post(`${API_BASE_URL}/team-analysis`, { pokemon: projectedTeam }, {
         params: { target_generation: targetGen }
       });
       setProjectedData(response.data);

@@ -1,0 +1,170 @@
+{
+  "chain_id": 442,
+  "nodes": [
+    {
+      "species_id": 840,
+      "identifier": "applin",
+      "name": "Applin",
+      "pokemon_id": 840,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/840.png"
+    },
+    {
+      "species_id": 841,
+      "identifier": "flapple",
+      "name": "Flapple",
+      "pokemon_id": 841,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/841.png"
+    },
+    {
+      "species_id": 842,
+      "identifier": "appletun",
+      "name": "Appletun",
+      "pokemon_id": 842,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/842.png"
+    },
+    {
+      "species_id": 1011,
+      "identifier": "dipplin",
+      "name": "Dipplin",
+      "pokemon_id": 1011,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1011.png"
+    },
+    {
+      "species_id": 1019,
+      "identifier": "hydrapple",
+      "name": "Hydrapple",
+      "pokemon_id": 1019,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1019.png"
+    }
+  ],
+  "edges": [
+    {
+      "from_species_id": 840,
+      "to_species_id": 841,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 1175,
+          "name": "Tart Apple",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 840,
+      "to_species_id": 842,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 1174,
+          "name": "Sweet Apple",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 840,
+      "to_species_id": 1011,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 2109,
+          "name": "Syrupy Apple",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 1011,
+      "to_species_id": 1019,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": {
+          "id": 913,
+          "name": "dragon-cheer",
+          "identifier": null
+        },
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    }
+  ]
+}

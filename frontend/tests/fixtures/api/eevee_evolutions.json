@@ -1,0 +1,670 @@
+{
+  "chain_id": 67,
+  "nodes": [
+    {
+      "species_id": 133,
+      "identifier": "eevee",
+      "name": "Eevee",
+      "pokemon_id": 133,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png"
+    },
+    {
+      "species_id": 134,
+      "identifier": "vaporeon",
+      "name": "Vaporeon",
+      "pokemon_id": 134,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/134.png"
+    },
+    {
+      "species_id": 135,
+      "identifier": "jolteon",
+      "name": "Jolteon",
+      "pokemon_id": 135,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/135.png"
+    },
+    {
+      "species_id": 136,
+      "identifier": "flareon",
+      "name": "Flareon",
+      "pokemon_id": 136,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/136.png"
+    },
+    {
+      "species_id": 196,
+      "identifier": "espeon",
+      "name": "Espeon",
+      "pokemon_id": 196,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/196.png"
+    },
+    {
+      "species_id": 197,
+      "identifier": "umbreon",
+      "name": "Umbreon",
+      "pokemon_id": 197,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/197.png"
+    },
+    {
+      "species_id": 470,
+      "identifier": "leafeon",
+      "name": "Leafeon",
+      "pokemon_id": 470,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/470.png"
+    },
+    {
+      "species_id": 471,
+      "identifier": "glaceon",
+      "name": "Glaceon",
+      "pokemon_id": 471,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/471.png"
+    },
+    {
+      "species_id": 700,
+      "identifier": "sylveon",
+      "name": "Sylveon",
+      "pokemon_id": 700,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/700.png"
+    }
+  ],
+  "edges": [
+    {
+      "from_species_id": 133,
+      "to_species_id": 134,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 84,
+          "name": "Water Stone",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 135,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 83,
+          "name": "Thunder Stone",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 136,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 82,
+          "name": "Fire Stone",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 196,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": "day",
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": 160,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 197,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": "night",
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": 160,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 470,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 8,
+          "name": "Eterna Forest",
+          "identifier": "eterna-forest"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 471,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 48,
+          "name": "Route 217",
+          "identifier": "sinnoh-route-217"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 470,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 375,
+          "name": "Pinwheel Forest",
+          "identifier": "pinwheel-forest"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 471,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 380,
+          "name": "Twist Mountain",
+          "identifier": "twist-mountain"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 700,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": {
+          "id": 18,
+          "name": null,
+          "identifier": "fairy"
+        },
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": 2,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 470,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 650,
+          "name": "Route 20",
+          "identifier": "kalos-route-20"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 471,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 640,
+          "name": "Frost Cavern",
+          "identifier": "frost-cavern"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 470,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 85,
+          "name": "Leaf Stone",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 471,
+      "trigger": {
+        "id": 3,
+        "name": "Use item",
+        "identifier": "use-item"
+      },
+      "requirements": {
+        "trigger_item": {
+          "id": 885,
+          "name": "Ice Stone",
+          "identifier": null
+        },
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 700,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": null,
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": {
+          "id": 18,
+          "name": null,
+          "identifier": "fairy"
+        },
+        "min_happiness": 160,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 470,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 438,
+          "name": "Petalburg Woods",
+          "identifier": "petalburg-woods"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 471,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 445,
+          "name": "Shoal Cave",
+          "identifier": "shoal-cave"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 470,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 750,
+          "name": "Lush Jungle",
+          "identifier": "lush-jungle"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    },
+    {
+      "from_species_id": 133,
+      "to_species_id": 471,
+      "trigger": {
+        "id": 1,
+        "name": "Level up",
+        "identifier": "level-up"
+      },
+      "requirements": {
+        "trigger_item": null,
+        "held_item": null,
+        "min_level": null,
+        "gender": null,
+        "location": {
+          "id": 775,
+          "name": "Mount Lanakila",
+          "identifier": "mount-lanakila"
+        },
+        "time_of_day": null,
+        "known_move": null,
+        "known_move_type": null,
+        "min_happiness": null,
+        "min_beauty": null,
+        "min_affection": null,
+        "relative_physical_stats": null,
+        "party_species": null,
+        "party_type": null,
+        "trade_species": null,
+        "needs_overworld_rain": null,
+        "turn_upside_down": null
+      }
+    }
+  ]
+}

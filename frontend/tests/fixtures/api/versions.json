@@ -1,0 +1,479 @@
+[
+  {
+    "id": 44,
+    "identifier": "red-japan",
+    "name": "Red",
+    "version_group_id": 28,
+    "version_group": "red-green-japan",
+    "version_group_identifier": "red-green-japan",
+    "generation_id": 1
+  },
+  {
+    "id": 45,
+    "identifier": "green-japan",
+    "name": "Green",
+    "version_group_id": 28,
+    "version_group": "red-green-japan",
+    "version_group_identifier": "red-green-japan",
+    "generation_id": 1
+  },
+  {
+    "id": 46,
+    "identifier": "blue-japan",
+    "name": "Blue",
+    "version_group_id": 29,
+    "version_group": "blue-japan",
+    "version_group_identifier": "blue-japan",
+    "generation_id": 1
+  },
+  {
+    "id": 1,
+    "identifier": "red",
+    "name": "Red",
+    "version_group_id": 1,
+    "version_group": "red-blue",
+    "version_group_identifier": "red-blue",
+    "generation_id": 1
+  },
+  {
+    "id": 2,
+    "identifier": "blue",
+    "name": "Blue",
+    "version_group_id": 1,
+    "version_group": "red-blue",
+    "version_group_identifier": "red-blue",
+    "generation_id": 1
+  },
+  {
+    "id": 3,
+    "identifier": "yellow",
+    "name": "Yellow",
+    "version_group_id": 2,
+    "version_group": "yellow",
+    "version_group_identifier": "yellow",
+    "generation_id": 1
+  },
+  {
+    "id": 4,
+    "identifier": "gold",
+    "name": "Gold",
+    "version_group_id": 3,
+    "version_group": "gold-silver",
+    "version_group_identifier": "gold-silver",
+    "generation_id": 2
+  },
+  {
+    "id": 5,
+    "identifier": "silver",
+    "name": "Silver",
+    "version_group_id": 3,
+    "version_group": "gold-silver",
+    "version_group_identifier": "gold-silver",
+    "generation_id": 2
+  },
+  {
+    "id": 6,
+    "identifier": "crystal",
+    "name": "Crystal",
+    "version_group_id": 4,
+    "version_group": "crystal",
+    "version_group_identifier": "crystal",
+    "generation_id": 2
+  },
+  {
+    "id": 7,
+    "identifier": "ruby",
+    "name": "Ruby",
+    "version_group_id": 5,
+    "version_group": "ruby-sapphire",
+    "version_group_identifier": "ruby-sapphire",
+    "generation_id": 3
+  },
+  {
+    "id": 8,
+    "identifier": "sapphire",
+    "name": "Sapphire",
+    "version_group_id": 5,
+    "version_group": "ruby-sapphire",
+    "version_group_identifier": "ruby-sapphire",
+    "generation_id": 3
+  },
+  {
+    "id": 9,
+    "identifier": "emerald",
+    "name": "Emerald",
+    "version_group_id": 6,
+    "version_group": "emerald",
+    "version_group_identifier": "emerald",
+    "generation_id": 3
+  },
+  {
+    "id": 19,
+    "identifier": "colosseum",
+    "name": "Colosseum",
+    "version_group_id": 12,
+    "version_group": "colosseum",
+    "version_group_identifier": "colosseum",
+    "generation_id": 3
+  },
+  {
+    "id": 20,
+    "identifier": "xd",
+    "name": "XD",
+    "version_group_id": 13,
+    "version_group": "xd",
+    "version_group_identifier": "xd",
+    "generation_id": 3
+  },
+  {
+    "id": 10,
+    "identifier": "firered",
+    "name": "FireRed",
+    "version_group_id": 7,
+    "version_group": "firered-leafgreen",
+    "version_group_identifier": "firered-leafgreen",
+    "generation_id": 3
+  },
+  {
+    "id": 11,
+    "identifier": "leafgreen",
+    "name": "LeafGreen",
+    "version_group_id": 7,
+    "version_group": "firered-leafgreen",
+    "version_group_identifier": "firered-leafgreen",
+    "generation_id": 3
+  },
+  {
+    "id": 12,
+    "identifier": "diamond",
+    "name": "Diamond",
+    "version_group_id": 8,
+    "version_group": "diamond-pearl",
+    "version_group_identifier": "diamond-pearl",
+    "generation_id": 4
+  },
+  {
+    "id": 13,
+    "identifier": "pearl",
+    "name": "Pearl",
+    "version_group_id": 8,
+    "version_group": "diamond-pearl",
+    "version_group_identifier": "diamond-pearl",
+    "generation_id": 4
+  },
+  {
+    "id": 14,
+    "identifier": "platinum",
+    "name": "Platinum",
+    "version_group_id": 9,
+    "version_group": "platinum",
+    "version_group_identifier": "platinum",
+    "generation_id": 4
+  },
+  {
+    "id": 15,
+    "identifier": "heartgold",
+    "name": "HeartGold",
+    "version_group_id": 10,
+    "version_group": "heartgold-soulsilver",
+    "version_group_identifier": "heartgold-soulsilver",
+    "generation_id": 4
+  },
+  {
+    "id": 16,
+    "identifier": "soulsilver",
+    "name": "SoulSilver",
+    "version_group_id": 10,
+    "version_group": "heartgold-soulsilver",
+    "version_group_identifier": "heartgold-soulsilver",
+    "generation_id": 4
+  },
+  {
+    "id": 17,
+    "identifier": "black",
+    "name": "Black",
+    "version_group_id": 11,
+    "version_group": "black-white",
+    "version_group_identifier": "black-white",
+    "generation_id": 5
+  },
+  {
+    "id": 18,
+    "identifier": "white",
+    "name": "White",
+    "version_group_id": 11,
+    "version_group": "black-white",
+    "version_group_identifier": "black-white",
+    "generation_id": 5
+  },
+  {
+    "id": 21,
+    "identifier": "black-2",
+    "name": "Black 2",
+    "version_group_id": 14,
+    "version_group": "black-2-white-2",
+    "version_group_identifier": "black-2-white-2",
+    "generation_id": 5
+  },
+  {
+    "id": 22,
+    "identifier": "white-2",
+    "name": "White 2",
+    "version_group_id": 14,
+    "version_group": "black-2-white-2",
+    "version_group_identifier": "black-2-white-2",
+    "generation_id": 5
+  },
+  {
+    "id": 23,
+    "identifier": "x",
+    "name": "X",
+    "version_group_id": 15,
+    "version_group": "x-y",
+    "version_group_identifier": "x-y",
+    "generation_id": 6
+  },
+  {
+    "id": 24,
+    "identifier": "y",
+    "name": "Y",
+    "version_group_id": 15,
+    "version_group": "x-y",
+    "version_group_identifier": "x-y",
+    "generation_id": 6
+  },
+  {
+    "id": 25,
+    "identifier": "omega-ruby",
+    "name": "Omega Ruby",
+    "version_group_id": 16,
+    "version_group": "omega-ruby-alpha-sapphire",
+    "version_group_identifier": "omega-ruby-alpha-sapphire",
+    "generation_id": 6
+  },
+  {
+    "id": 26,
+    "identifier": "alpha-sapphire",
+    "name": "Alpha Sapphire",
+    "version_group_id": 16,
+    "version_group": "omega-ruby-alpha-sapphire",
+    "version_group_identifier": "omega-ruby-alpha-sapphire",
+    "generation_id": 6
+  },
+  {
+    "id": 27,
+    "identifier": "sun",
+    "name": "Sun",
+    "version_group_id": 17,
+    "version_group": "sun-moon",
+    "version_group_identifier": "sun-moon",
+    "generation_id": 7
+  },
+  {
+    "id": 28,
+    "identifier": "moon",
+    "name": "Moon",
+    "version_group_id": 17,
+    "version_group": "sun-moon",
+    "version_group_identifier": "sun-moon",
+    "generation_id": 7
+  },
+  {
+    "id": 29,
+    "identifier": "ultra-sun",
+    "name": "Ultra Sun",
+    "version_group_id": 18,
+    "version_group": "ultra-sun-ultra-moon",
+    "version_group_identifier": "ultra-sun-ultra-moon",
+    "generation_id": 7
+  },
+  {
+    "id": 30,
+    "identifier": "ultra-moon",
+    "name": "Ultra Moon",
+    "version_group_id": 18,
+    "version_group": "ultra-sun-ultra-moon",
+    "version_group_identifier": "ultra-sun-ultra-moon",
+    "generation_id": 7
+  },
+  {
+    "id": 31,
+    "identifier": "lets-go-pikachu",
+    "name": "Let\u2019s Go, Pikachu!",
+    "version_group_id": 19,
+    "version_group": "lets-go-pikachu-lets-go-eevee",
+    "version_group_identifier": "lets-go-pikachu-lets-go-eevee",
+    "generation_id": 7
+  },
+  {
+    "id": 32,
+    "identifier": "lets-go-eevee",
+    "name": "Let\u2019s Go, Eevee!",
+    "version_group_id": 19,
+    "version_group": "lets-go-pikachu-lets-go-eevee",
+    "version_group_identifier": "lets-go-pikachu-lets-go-eevee",
+    "generation_id": 7
+  },
+  {
+    "id": 33,
+    "identifier": "sword",
+    "name": "Sword",
+    "version_group_id": 20,
+    "version_group": "sword-shield",
+    "version_group_identifier": "sword-shield",
+    "generation_id": 8
+  },
+  {
+    "id": 34,
+    "identifier": "shield",
+    "name": "Shield",
+    "version_group_id": 20,
+    "version_group": "sword-shield",
+    "version_group_identifier": "sword-shield",
+    "generation_id": 8
+  },
+  {
+    "id": 35,
+    "identifier": "the-isle-of-armor-sword",
+    "name": "Sword: The Isle of Armor",
+    "version_group_id": 21,
+    "version_group": "the-isle-of-armor",
+    "version_group_identifier": "the-isle-of-armor",
+    "generation_id": 8
+  },
+  {
+    "id": 50,
+    "identifier": "the-isle-of-armor-shield",
+    "name": "Shield: The Isle of Armor",
+    "version_group_id": 21,
+    "version_group": "the-isle-of-armor",
+    "version_group_identifier": "the-isle-of-armor",
+    "generation_id": 8
+  },
+  {
+    "id": 36,
+    "identifier": "the-crown-tundra-sword",
+    "name": "Sword: The Crown Tundra",
+    "version_group_id": 22,
+    "version_group": "the-crown-tundra",
+    "version_group_identifier": "the-crown-tundra",
+    "generation_id": 8
+  },
+  {
+    "id": 51,
+    "identifier": "the-crown-tundra-shield",
+    "name": "Shield: The Crown Tundra",
+    "version_group_id": 22,
+    "version_group": "the-crown-tundra",
+    "version_group_identifier": "the-crown-tundra",
+    "generation_id": 8
+  },
+  {
+    "id": 37,
+    "identifier": "brilliant-diamond",
+    "name": "Brilliant Diamond",
+    "version_group_id": 23,
+    "version_group": "brilliant-diamond-shining-pearl",
+    "version_group_identifier": "brilliant-diamond-shining-pearl",
+    "generation_id": 8
+  },
+  {
+    "id": 38,
+    "identifier": "shining-pearl",
+    "name": "Shining Pearl",
+    "version_group_id": 23,
+    "version_group": "brilliant-diamond-shining-pearl",
+    "version_group_identifier": "brilliant-diamond-shining-pearl",
+    "generation_id": 8
+  },
+  {
+    "id": 39,
+    "identifier": "legends-arceus",
+    "name": "Legends: Arceus",
+    "version_group_id": 24,
+    "version_group": "legends-arceus",
+    "version_group_identifier": "legends-arceus",
+    "generation_id": 8
+  },
+  {
+    "id": 40,
+    "identifier": "scarlet",
+    "name": "Scarlet",
+    "version_group_id": 25,
+    "version_group": "scarlet-violet",
+    "version_group_identifier": "scarlet-violet",
+    "generation_id": 9
+  },
+  {
+    "id": 41,
+    "identifier": "violet",
+    "name": "Violet",
+    "version_group_id": 25,
+    "version_group": "scarlet-violet",
+    "version_group_identifier": "scarlet-violet",
+    "generation_id": 9
+  },
+  {
+    "id": 42,
+    "identifier": "the-teal-mask-scarlet",
+    "name": "Scarlet: The Teal Mask",
+    "version_group_id": 26,
+    "version_group": "the-teal-mask",
+    "version_group_identifier": "the-teal-mask",
+    "generation_id": 9
+  },
+  {
+    "id": 52,
+    "identifier": "the-teal-mask-violet",
+    "name": "Violet: The Teal Mask",
+    "version_group_id": 26,
+    "version_group": "the-teal-mask",
+    "version_group_identifier": "the-teal-mask",
+    "generation_id": 9
+  },
+  {
+    "id": 43,
+    "identifier": "the-indigo-disk-scarlet",
+    "name": "Scarlet: The Indigo Disk",
+    "version_group_id": 27,
+    "version_group": "the-indigo-disk",
+    "version_group_identifier": "the-indigo-disk",
+    "generation_id": 9
+  },
+  {
+    "id": 53,
+    "identifier": "the-indigo-disk-violet",
+    "name": "Violet: The Indigo Disk",
+    "version_group_id": 27,
+    "version_group": "the-indigo-disk",
+    "version_group_identifier": "the-indigo-disk",
+    "generation_id": 9
+  },
+  {
+    "id": 47,
+    "identifier": "legends-za",
+    "name": "Legends: Z-A",
+    "version_group_id": 30,
+    "version_group": "legends-za",
+    "version_group_identifier": "legends-za",
+    "generation_id": 9
+  },
+  {
+    "id": 48,
+    "identifier": "mega-dimension",
+    "name": "Mega Dimension",
+    "version_group_id": 31,
+    "version_group": "mega-dimension",
+    "version_group_identifier": "mega-dimension",
+    "generation_id": 9
+  },
+  {
+    "id": 49,
+    "identifier": "champions",
+    "name": "Champions",
+    "version_group_id": 32,
+    "version_group": "champions",
+    "version_group_identifier": "champions",
+    "generation_id": 9
+  }
+]

@@ -6,7 +6,9 @@ import os
 sys.stdout.reconfigure(encoding='utf-8')
 
 def start_backend():
-    print("🚀 Starting FastAPI Backend...")
+    print("🚀 Running migrations & starting FastAPI Backend...")
+    config_path = os.path.join(os.getcwd(), "backend", "alembic.ini")
+    subprocess.run([sys.executable, "-m", "alembic", "-c", config_path, "upgrade", "head"])
     # Use Render's PORT env var if available, otherwise default to 8000
     port = os.getenv("PORT", "8000")
     return subprocess.Popen(

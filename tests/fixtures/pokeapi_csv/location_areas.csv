@@ -1,0 +1,4 @@
+id,location_id,game_index,identifier
+1,1,1,area
+2,2,1,
+999,9999,1,orphan-area

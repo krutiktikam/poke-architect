@@ -4,7 +4,7 @@ import { Search, Filter, Loader2, Cpu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PokemonCard from '../components/PokemonCard';
 import LiveAnalysisSidebar from '../components/LiveAnalysisSidebar';
-import { useTeam } from '../context/TeamContext';
+import { useTeam } from '../context/useTeam';
 import type { Pokemon } from '../types';
 
 import { API_BASE_URL } from '../config';
@@ -85,6 +85,7 @@ const Builder = () => {
               <div className="relative min-w-[160px]">
                 <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
                 <select 
+                  aria-label="Filter by Pokémon type"
                   className="w-full pl-10 pr-10 py-3.5 rounded-2xl border border-white/5 focus:border-indigo-500/30 focus:outline-none transition-all bg-white/[0.02] appearance-none capitalize text-white font-bold cursor-pointer text-sm"
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
@@ -99,6 +100,7 @@ const Builder = () => {
               <div className="relative min-w-[160px]">
                 <Cpu className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
                 <select 
+                  aria-label="Filter by generation"
                   className="w-full pl-10 pr-10 py-3.5 rounded-2xl border border-white/5 focus:border-indigo-500/30 focus:outline-none transition-all bg-white/[0.02] appearance-none text-white font-bold cursor-pointer text-sm"
                   value={selectedGen}
                   onChange={(e) => setSelectedGen(e.target.value)}
