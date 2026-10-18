@@ -10,6 +10,7 @@ Usage:
     python scripts/populate_extended.py --reference
     python scripts/populate_extended.py --pockets
     python scripts/populate_extended.py --items
+    python scripts/populate_extended.py --item-effects
     python scripts/populate_extended.py --berries
     python scripts/populate_extended.py --locations
     python scripts/populate_extended.py --encounter-meta
@@ -57,6 +58,7 @@ from backend.models import (
     Generation,
     Item,
     ItemCategory,
+    ItemEffect,
     ItemPocket,
     Location,
     LocationArea,
@@ -82,12 +84,80 @@ STAGE_DEPENDENCY_ORDER: List[str] = [
     "reference",
     "pockets",
     "items",
+    "item_effects",
     "berries",
     "locations",
     "encounter_meta",
     "encounters",
     "evolutions",
 ]
+
+FILE_FOR_NAMES: Dict[str, Tuple[str, str]] = {
+    "encounter_methods": ("encounter_method_prose.csv", "encounter_method_id"),
+    "evolution_triggers": ("evolution_trigger_prose.csv", "evolution_trigger_id"),
+    "encounter_conditions": ("encounter_condition_prose.csv", "encounter_condition_id"),
+    "encounter_condition_values": (
+        "encounter_condition_value_prose.csv",
+        "encounter_condition_value_id",
+    ),
+    "item_categories": ("item_category_prose.csv", "item_category_id"),
+}
+
+STAGE_REQUIRED_CSVS: Dict[str, List[str]] = {
+    "reference": [
+        "generations.csv",
+        "generation_names.csv",
+        "types.csv",
+        "regions.csv",
+        "region_names.csv",
+        "version_groups.csv",
+        "versions.csv",
+        "version_names.csv",
+    ],
+    "pockets": [
+        "item_pockets.csv",
+        "item_pocket_names.csv",
+        "item_categories.csv",
+        "item_category_prose.csv",
+    ],
+    "items": [
+        "items.csv",
+    ],
+    "item_effects": [
+        "item_prose.csv",
+    ],
+    "berries": [
+        "berry_firmness.csv",
+        "berries.csv",
+        "contest_types.csv",
+        "berry_flavors.csv",
+    ],
+    "locations": [
+        "locations.csv",
+        "location_names.csv",
+        "location_areas.csv",
+    ],
+    "encounter_meta": [
+        "encounter_methods.csv",
+        FILE_FOR_NAMES["encounter_methods"][0],
+        "encounter_conditions.csv",
+        FILE_FOR_NAMES["encounter_conditions"][0],
+        "encounter_condition_values.csv",
+        FILE_FOR_NAMES["encounter_condition_values"][0],
+    ],
+    "encounters": [
+        "encounter_slots.csv",
+        "encounters.csv",
+        "encounter_condition_value_map.csv",
+    ],
+    "evolutions": [
+        "evolution_triggers.csv",
+        FILE_FOR_NAMES["evolution_triggers"][0],
+        "evolution_chains.csv",
+        "pokemon_species.csv",
+        "pokemon_evolution.csv",
+    ],
+}
 
 logger = logging.getLogger("populate_extended")
 
@@ -170,9 +240,14 @@ def download_file(
     target_path: str,
     max_retries: int = 5,
     timeout: float = 30.0,
+    ref: str = DEFAULT_REF,
 ) -> None:
     """
     Downloads file using httpx with exponential backoff, jitter, and Retry-After handling.
+    Fast-fails on HTTP 4xx errors:
+      - 404 raises FileNotFoundError immediately with exact URL and git ref.
+      - 408 and 429 are retried.
+      - Any other 4xx fails immediately without retrying.
     """
     os.makedirs(os.path.dirname(os.path.abspath(target_path)), exist_ok=True)
     temp_path = f"{target_path}.tmp.{os.getpid()}"
@@ -181,6 +256,13 @@ def download_file(
         for attempt in range(1, max_retries + 1):
             try:
                 response = client.get(url)
+                if response.status_code == 404:
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+                    raise FileNotFoundError(
+                        f"HTTP 404: CSV file not found at URL '{url}' (git ref: '{ref}')"
+                    )
+
                 if response.status_code == 429:
                     retry_after = response.headers.get("Retry-After")
                     wait_time = (
@@ -196,12 +278,56 @@ def download_file(
                     time.sleep(wait_time)
                     continue
 
+                if response.status_code == 408:
+                    if attempt == max_retries:
+                        if os.path.exists(temp_path):
+                            os.remove(temp_path)
+                        response.raise_for_status()
+                    wait_time = (2**attempt) + random.uniform(0.1, 0.5)
+                    logger.warning(
+                        "Request timeout (408) for %s. Retrying in %.2fs...",
+                        url,
+                        wait_time,
+                    )
+                    time.sleep(wait_time)
+                    continue
+
+                if 400 <= response.status_code < 500:
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+                    response.raise_for_status()
+
                 response.raise_for_status()
                 with open(temp_path, "wb") as f:
                     f.write(response.content)
                 os.replace(temp_path, target_path)
                 return
-            except (httpx.RequestError, httpx.HTTPStatusError) as e:
+            except FileNotFoundError:
+                raise
+            except httpx.HTTPStatusError as e:
+                # Do not retry 4xx status codes except 408 and 429
+                if (
+                    e.response is not None
+                    and 400 <= e.response.status_code < 500
+                    and e.response.status_code not in (408, 429)
+                ):
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+                    raise
+                if attempt == max_retries:
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+                    raise
+                wait_time = (2**attempt) + random.uniform(0.1, 0.5)
+                logger.warning(
+                    "Download error on attempt %d for %s: %s. Retrying in %.2fs...",
+                    attempt,
+                    url,
+                    e,
+                    wait_time,
+                )
+                time.sleep(wait_time)
+            except httpx.RequestError as e:
                 if attempt == max_retries:
                     if os.path.exists(temp_path):
                         os.remove(temp_path)
@@ -230,7 +356,7 @@ def get_csv_path(
         if os.path.exists(candidate):
             return candidate
         raise FileNotFoundError(
-            f"CSV file '{filename}' not found in provided --csv-dir: {csv_dir}"
+            f"CSV file '{filename}' not found in provided --csv-dir: {csv_dir} (git ref: '{ref}')"
         )
 
     cache_dir = os.path.join(".cache", "pokeapi_csv", ref)
@@ -240,8 +366,71 @@ def get_csv_path(
 
     url = f"https://raw.githubusercontent.com/PokeAPI/pokeapi/{ref}/data/v2/csv/{filename}"
     logger.info("Downloading %s from %s...", filename, url)
-    download_file(url, cached_path)
+    download_file(url, cached_path, ref=ref)
     return cached_path
+
+
+def preflight_check(
+    selected_stages: Sequence[str],
+    ref: str = DEFAULT_REF,
+    csv_dir: Optional[str] = None,
+) -> List[str]:
+    """
+    Preflight verification before opening database sessions:
+    Verifies that all required CSV URLs exist via HTTP HEAD/GET (or local disk cache / csv_dir).
+    If any files return 404 or fail, prints a list of all missing files.
+    Returns the list of missing filenames.
+    """
+    logger.info("Running preflight check for stages: %s (ref: %s)", list(selected_stages), ref)
+    required_files: List[str] = []
+    seen: Set[str] = set()
+    for stage in selected_stages:
+        for f in STAGE_REQUIRED_CSVS.get(stage, []):
+            if f not in seen:
+                seen.add(f)
+                required_files.append(f)
+
+    missing: List[str] = []
+    if csv_dir:
+        for f in required_files:
+            if not os.path.exists(os.path.join(csv_dir, f)):
+                missing.append(f)
+    else:
+        cache_dir = os.path.join(".cache", "pokeapi_csv", ref)
+        with httpx.Client(timeout=10.0) as client:
+            for f in required_files:
+                cached_path = os.path.join(cache_dir, f)
+                if os.path.exists(cached_path):
+                    continue
+                url = f"https://raw.githubusercontent.com/PokeAPI/pokeapi/{ref}/data/v2/csv/{f}"
+                try:
+                    head_resp = client.head(url)
+                    if head_resp.status_code == 200:
+                        continue
+                    if head_resp.status_code == 404:
+                        missing.append(f)
+                        continue
+                    # Fallback to GET for CDNs/proxies that reject HEAD
+                    get_resp = client.get(url, headers={"Range": "bytes=0-0"})
+                    if get_resp.status_code in (200, 206):
+                        continue
+                    missing.append(f)
+                except Exception as e:
+                    logger.debug("Preflight check probe error for %s: %s", url, e)
+                    missing.append(f)
+
+    if missing:
+        print(f"\n[ERROR] Preflight CSV check failed for ref '{ref}'! Missing required files:")
+        for m in missing:
+            print(f"  - {m}")
+        logger.error(
+            "Preflight CSV check failed for ref '%s'. Missing %d file(s): %s",
+            ref,
+            len(missing),
+            missing,
+        )
+
+    return missing
 
 
 def get_optional_csv_path(
@@ -576,6 +765,82 @@ def populate_items(
     return counts
 
 
+def populate_item_effects(
+    session: Session,
+    csv_dir: Optional[str] = None,
+    ref: str = DEFAULT_REF,
+    dry_run: bool = False,
+    orphan_counts: Optional[Dict[str, int]] = None,
+) -> Dict[str, int]:
+    """
+    Populates item_effects from item_prose.csv.
+    Filters for English rows only (local_language_id == '9').
+    Upserts on item_id (updating short_effect, effect).
+    Skips rows whose item_id is missing in items table and tracks the orphan count.
+    """
+    logger.info("Executing stage: populate_item_effects")
+    counts: Dict[str, int] = {}
+
+    # Check prerequisite: items table must not be empty
+    items_count = session.execute(select(func.count(Item.id))).scalar() or 0
+    if items_count == 0:
+        raise RuntimeError(
+            "Prerequisite missing: items table is empty. Please run populate_items first."
+        )
+
+    valid_item_ids: Set[int] = set(session.scalars(select(Item.id)).all())
+
+    item_prose_csv = get_csv_path("item_prose.csv", csv_dir=csv_dir, ref=ref)
+    prose_rows = read_csv_rows(
+        item_prose_csv,
+        required_columns=["item_id", "local_language_id", "short_effect", "effect"],
+    )
+
+    effects_to_upsert: List[Dict[str, Any]] = []
+    orphan_key = "item_effects: missing item_id in items"
+
+    for r in prose_rows:
+        # Filter for English rows only (local_language_id 9)
+        if str(r.get("local_language_id") or "").strip() != "9":
+            continue
+
+        raw_item_id = r.get("item_id")
+        if not raw_item_id:
+            continue
+
+        try:
+            item_id = int(raw_item_id)
+        except (ValueError, TypeError):
+            continue
+
+        if item_id not in valid_item_ids:
+            if orphan_counts is not None:
+                orphan_counts[orphan_key] = orphan_counts.get(orphan_key, 0) + 1
+            continue
+
+        effects_to_upsert.append(
+            {
+                "item_id": item_id,
+                "short_effect": r.get("short_effect"),
+                "effect": r.get("effect"),
+            }
+        )
+
+    counts["item_effects"] = upsert(
+        session,
+        ItemEffect,
+        effects_to_upsert,
+        conflict_cols=["item_id"],
+        update_cols=["short_effect", "effect"],
+    )
+
+    if dry_run:
+        session.flush()
+    else:
+        session.commit()
+    return counts
+
+
 def populate_berries(
     session: Session,
     csv_dir: Optional[str] = None,
@@ -834,11 +1099,10 @@ def populate_encounter_methods_and_conditions(
 
     # Methods
     em_csv = get_csv_path("encounter_methods.csv", csv_dir=csv_dir, ref=ref)
+    em_prose_file, em_id_col = FILE_FOR_NAMES["encounter_methods"]
     em_names = load_english_names(
-        get_optional_csv_path(
-            "encounter_method_names.csv", csv_dir=csv_dir, ref=ref
-        ),
-        id_col="encounter_method_id",
+        get_csv_path(em_prose_file, csv_dir=csv_dir, ref=ref),
+        id_col=em_id_col,
     )
     em_rows = read_csv_rows(em_csv, required_columns=["id", "identifier"])
     em_items = [
@@ -860,9 +1124,21 @@ def populate_encounter_methods_and_conditions(
 
     # Conditions
     ec_csv = get_csv_path("encounter_conditions.csv", csv_dir=csv_dir, ref=ref)
+    ec_prose_file, ec_id_col = FILE_FOR_NAMES["encounter_conditions"]
+    ec_names = load_english_names(
+        get_csv_path(ec_prose_file, csv_dir=csv_dir, ref=ref),
+        id_col=ec_id_col,
+    )
     ec_rows = read_csv_rows(ec_csv, required_columns=["id", "identifier"])
     ec_items = [
-        {"id": int(r["id"]), "identifier": r["identifier"]}  # type: ignore[arg-type]
+        {
+            "id": int(r["id"]),
+            "identifier": r["identifier"],
+            "name": ec_names.get(
+                int(r["id"]),
+                r["identifier"].replace("-", " ").title() if r.get("identifier") else None,
+            ),
+        }
         for r in ec_rows
         if r.get("id") and r.get("identifier")
     ]
@@ -872,14 +1148,23 @@ def populate_encounter_methods_and_conditions(
 
     # Condition Values
     ecv_csv = get_csv_path("encounter_condition_values.csv", csv_dir=csv_dir, ref=ref)
+    ecv_prose_file, ecv_id_col = FILE_FOR_NAMES["encounter_condition_values"]
+    ecv_names = load_english_names(
+        get_csv_path(ecv_prose_file, csv_dir=csv_dir, ref=ref),
+        id_col=ecv_id_col,
+    )
     ecv_rows = read_csv_rows(
         ecv_csv, required_columns=["id", "encounter_condition_id", "identifier"]
     )
     ecv_items = [
         {
-            "id": int(r["id"]),  # type: ignore[arg-type]
-            "condition_id": int(r["encounter_condition_id"]),  # type: ignore[arg-type]
+            "id": int(r["id"]),
+            "condition_id": int(r["encounter_condition_id"]),
             "identifier": r["identifier"],
+            "name": ecv_names.get(
+                int(r["id"]),
+                r["identifier"].replace("-", " ").title() if r.get("identifier") else None,
+            ),
             "is_default": r.get("is_default") in ("1", "true", "True"),
         }
         for r in ecv_rows
@@ -1081,11 +1366,10 @@ def populate_evolution_chains(
 
     # 1. Triggers
     et_csv = get_csv_path("evolution_triggers.csv", csv_dir=csv_dir, ref=ref)
+    et_prose_file, et_id_col = FILE_FOR_NAMES["evolution_triggers"]
     et_names = load_english_names(
-        get_optional_csv_path(
-            "evolution_trigger_names.csv", csv_dir=csv_dir, ref=ref
-        ),
-        id_col="evolution_trigger_id",
+        get_csv_path(et_prose_file, csv_dir=csv_dir, ref=ref),
+        id_col=et_id_col,
     )
     et_rows = read_csv_rows(et_csv, required_columns=["id", "identifier"])
     et_items = [
@@ -1375,6 +1659,7 @@ def run_pipeline(
         "reference": populate_reference,
         "pockets": populate_item_categories_and_pockets,
         "items": populate_items,
+        "item_effects": populate_item_effects,
         "berries": populate_berries,
         "locations": populate_locations_and_areas,
         "encounter_meta": populate_encounter_methods_and_conditions,
@@ -1416,6 +1701,30 @@ def run_pipeline(
         session.commit()
         logger.info("Successfully updated DataMeta tracking rows.")
 
+    # Explicit NULL checks for critical name fields
+    from sqlalchemy import text
+    try:
+        em_null_count = session.execute(
+            text("SELECT count(*) FROM encounter_methods WHERE name IS NULL")
+        ).scalar() or 0
+        logger.info(
+            "SELECT count(*) FROM encounter_methods WHERE name IS NULL -> %d",
+            em_null_count,
+        )
+    except Exception as e:
+        logger.debug("Could not run encounter_methods NULL check: %s", e)
+
+    try:
+        et_null_count = session.execute(
+            text("SELECT count(*) FROM evolution_triggers WHERE name IS NULL")
+        ).scalar() or 0
+        logger.info(
+            "SELECT count(*) FROM evolution_triggers WHERE name IS NULL -> %d",
+            et_null_count,
+        )
+    except Exception as e:
+        logger.debug("Could not run evolution_triggers NULL check: %s", e)
+
     return table_counts, dict(orphan_counts)
 
 
@@ -1447,6 +1756,63 @@ def print_summary_table(
     print("")
 
 
+def print_row_count_summary(session: Session) -> None:
+    """
+    Logs and prints per-table row-count summary and explicit NULL checks for critical name fields.
+    """
+    from sqlalchemy import text
+    tables = [
+        "regions",
+        "version_groups",
+        "versions",
+        "item_pockets",
+        "item_categories",
+        "items",
+        "item_effects",
+        "berry_firmnesses",
+        "berry_flavors",
+        "berries",
+        "locations",
+        "location_areas",
+        "encounter_methods",
+        "encounter_conditions",
+        "encounter_condition_values",
+        "encounters",
+        "evolution_triggers",
+        "evolution_chains",
+        "pokemon_species",
+        "evolutions",
+    ]
+    print("\n" + "=" * 65)
+    print(f"{'Per-Table Database Row-Count Summary':^65}")
+    print("=" * 65)
+    print(f"{'Table':<40} {'Total Rows':>20}")
+    print("-" * 65)
+    for tbl in tables:
+        try:
+            cnt = session.execute(text(f"SELECT count(*) FROM {tbl}")).scalar() or 0
+            print(f"{tbl:<40} {cnt:>20}")
+            logger.info("Table '%s' count: %d", tbl, cnt)
+        except Exception:
+            pass
+    print("-" * 65)
+
+    try:
+        em_nulls = session.execute(
+            text("SELECT count(*) FROM encounter_methods WHERE name IS NULL")
+        ).scalar() or 0
+        et_nulls = session.execute(
+            text("SELECT count(*) FROM evolution_triggers WHERE name IS NULL")
+        ).scalar() or 0
+        print(f"encounter_methods WHERE name IS NULL: {em_nulls}")
+        print(f"evolution_triggers WHERE name IS NULL: {et_nulls}")
+        logger.info("SELECT count(*) FROM encounter_methods WHERE name IS NULL -> %d", em_nulls)
+        logger.info("SELECT count(*) FROM evolution_triggers WHERE name IS NULL -> %d", et_nulls)
+    except Exception:
+        pass
+    print("=" * 65 + "\n")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="PokéArchitect CSV-Based Ingestion Pipeline"
@@ -1470,6 +1836,11 @@ def main() -> None:
         "--items",
         action="store_true",
         help="Ingest missing items and category mappings",
+    )
+    parser.add_argument(
+        "--item-effects",
+        action="store_true",
+        help="Ingest item short effects and detailed prose",
     )
     parser.add_argument(
         "--berries",
@@ -1539,6 +1910,8 @@ def main() -> None:
             stages.append("pockets")
         if args.items:
             stages.append("items")
+        if args.item_effects:
+            stages.append("item_effects")
         if args.berries:
             stages.append("berries")
         if args.locations:
@@ -1554,6 +1927,11 @@ def main() -> None:
         parser.print_help()
         sys.exit(0)
 
+    # Preflight check before touching the database
+    missing = preflight_check(stages, ref=args.ref, csv_dir=args.csv_dir)
+    if missing:
+        sys.exit(1)
+
     session = SessionLocal()
     try:
         table_counts, orphan_counts = run_pipeline(
@@ -1564,6 +1942,7 @@ def main() -> None:
             dry_run=args.dry_run,
         )
         print_summary_table(table_counts, orphan_counts, dry_run=args.dry_run)
+        print_row_count_summary(session)
     finally:
         session.close()
 

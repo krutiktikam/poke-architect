@@ -53,6 +53,7 @@ class Location(Base):
     region_id: Mapped[Optional[int]] = mapped_column(ForeignKey("regions.id"), index=True)
     identifier: Mapped[str] = mapped_column(String(128), unique=True)
     name: Mapped[Optional[str]] = mapped_column(String(128))
+    region: Mapped[Optional["Region"]] = relationship()
     areas: Mapped[List["LocationArea"]] = relationship(back_populates="location")
 
 
@@ -69,22 +70,24 @@ class LocationArea(Base):
 class EncounterMethod(Base):
     __tablename__ = "encounter_methods"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
-    identifier: Mapped[str] = mapped_column(String(64), unique=True)  # walk, surf, old-rod, gift...
-    name: Mapped[Optional[str]] = mapped_column(String(64))
+    identifier: Mapped[str] = mapped_column(String(100), unique=True)  # walk, surf, old-rod, gift...
+    name: Mapped[Optional[str]] = mapped_column(String(255))
     order: Mapped[Optional[int]] = mapped_column(Integer)
 
 
 class EncounterCondition(Base):
     __tablename__ = "encounter_conditions"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
-    identifier: Mapped[str] = mapped_column(String(64), unique=True)  # time, swarm, radar...
+    identifier: Mapped[str] = mapped_column(String(100), unique=True)  # time, swarm, radar...
+    name: Mapped[Optional[str]] = mapped_column(String(255))
 
 
 class EncounterConditionValue(Base):
     __tablename__ = "encounter_condition_values"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
     condition_id: Mapped[int] = mapped_column(ForeignKey("encounter_conditions.id"), index=True)
-    identifier: Mapped[str] = mapped_column(String(64))  # time-morning, swarm-yes...
+    identifier: Mapped[str] = mapped_column(String(100))  # time-morning, swarm-yes...
+    name: Mapped[Optional[str]] = mapped_column(String(255))
     is_default: Mapped[bool] = mapped_column(Boolean, default=False)
 
 

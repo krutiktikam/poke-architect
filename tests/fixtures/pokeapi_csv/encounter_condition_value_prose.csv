@@ -1,0 +1,6 @@
+encounter_condition_value_id,local_language_id,name
+1,9,During a swarm
+2,9,Not during a swarm
+3,9,In the morning
+4,9,During the day
+5,9,At night

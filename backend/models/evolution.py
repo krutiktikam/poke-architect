@@ -9,8 +9,8 @@ from backend.database import Base
 class EvolutionTrigger(Base):
     __tablename__ = "evolution_triggers"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
-    identifier: Mapped[str] = mapped_column(String(64), unique=True)  # level-up, trade, use-item...
-    name: Mapped[Optional[str]] = mapped_column(String(64))
+    identifier: Mapped[str] = mapped_column(String(100), unique=True)  # level-up, trade, use-item...
+    name: Mapped[Optional[str]] = mapped_column(String(255))
 
 
 class EvolutionChain(Base):

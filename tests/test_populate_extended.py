@@ -9,6 +9,7 @@ Covers:
 """
 
 import os
+import httpx
 import pytest
 from sqlalchemy import create_engine, event, func, select
 from sqlalchemy.orm import Session
@@ -31,6 +32,7 @@ from backend.models import (
     Generation,
     Item,
     ItemCategory,
+    ItemEffect,
     ItemPocket,
     Location,
     LocationArea,
@@ -42,7 +44,11 @@ from backend.models import (
     VersionGroup,
 )
 from scripts.populate_extended import (
+    FILE_FOR_NAMES,
     STAGE_DEPENDENCY_ORDER,
+    download_file,
+    populate_encounter_methods_and_conditions,
+    preflight_check,
     read_csv_rows,
     run_pipeline,
 )
@@ -109,6 +115,7 @@ def test_idempotency_running_all_twice(db_session: Session):
         ItemPocket,
         ItemCategory,
         Item,
+        ItemEffect,
         BerryFirmness,
         BerryFlavor,
         Berry,
@@ -127,7 +134,15 @@ def test_idempotency_running_all_twice(db_session: Session):
     ]
 
     snapshot1 = {
-        model.__tablename__: db_session.execute(select(func.count(model.id if hasattr(model, "id") else getattr(model, "key")))).scalar()
+        model.__tablename__: db_session.execute(
+            select(
+                func.count(
+                    model.id
+                    if hasattr(model, "id")
+                    else (model.item_id if hasattr(model, "item_id") else getattr(model, "key"))
+                )
+            )
+        ).scalar()
         for model in tables_to_check
     }
     # Also check association table
@@ -145,7 +160,15 @@ def test_idempotency_running_all_twice(db_session: Session):
     )
 
     snapshot2 = {
-        model.__tablename__: db_session.execute(select(func.count(model.id if hasattr(model, "id") else getattr(model, "key")))).scalar()
+        model.__tablename__: db_session.execute(
+            select(
+                func.count(
+                    model.id
+                    if hasattr(model, "id")
+                    else (model.item_id if hasattr(model, "item_id") else getattr(model, "key"))
+                )
+            )
+        ).scalar()
         for model in tables_to_check
     }
     snapshot2["encounter_condition_value_map"] = db_session.execute(
@@ -156,6 +179,7 @@ def test_idempotency_running_all_twice(db_session: Session):
     assert snapshot1["regions"] == 1
     assert snapshot1["versions"] == 2
     assert snapshot1["evolutions"] == 3
+    assert snapshot1["item_effects"] >= 3
 
 
 def test_orphan_rows_skipped_and_reported(db_session: Session):
@@ -203,6 +227,12 @@ def test_orphan_rows_skipped_and_reported(db_session: Session):
     assert 3 in evolutions
     assert 4 not in evolutions  # Evolution 4 had invalid evolved_species_id 9999
     assert orphan_counts.get("evolution: missing to_species_id", 0) >= 1
+
+    # 6. ItemEffect with missing item_id 9999 was skipped
+    effects = db_session.scalars(select(ItemEffect.item_id)).all()
+    assert 1 in effects
+    assert 9999 not in effects
+    assert orphan_counts.get("item_effects: missing item_id in items", 0) >= 1
 
 
 def test_english_names_selected(db_session: Session):
@@ -300,3 +330,114 @@ def test_missing_required_csv_column_raises_error(tmp_path):
 
     assert "missing required column(s)" in str(excinfo.value)
     assert "category_id" in str(excinfo.value)
+
+
+def test_404_is_not_retried(tmp_path, monkeypatch):
+    """
+    Verify that HTTP 404 is not retried and immediately raises FileNotFoundError
+    with the exact URL and git ref.
+    """
+    call_count = 0
+
+    def mock_get(self, url, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        req = httpx.Request("GET", url)
+        return httpx.Response(404, request=req)
+
+    monkeypatch.setattr(httpx.Client, "get", mock_get)
+
+    target_file = str(tmp_path / "test.csv")
+    with pytest.raises(FileNotFoundError) as exc_info:
+        download_file("https://example.com/test.csv", target_file, max_retries=5, ref="my-ref")
+
+    assert "HTTP 404" in str(exc_info.value)
+    assert "https://example.com/test.csv" in str(exc_info.value)
+    assert "my-ref" in str(exc_info.value)
+    assert call_count == 1, f"Expected 404 not to be retried, but called {call_count} times"
+
+
+def test_preflight_lists_missing_files(tmp_path):
+    """
+    Verify that preflight_check identifies and returns missing files.
+    """
+    empty_dir = str(tmp_path / "empty_csvs")
+    os.makedirs(empty_dir, exist_ok=True)
+
+    missing = preflight_check(["encounter_meta", "evolutions"], ref="test-ref", csv_dir=empty_dir)
+    assert len(missing) > 0
+    assert "encounter_methods.csv" in missing
+    assert "encounter_method_prose.csv" in missing
+    assert "evolution_triggers.csv" in missing
+    assert "evolution_trigger_prose.csv" in missing
+
+    # With full fixture directory, missing should be empty
+    missing_none = preflight_check(["encounter_meta", "evolutions"], ref="test-ref", csv_dir=FIXTURES_DIR)
+    assert len(missing_none) == 0
+
+
+def test_missing_name_files_abort_stage_execution(db_session: Session, tmp_path):
+    """
+    Verify that missing name files (e.g. encounter_method_prose.csv) abort stage execution with FileNotFoundError.
+    """
+    custom_dir = tmp_path / "partial_csvs"
+    custom_dir.mkdir()
+    (custom_dir / "encounter_methods.csv").write_text("id,identifier,order\n1,walk,1\n", encoding="utf-8")
+    # Notice: encounter_method_prose.csv is intentionally missing
+
+    with pytest.raises(FileNotFoundError) as exc_info:
+        populate_encounter_methods_and_conditions(
+            session=db_session,
+            csv_dir=str(custom_dir),
+            ref="test-ref",
+        )
+
+    assert "encounter_method_prose.csv" in str(exc_info.value)
+
+
+def test_item_effects_english_selection_and_idempotence(db_session: Session):
+    """
+    Verify:
+    1. Only English prose (local_language_id == '9') is ingested into item_effects.
+    2. Items with only non-English prose (e.g. Thunder Stone id=84) do not have an ItemEffect row.
+    3. Running populate_item_effects repeatedly is idempotent.
+    """
+    run_pipeline(
+        session=db_session,
+        stages=STAGE_DEPENDENCY_ORDER,
+        csv_dir=FIXTURES_DIR,
+        ref="test-ref",
+        dry_run=False,
+    )
+
+    # Item 1 (Master Ball): has French (5) and English (9)
+    eff1 = db_session.scalar(select(ItemEffect).where(ItemEffect.item_id == 1))
+    assert eff1 is not None
+    assert eff1.short_effect == "Catches a wild Pokémon every time."
+    assert "Catches a wild Pokémon without fail." in eff1.effect
+    assert "sans échouer" not in eff1.effect
+
+    # Item 2 (Ultra Ball): English only
+    eff2 = db_session.scalar(select(ItemEffect).where(ItemEffect.item_id == 2))
+    assert eff2 is not None
+    assert eff2.short_effect == "Tries to catch a wild Pokémon. Success rate is 2x."
+
+    # Item 84 (Thunder Stone): Japanese only in fixture -> no ItemEffect row
+    eff84 = db_session.scalar(select(ItemEffect).where(ItemEffect.item_id == 84))
+    assert eff84 is None
+
+    # Item 85: Not in item_prose.csv -> no ItemEffect row
+    eff85 = db_session.scalar(select(ItemEffect).where(ItemEffect.item_id == 85))
+    assert eff85 is None
+
+    # Idempotence: re-run pipeline stage
+    from scripts.populate_extended import populate_item_effects
+    orphans = {}
+    counts = populate_item_effects(session=db_session, csv_dir=FIXTURES_DIR, ref="test-ref", dry_run=False, orphan_counts=orphans)
+    assert counts.get("item_effects") == 3
+    assert orphans.get("item_effects: missing item_id in items", 0) == 1
+
+    # Verify rows still unchanged
+    eff1_after = db_session.scalar(select(ItemEffect).where(ItemEffect.item_id == 1))
+    assert eff1_after.short_effect == "Catches a wild Pokémon every time."
+

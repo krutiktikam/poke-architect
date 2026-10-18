@@ -106,6 +106,18 @@ class Item(Base):
 
     item_category = relationship("ItemCategory", back_populates="items")
     berry = relationship("Berry", back_populates="item", uselist=False)
+    item_effect = relationship("ItemEffect", back_populates="item", uselist=False)
+
+
+class ItemEffect(Base):
+    __tablename__ = "item_effects"
+
+    item_id: Mapped[int] = mapped_column(ForeignKey("items.id"), primary_key=True, autoincrement=False)
+    short_effect: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    effect: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    item = relationship("Item", back_populates="item_effect")
+
 
 # ==========================================
 # Berries

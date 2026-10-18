@@ -11,7 +11,8 @@ from .models import Pokemon, TypeEfficacy, Move, Nature, PokemonMove, Ability, I
 from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse, MoveBase, NatureBase, PokemonMoveBase, AbilityResponse, PokemonAbilityBase, ItemResponse, TeamAnalysisRequest
 from .utils import calculate_team_stats, calculate_type_coverage, suggest_pokemon, generate_tactical_advice, detect_team_archetype, calculate_health_score, calculate_win_probability
 from . import auth, teams
-from .routers import compendium
+from .routers import compendium, encounters, evolutions, locations, items_extended, meta
+from .http_cache import HttpCacheMiddleware
 import json
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -33,7 +34,7 @@ if "*" in origins:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-        expose_headers=["*"]
+        expose_headers=["*", "ETag", "Cache-Control"]
     )
 else:
     # If the list is empty we use a sensible default that includes the deployed Vercel site and localhost.
@@ -51,11 +52,14 @@ else:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-        expose_headers=["*"]
+        expose_headers=["*", "ETag", "Cache-Control"]
     )
 
 # Log the final list of allowed origins – useful for debugging startup.
 logger.info(f"CORS allowed origins: {origins if origins else '*'}")
+
+# HTTP Caching Middleware for encyclopedia GET endpoints
+app.add_middleware(HttpCacheMiddleware)
 
 # Session Middleware
 app.add_middleware(
@@ -175,7 +179,12 @@ def test_cors():
 
 app.include_router(auth.router)
 app.include_router(teams.router)
+app.include_router(items_extended.router)
 app.include_router(compendium.router)
+app.include_router(encounters.router)
+app.include_router(evolutions.router)
+app.include_router(locations.router)
+app.include_router(meta.router)
 
 @app.get("/")
 def read_root():

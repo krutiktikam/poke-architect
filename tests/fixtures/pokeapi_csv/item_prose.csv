@@ -1,0 +1,7 @@
+item_id,local_language_id,short_effect,effect
+1,5,Capture un Pokémon sauvage à chaque fois.,"Utilisé au combat: Capture un Pokémon sauvage sans échouer."
+1,9,Catches a wild Pokémon every time.,"Used in battle: Catches a wild Pokémon without fail."
+2,9,Tries to catch a wild Pokémon. Success rate is 2x.,"Used in battle: Attempts to catch a wild Pokémon, using a catch rate of 2x."
+83,9,Evolves certain species of Pokémon.,"Used on a party Pokémon: Evolves a member of certain species of Pokémon."
+84,1,かみなりのいし,"ピカチュウなどを　しんかさせる。"
+9999,9,Non-existent orphan item short effect.,"Non-existent orphan item full effect prose."
