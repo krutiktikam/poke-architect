@@ -1,10 +1,20 @@
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import { Analytics as VercelAnalytics } from '@vercel/analytics/react';
+import { MotionConfig } from 'framer-motion';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { queryClient, idbPersister, dehydrateOptions, PERSISTER_MAX_AGE } from './api/queryClient';
+import { fetchDataVersion } from './api/dataVersion';
 import { TeamProvider } from './context/TeamContext';
+import { useTeam } from './context/useTeam';
 import { AuthProvider } from './context/AuthContext';
+import { VersionProvider } from './context/VersionContext';
+import { VisualQualityProvider } from './context/VisualQualityContext';
 import Header from './components/Header';
 import TeamDock from './components/TeamDock';
+import ServerStatusNotice from './components/common/ServerStatusNotice';
+import HeroBackground from './components/common/HeroBackground';
 import Builder from './pages/Builder';
 import Analysis from './pages/Analysis';
 import Pokedex from './pages/Pokedex';
@@ -14,26 +24,32 @@ import Leaderboard from './pages/Leaderboard';
 import Analytics from './pages/Analytics';
 import AuthCallback from './pages/AuthCallback';
 import Compendium from './pages/Compendium';
-import { useTeam } from './context/TeamContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-// Create a client instance
-const queryClient = new QueryClient();
 
 axios.defaults.withCredentials = true;
 
-// Wrapper component to handle TeamDock visibility and context
-const AppContent = () => {
+// Wrapper component to handle TeamDock visibility, data version watcher, and context
+const AppContent: React.FC = () => {
   const { team, removeFromTeam } = useTeam();
+
+  useEffect(() => {
+    // Check data version on mount
+    fetchDataVersion();
+
+    // Check data version when window regains focus
+    const handleFocus = () => {
+      fetchDataVersion();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen pb-32">
-      {/* Background Aura Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10 hidden md:block">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full animate-pulse-glow" />
-        <div className="absolute top-[20%] -right-[10%] w-[35%] h-[35%] bg-purple-600/10 blur-[120px] rounded-full animate-pulse-glow" style={{ animationDelay: '-2s' }} />
-        <div className="absolute -bottom-[10%] left-[20%] w-[30%] h-[30%] bg-blue-600/5 blur-[100px] rounded-full animate-pulse-glow" style={{ animationDelay: '-1s' }} />
-      </div>
+      {/* Dynamic / Low-Power Adaptive Background */}
+      <HeroBackground />
 
       <Header />
 
@@ -58,23 +74,40 @@ const AppContent = () => {
         onAnalyze={() => {}}
       />
 
-      {/* Vercel Web Analytics */}
-      <VercelAnalytics />
+      {/* Non-blocking server waking and offline notice */}
+      <ServerStatusNotice />
+
+      {/* Vercel Web Analytics - disabled under test / Playwright automation */}
+      {import.meta.env.MODE !== 'test' &&
+        !(typeof navigator !== 'undefined' && navigator.webdriver) && <VercelAnalytics />}
     </div>
   );
 };
 
 function App() {
   return (
-    <AuthProvider>
-      <TeamProvider>
-        <QueryClientProvider client={queryClient}>
-          <Router>
-            <AppContent />
-          </Router>
-        </QueryClientProvider>
-      </TeamProvider>
-    </AuthProvider>
+    <MotionConfig reducedMotion="user">
+      <VisualQualityProvider>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={{
+            persister: idbPersister,
+            maxAge: PERSISTER_MAX_AGE,
+            dehydrateOptions,
+          }}
+        >
+          <VersionProvider>
+            <AuthProvider>
+              <TeamProvider>
+                <Router>
+                  <AppContent />
+                </Router>
+              </TeamProvider>
+            </AuthProvider>
+          </VersionProvider>
+        </PersistQueryClientProvider>
+      </VisualQualityProvider>
+    </MotionConfig>
   );
 }
 

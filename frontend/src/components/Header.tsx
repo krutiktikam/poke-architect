@@ -3,6 +3,8 @@ import { Shield, LayoutDashboard, BarChart3, Library, Users, LogIn, LogOut, User
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import GameVersionSelector from './Header/GameVersionSelector';
+import VisualQualityToggle from './Header/VisualQualityToggle';
 
 const Header: React.FC = () => {
   const location = useLocation();
@@ -68,8 +70,14 @@ const Header: React.FC = () => {
           })}
         </nav>
 
-        {/* Auth Section */}
-        <div className="flex items-center gap-4">
+        {/* Controls & Auth Section */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Game Version Selector */}
+          <GameVersionSelector />
+
+          {/* Visual Quality Toggle */}
+          <VisualQualityToggle />
+
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
               <Link 
@@ -96,16 +104,20 @@ const Header: React.FC = () => {
             </div>
           ) : (
             <button 
+              type="button"
               onClick={login}
-              className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
+              aria-label="Connect trainer account"
+              className="flex items-center gap-2 bg-indigo-600 text-white px-4 sm:px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
             >
               <LogIn size={14} />
-              <span>Connect</span>
+              <span className="hidden sm:inline">Connect</span>
             </button>
           )}
 
           {/* Mobile Menu Toggle */}
           <button 
+            type="button"
+            aria-label="Toggle navigation menu"
             className="xl:hidden p-2 text-slate-500 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >

@@ -7,7 +7,7 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip, Cell, Legend
 } from 'recharts';
-import { useTeam } from '../context/TeamContext';
+import { useTeam } from '../context/useTeam';
 import { useAuth } from '../context/AuthContext';
 import CertificateCard from '../components/CertificateCard';
 

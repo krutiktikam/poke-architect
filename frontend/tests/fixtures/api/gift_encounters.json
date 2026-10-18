@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Pallet Town",
+    "identifier": "pallet-town",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 1001,
+        "name": "Professor Oak's Laboratory",
+        "identifier": "oaks-lab",
+        "encounters": [
+          {
+            "version": {
+              "id": 1,
+              "identifier": "red",
+              "name": "Red"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": null,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  }
+]

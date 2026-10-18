@@ -1,0 +1,4746 @@
+[
+  {
+    "id": 23,
+    "name": "Trophy Garden",
+    "identifier": "trophy-garden",
+    "region": {
+      "id": 4,
+      "identifier": "sinnoh",
+      "name": "Sinnoh"
+    },
+    "areas": [
+      {
+        "id": 118,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 12,
+              "identifier": "diamond",
+              "name": "Diamond"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 18,
+            "max_level": 18,
+            "chance": 5,
+            "conditions": [
+              "backlot-not-mentioned"
+            ]
+          },
+          {
+            "version": {
+              "id": 12,
+              "identifier": "diamond",
+              "name": "Diamond"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 18,
+            "max_level": 18,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 13,
+              "identifier": "pearl",
+              "name": "Pearl"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 18,
+            "max_level": 18,
+            "chance": 5,
+            "conditions": [
+              "backlot-not-mentioned"
+            ]
+          },
+          {
+            "version": {
+              "id": 13,
+              "identifier": "pearl",
+              "name": "Pearl"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 18,
+            "max_level": 18,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 14,
+              "identifier": "platinum",
+              "name": "Platinum"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 5,
+            "conditions": [
+              "backlot-not-mentioned"
+            ]
+          },
+          {
+            "version": {
+              "id": 14,
+              "identifier": "platinum",
+              "name": "Platinum"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 24,
+            "max_level": 24,
+            "chance": 5,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "name": "Celadon City",
+    "identifier": "celadon-city",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 1300,
+        "name": "Prize Corner",
+        "identifier": "prize-corner",
+        "encounters": [
+          {
+            "version": {
+              "id": 6,
+              "identifier": "crystal",
+              "name": "Crystal"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 25,
+            "max_level": 25,
+            "chance": 100,
+            "conditions": [
+              "coins-2222"
+            ]
+          },
+          {
+            "version": {
+              "id": 46,
+              "identifier": "blue-japan",
+              "name": "Blue"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 12,
+            "max_level": 12,
+            "chance": 100,
+            "conditions": [
+              "coins-620"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 86,
+    "name": "Pallet Town",
+    "identifier": "pallet-town",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 285,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 3,
+              "identifier": "yellow",
+              "name": "Yellow"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 31,
+              "identifier": "lets-go-pikachu",
+              "name": "Let\u2019s Go, Pikachu!"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "name": "Route 2",
+    "identifier": "kanto-route-2",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 296,
+        "name": "South Towards Viridian City",
+        "identifier": "south-towards-viridian-city",
+        "encounters": [
+          {
+            "version": {
+              "id": 4,
+              "identifier": "gold",
+              "name": "Gold"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-night"
+            ]
+          },
+          {
+            "version": {
+              "id": 4,
+              "identifier": "gold",
+              "name": "Gold"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-day"
+            ]
+          },
+          {
+            "version": {
+              "id": 4,
+              "identifier": "gold",
+              "name": "Gold"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-morning"
+            ]
+          },
+          {
+            "version": {
+              "id": 5,
+              "identifier": "silver",
+              "name": "Silver"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-day"
+            ]
+          },
+          {
+            "version": {
+              "id": 5,
+              "identifier": "silver",
+              "name": "Silver"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-night"
+            ]
+          },
+          {
+            "version": {
+              "id": 5,
+              "identifier": "silver",
+              "name": "Silver"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-morning"
+            ]
+          },
+          {
+            "version": {
+              "id": 6,
+              "identifier": "crystal",
+              "name": "Crystal"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-morning"
+            ]
+          },
+          {
+            "version": {
+              "id": 6,
+              "identifier": "crystal",
+              "name": "Crystal"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": [
+              "time-day"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 155,
+    "name": "Viridian Forest",
+    "identifier": "viridian-forest",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 321,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 1,
+              "identifier": "red",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 1,
+              "identifier": "red",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 2,
+              "identifier": "blue",
+              "name": "Blue"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 2,
+              "identifier": "blue",
+              "name": "Blue"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 10,
+              "identifier": "firered",
+              "name": "FireRed"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 10,
+              "identifier": "firered",
+              "name": "FireRed"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 11,
+              "identifier": "leafgreen",
+              "name": "LeafGreen"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 11,
+              "identifier": "leafgreen",
+              "name": "LeafGreen"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 15,
+              "identifier": "heartgold",
+              "name": "HeartGold"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 15,
+              "identifier": "heartgold",
+              "name": "HeartGold"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 7,
+            "max_level": 7,
+            "chance": 1,
+            "conditions": [
+              "time-day"
+            ]
+          },
+          {
+            "version": {
+              "id": 15,
+              "identifier": "heartgold",
+              "name": "HeartGold"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 7,
+            "max_level": 7,
+            "chance": 1,
+            "conditions": [
+              "time-morning"
+            ]
+          },
+          {
+            "version": {
+              "id": 16,
+              "identifier": "soulsilver",
+              "name": "SoulSilver"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 16,
+              "identifier": "soulsilver",
+              "name": "SoulSilver"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 7,
+            "max_level": 7,
+            "chance": 1,
+            "conditions": [
+              "time-morning"
+            ]
+          },
+          {
+            "version": {
+              "id": 16,
+              "identifier": "soulsilver",
+              "name": "SoulSilver"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 7,
+            "max_level": 7,
+            "chance": 1,
+            "conditions": [
+              "time-day"
+            ]
+          },
+          {
+            "version": {
+              "id": 31,
+              "identifier": "lets-go-pikachu",
+              "name": "Let\u2019s Go, Pikachu!"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 3,
+            "max_level": 6,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 32,
+              "identifier": "lets-go-eevee",
+              "name": "Let\u2019s Go, Eevee!"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 3,
+            "max_level": 6,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 44,
+              "identifier": "red-japan",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 44,
+              "identifier": "red-japan",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 45,
+              "identifier": "green-japan",
+              "name": "Green"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 45,
+              "identifier": "green-japan",
+              "name": "Green"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 158,
+    "name": "Kanto Power Plant",
+    "identifier": "kanto-power-plant",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 330,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 1,
+              "identifier": "red",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 15,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 1,
+              "identifier": "red",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 24,
+            "max_level": 24,
+            "chance": 10,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 2,
+              "identifier": "blue",
+              "name": "Blue"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 15,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 2,
+              "identifier": "blue",
+              "name": "Blue"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 24,
+            "max_level": 24,
+            "chance": 10,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 10,
+              "identifier": "firered",
+              "name": "FireRed"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 10,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 10,
+              "identifier": "firered",
+              "name": "FireRed"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 24,
+            "max_level": 24,
+            "chance": 10,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 10,
+              "identifier": "firered",
+              "name": "FireRed"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 26,
+            "max_level": 26,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 11,
+              "identifier": "leafgreen",
+              "name": "LeafGreen"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 10,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 11,
+              "identifier": "leafgreen",
+              "name": "LeafGreen"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 24,
+            "max_level": 24,
+            "chance": 10,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 11,
+              "identifier": "leafgreen",
+              "name": "LeafGreen"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 26,
+            "max_level": 26,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 44,
+              "identifier": "red-japan",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 15,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 44,
+              "identifier": "red-japan",
+              "name": "Red"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 24,
+            "max_level": 24,
+            "chance": 10,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 45,
+              "identifier": "green-japan",
+              "name": "Green"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 15,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 45,
+              "identifier": "green-japan",
+              "name": "Green"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 24,
+            "max_level": 24,
+            "chance": 10,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 234,
+    "name": "Saffron City",
+    "identifier": "saffron-city",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 1664,
+        "name": "Magnet Train Station",
+        "identifier": "magnet-train-station",
+        "encounters": [
+          {
+            "version": {
+              "id": 15,
+              "identifier": "heartgold",
+              "name": "HeartGold"
+            },
+            "method": {
+              "id": 36,
+              "identifier": "npc-trade",
+              "name": "Trade with an NPC"
+            },
+            "min_level": 2,
+            "max_level": 100,
+            "chance": 100,
+            "conditions": [
+              "trade-pikachu"
+            ]
+          },
+          {
+            "version": {
+              "id": 16,
+              "identifier": "soulsilver",
+              "name": "SoulSilver"
+            },
+            "method": {
+              "id": 36,
+              "identifier": "npc-trade",
+              "name": "Trade with an NPC"
+            },
+            "min_level": 2,
+            "max_level": 100,
+            "chance": 100,
+            "conditions": [
+              "trade-pikachu"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 430,
+    "name": "Slateport City",
+    "identifier": "slateport-city",
+    "region": {
+      "id": 3,
+      "identifier": "hoenn",
+      "name": "Hoenn"
+    },
+    "areas": [
+      {
+        "id": 781,
+        "name": "Contest Hall",
+        "identifier": "contest-hall",
+        "encounters": [
+          {
+            "version": {
+              "id": 25,
+              "identifier": "omega-ruby",
+              "name": "Omega Ruby"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 26,
+              "identifier": "alpha-sapphire",
+              "name": "Alpha Sapphire"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 431,
+    "name": "Lilycove City",
+    "identifier": "lilycove-city",
+    "region": {
+      "id": 3,
+      "identifier": "hoenn",
+      "name": "Hoenn"
+    },
+    "areas": [
+      {
+        "id": 784,
+        "name": "Contest Hall",
+        "identifier": "contest-hall",
+        "encounters": [
+          {
+            "version": {
+              "id": 25,
+              "identifier": "omega-ruby",
+              "name": "Omega Ruby"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 26,
+              "identifier": "alpha-sapphire",
+              "name": "Alpha Sapphire"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 483,
+    "name": "Safari Zone",
+    "identifier": "hoenn-safari-zone",
+    "region": {
+      "id": 3,
+      "identifier": "hoenn",
+      "name": "Hoenn"
+    },
+    "areas": [
+      {
+        "id": 431,
+        "name": "Sw",
+        "identifier": "sw",
+        "encounters": [
+          {
+            "version": {
+              "id": 7,
+              "identifier": "ruby",
+              "name": "Ruby"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 25,
+            "max_level": 25,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 7,
+              "identifier": "ruby",
+              "name": "Ruby"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 27,
+            "max_level": 27,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 8,
+              "identifier": "sapphire",
+              "name": "Sapphire"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 25,
+            "max_level": 25,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 8,
+              "identifier": "sapphire",
+              "name": "Sapphire"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 27,
+            "max_level": 27,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 9,
+              "identifier": "emerald",
+              "name": "Emerald"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 25,
+            "max_level": 25,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 9,
+              "identifier": "emerald",
+              "name": "Emerald"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 27,
+            "max_level": 27,
+            "chance": 1,
+            "conditions": []
+          }
+        ]
+      },
+      {
+        "id": 432,
+        "name": "Se",
+        "identifier": "se",
+        "encounters": [
+          {
+            "version": {
+              "id": 7,
+              "identifier": "ruby",
+              "name": "Ruby"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 25,
+            "max_level": 25,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 7,
+              "identifier": "ruby",
+              "name": "Ruby"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 27,
+            "max_level": 27,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 8,
+              "identifier": "sapphire",
+              "name": "Sapphire"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 25,
+            "max_level": 25,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 8,
+              "identifier": "sapphire",
+              "name": "Sapphire"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 27,
+            "max_level": 27,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 9,
+              "identifier": "emerald",
+              "name": "Emerald"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 25,
+            "max_level": 25,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 9,
+              "identifier": "emerald",
+              "name": "Emerald"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 27,
+            "max_level": 27,
+            "chance": 1,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 570,
+    "name": "Fallarbor Town",
+    "identifier": "fallarbor-town",
+    "region": {
+      "id": 3,
+      "identifier": "hoenn",
+      "name": "Hoenn"
+    },
+    "areas": [
+      {
+        "id": 783,
+        "name": "Contest Hall",
+        "identifier": "contest-hall",
+        "encounters": [
+          {
+            "version": {
+              "id": 25,
+              "identifier": "omega-ruby",
+              "name": "Omega Ruby"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 26,
+              "identifier": "alpha-sapphire",
+              "name": "Alpha Sapphire"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 571,
+    "name": "Verdanturf Town",
+    "identifier": "verdanturf-town",
+    "region": {
+      "id": 3,
+      "identifier": "hoenn",
+      "name": "Hoenn"
+    },
+    "areas": [
+      {
+        "id": 782,
+        "name": "Contest Hall",
+        "identifier": "contest-hall",
+        "encounters": [
+          {
+            "version": {
+              "id": 25,
+              "identifier": "omega-ruby",
+              "name": "Omega Ruby"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 26,
+              "identifier": "alpha-sapphire",
+              "name": "Alpha Sapphire"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 20,
+            "max_level": 20,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 593,
+    "name": "Santalune Forest",
+    "identifier": "santalune-forest",
+    "region": {
+      "id": 6,
+      "identifier": "kalos",
+      "name": "Kalos"
+    },
+    "areas": [
+      {
+        "id": 734,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 23,
+              "identifier": "x",
+              "name": "X"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 23,
+              "identifier": "x",
+              "name": "X"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 24,
+              "identifier": "y",
+              "name": "Y"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 3,
+            "max_level": 3,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 24,
+              "identifier": "y",
+              "name": "Y"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 1,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 594,
+    "name": "Route 3",
+    "identifier": "kalos-route-3",
+    "region": {
+      "id": 6,
+      "identifier": "kalos",
+      "name": "Kalos"
+    },
+    "areas": [
+      {
+        "id": 714,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 23,
+              "identifier": "x",
+              "name": "X"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 23,
+              "identifier": "x",
+              "name": "X"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 24,
+              "identifier": "y",
+              "name": "Y"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 4,
+            "max_level": 4,
+            "chance": 4,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 24,
+              "identifier": "y",
+              "name": "Y"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 5,
+            "max_level": 5,
+            "chance": 1,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 680,
+    "name": "Friend Safari",
+    "identifier": "friend-safari",
+    "region": {
+      "id": 6,
+      "identifier": "kalos",
+      "name": "Kalos"
+    },
+    "areas": [
+      {
+        "id": 1329,
+        "name": "Electric",
+        "identifier": "electric",
+        "encounters": [
+          {
+            "version": {
+              "id": 23,
+              "identifier": "x",
+              "name": "X"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 30,
+            "max_level": 30,
+            "chance": 33,
+            "conditions": [
+              "friend-safari-slot-2"
+            ]
+          },
+          {
+            "version": {
+              "id": 24,
+              "identifier": "y",
+              "name": "Y"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 30,
+            "max_level": 30,
+            "chance": 33,
+            "conditions": [
+              "friend-safari-slot-2"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 711,
+    "name": "Route 1",
+    "identifier": "alola-route-1",
+    "region": {
+      "id": 7,
+      "identifier": "alola",
+      "name": "Alola"
+    },
+    "areas": [
+      {
+        "id": 1035,
+        "name": "East",
+        "identifier": "east",
+        "encounters": [
+          {
+            "version": {
+              "id": 29,
+              "identifier": "ultra-sun",
+              "name": "Ultra Sun"
+            },
+            "method": {
+              "id": 33,
+              "identifier": "sos",
+              "name": "SOS Battle"
+            },
+            "min_level": 2,
+            "max_level": 3,
+            "chance": 15,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 30,
+              "identifier": "ultra-moon",
+              "name": "Ultra Moon"
+            },
+            "method": {
+              "id": 33,
+              "identifier": "sos",
+              "name": "SOS Battle"
+            },
+            "min_level": 2,
+            "max_level": 3,
+            "chance": 15,
+            "conditions": []
+          }
+        ]
+      },
+      {
+        "id": 1039,
+        "name": "West",
+        "identifier": "west",
+        "encounters": [
+          {
+            "version": {
+              "id": 27,
+              "identifier": "sun",
+              "name": "Sun"
+            },
+            "method": {
+              "id": 33,
+              "identifier": "sos",
+              "name": "SOS Battle"
+            },
+            "min_level": 3,
+            "max_level": 5,
+            "chance": 15,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 28,
+              "identifier": "moon",
+              "name": "Moon"
+            },
+            "method": {
+              "id": 33,
+              "identifier": "sos",
+              "name": "SOS Battle"
+            },
+            "min_level": 3,
+            "max_level": 5,
+            "chance": 15,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 741,
+    "name": "Heahea City",
+    "identifier": "heahea-city",
+    "region": {
+      "id": 7,
+      "identifier": "alola",
+      "name": "Alola"
+    },
+    "areas": [
+      {
+        "id": 1088,
+        "name": "Surf Association",
+        "identifier": "surf-association",
+        "encounters": [
+          {
+            "version": {
+              "id": 29,
+              "identifier": "ultra-sun",
+              "name": "Ultra Sun"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 40,
+            "max_level": 40,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 30,
+              "identifier": "ultra-moon",
+              "name": "Ultra Moon"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 40,
+            "max_level": 40,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 871,
+    "name": "Route 4",
+    "identifier": "galar-route-4",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 847,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 14,
+            "max_level": 16,
+            "chance": 5,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 14,
+            "max_level": 16,
+            "chance": 1,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 884,
+    "name": "Challenge Beach",
+    "identifier": "challenge-beach",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1513,
+        "name": "Max Den E",
+        "identifier": "max-den-e",
+        "encounters": [
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 893,
+    "name": "Fields of Honor",
+    "identifier": "fields-of-honor",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 876,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 15,
+            "max_level": 15,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 15,
+            "max_level": 15,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1488,
+        "name": "Max Den E",
+        "identifier": "max-den-e",
+        "encounters": [
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 894,
+    "name": "Forest of Focus",
+    "identifier": "forest-of-focus",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 878,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-intense-sun"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-fog"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-sandstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-fog"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-sandstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-intense-sun"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-intense-sun"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-sandstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-fog"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 10,
+            "max_level": 15,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 22,
+            "max_level": 22,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-fog"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-normal"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-overcast"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-intense-sun"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-sandstorm"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1504,
+        "name": "Max Den B",
+        "identifier": "max-den-b",
+        "encounters": [
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 902,
+    "name": "Giant's Mirror",
+    "identifier": "giants-mirror",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1469,
+        "name": "Max Den C",
+        "identifier": "max-den-c",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 15,
+            "max_level": 20,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-1-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 55,
+            "max_level": 60,
+            "chance": 15,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-5-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 15,
+            "max_level": 20,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-1-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 55,
+            "max_level": 60,
+            "chance": 15,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-5-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 906,
+    "name": "Hammerlocke Hills",
+    "identifier": "hammerlocke-hills",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1481,
+        "name": "Max Den F",
+        "identifier": "max-den-f",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 60,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 45,
+            "max_level": 50,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-4-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 55,
+            "max_level": 60,
+            "chance": 10,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-5-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 60,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 45,
+            "max_level": 50,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-4-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 55,
+            "max_level": 60,
+            "chance": 10,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-5-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 908,
+    "name": "Honeycalm Sea",
+    "identifier": "honeycalm-sea",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1565,
+        "name": "Max Den C",
+        "identifier": "max-den-c",
+        "encounters": [
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 25,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-3-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 913,
+    "name": "Lake of Outrage",
+    "identifier": "lake-of-outrage",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1473,
+        "name": "Max Den B",
+        "identifier": "max-den-b",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 15,
+            "max_level": 20,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-1-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 15,
+            "max_level": 20,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-1-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 920,
+    "name": "Motostoke Riverbank",
+    "identifier": "motostoke-riverbank",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1429,
+        "name": "Max Den B",
+        "identifier": "max-den-b",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 15,
+            "max_level": 20,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-1-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 60,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 45,
+            "max_level": 50,
+            "chance": 35,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-4-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 15,
+            "max_level": 20,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-1-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 30,
+            "conditions": [
+              "max-den-rarity-rare",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 60,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 45,
+            "max_level": 50,
+            "chance": 35,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-4-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 928,
+    "name": "Rolling Fields",
+    "identifier": "rolling-fields",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 916,
+        "name": "Main",
+        "identifier": "main",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 15,
+            "max_level": 15,
+            "chance": 100,
+            "conditions": [
+              "max-den-rarity-special",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 15,
+            "max_level": 15,
+            "chance": 100,
+            "conditions": [
+              "max-den-rarity-special",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 932,
+    "name": "Soothing Wetlands",
+    "identifier": "soothing-wetlands",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 921,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 15,
+            "max_level": 15,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 35,
+              "identifier": "the-isle-of-armor-sword",
+              "name": "Sword: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 15,
+            "max_level": 15,
+            "chance": 100,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 50,
+              "identifier": "the-isle-of-armor-shield",
+              "name": "Shield: The Isle of Armor"
+            },
+            "method": {
+              "id": 57,
+              "identifier": "wanderer",
+              "name": "Special overworld spawn in a fixed location."
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 100,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 938,
+    "name": "Stony Wilderness",
+    "identifier": "stony-wilderness",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 929,
+        "name": "Main",
+        "identifier": "main",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 26,
+            "max_level": 28,
+            "chance": 10,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 28,
+            "max_level": 30,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 10,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 26,
+            "max_level": 28,
+            "chance": 10,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 28,
+            "max_level": 30,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 1,
+              "identifier": "walk",
+              "name": "Walking in tall grass or a cave"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 10,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-raining"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 930,
+        "name": "Area 2",
+        "identifier": "area-2",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 28,
+            "max_level": 30,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 28,
+            "max_level": 30,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          }
+        ]
+      },
+      {
+        "id": 931,
+        "name": "Area 3",
+        "identifier": "area-3",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 28,
+            "max_level": 30,
+            "chance": 10,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 10,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 28,
+            "max_level": 30,
+            "chance": 5,
+            "conditions": [
+              "story-progress-before-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 38,
+              "identifier": "overworld",
+              "name": "Walking in the overworld"
+            },
+            "min_level": 60,
+            "max_level": 60,
+            "chance": 5,
+            "conditions": [
+              "story-progress-hall-of-fame",
+              "weather-thunderstorm"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1041,
+    "name": "Giant's Cap",
+    "identifier": "giants-cap",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1456,
+        "name": "Max Den D",
+        "identifier": "max-den-d",
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 60,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 45,
+            "max_level": 50,
+            "chance": 35,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-4-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 25,
+            "max_level": 30,
+            "chance": 20,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-2-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 35,
+            "max_level": 40,
+            "chance": 60,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-3-star"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 61,
+              "identifier": "max-raid",
+              "name": "Catch a wild Dynamax or Gigantamax Pok\u00e9mon in a Max Raid battle."
+            },
+            "min_level": 45,
+            "max_level": 50,
+            "chance": 35,
+            "conditions": [
+              "max-den-rarity-common",
+              "max-den-rating-4-star"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1042,
+    "name": "Hau'oli City",
+    "identifier": "hauoli-city",
+    "region": {
+      "id": 7,
+      "identifier": "alola",
+      "name": "Alola"
+    },
+    "areas": [
+      {
+        "id": 1085,
+        "name": "Shopping District",
+        "identifier": "shopping-district",
+        "encounters": [
+          {
+            "version": {
+              "id": 27,
+              "identifier": "sun",
+              "name": "Sun"
+            },
+            "method": {
+              "id": 33,
+              "identifier": "sos",
+              "name": "SOS Battle"
+            },
+            "min_level": 5,
+            "max_level": 8,
+            "chance": 15,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 28,
+              "identifier": "moon",
+              "name": "Moon"
+            },
+            "method": {
+              "id": 33,
+              "identifier": "sos",
+              "name": "SOS Battle"
+            },
+            "min_level": 5,
+            "max_level": 8,
+            "chance": 15,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1089,
+    "name": "Hoenn Pokecenter",
+    "identifier": "hoenn-pokecenter",
+    "region": {
+      "id": 3,
+      "identifier": "hoenn",
+      "name": "Hoenn"
+    },
+    "areas": [
+      {
+        "id": 1210,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 7,
+              "identifier": "ruby",
+              "name": "Ruby"
+            },
+            "method": {
+              "id": 46,
+              "identifier": "colosseum-bonus-disc-jpn",
+              "name": "Receiving a Celebi or Pikachu from the Japanese Colosseum Bonus Disc"
+            },
+            "min_level": 10,
+            "max_level": 10,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 8,
+              "identifier": "sapphire",
+              "name": "Sapphire"
+            },
+            "method": {
+              "id": 46,
+              "identifier": "colosseum-bonus-disc-jpn",
+              "name": "Receiving a Celebi or Pikachu from the Japanese Colosseum Bonus Disc"
+            },
+            "min_level": 10,
+            "max_level": 10,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 9,
+              "identifier": "emerald",
+              "name": "Emerald"
+            },
+            "method": {
+              "id": 46,
+              "identifier": "colosseum-bonus-disc-jpn",
+              "name": "Receiving a Celebi or Pikachu from the Japanese Colosseum Bonus Disc"
+            },
+            "min_level": 10,
+            "max_level": 10,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1091,
+    "name": "Kanto Pokecenter",
+    "identifier": "kanto-pokecenter",
+    "region": {
+      "id": 1,
+      "identifier": "kanto",
+      "name": "Kanto"
+    },
+    "areas": [
+      {
+        "id": 1212,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 10,
+              "identifier": "firered",
+              "name": "FireRed"
+            },
+            "method": {
+              "id": 46,
+              "identifier": "colosseum-bonus-disc-jpn",
+              "name": "Receiving a Celebi or Pikachu from the Japanese Colosseum Bonus Disc"
+            },
+            "min_level": 10,
+            "max_level": 10,
+            "chance": 100,
+            "conditions": []
+          },
+          {
+            "version": {
+              "id": 11,
+              "identifier": "leafgreen",
+              "name": "LeafGreen"
+            },
+            "method": {
+              "id": 46,
+              "identifier": "colosseum-bonus-disc-jpn",
+              "name": "Receiving a Celebi or Pikachu from the Japanese Colosseum Bonus Disc"
+            },
+            "min_level": 10,
+            "max_level": 10,
+            "chance": 100,
+            "conditions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1115,
+    "name": "Meetup Spot",
+    "identifier": "meetup-spot",
+    "region": {
+      "id": 8,
+      "identifier": "galar",
+      "name": "Galar"
+    },
+    "areas": [
+      {
+        "id": 1371,
+        "name": "Main Area",
+        "identifier": null,
+        "encounters": [
+          {
+            "version": {
+              "id": 33,
+              "identifier": "sword",
+              "name": "Sword"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 10,
+            "max_level": 10,
+            "chance": 100,
+            "conditions": [
+              "save-data-from-lets-go-pikachu"
+            ]
+          },
+          {
+            "version": {
+              "id": 34,
+              "identifier": "shield",
+              "name": "Shield"
+            },
+            "method": {
+              "id": 18,
+              "identifier": "gift",
+              "name": "Receive as a gift"
+            },
+            "min_level": 10,
+            "max_level": 10,
+            "chance": 100,
+            "conditions": [
+              "save-data-from-lets-go-pikachu"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

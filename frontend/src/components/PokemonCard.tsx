@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { Plus, Info, Crown, Settings2, Check, X } from 'lucide-react';
+import React, { useState, Suspense } from 'react';
+import { Plus, Info, Crown, Settings2, Check, X, MapPin, Package } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { Sheet } from './ui/Sheet';
 import type { Pokemon } from '../types';
+
+const EncounterModal = React.lazy(() => import('./Compendium/EncounterModal'));
+const EvolutionTree = React.lazy(() => import('./Compendium/EvolutionTree'));
+const ItemBagDrawer = React.lazy(() => import('./Items/ItemBagDrawer'));
+
 
 interface LoadoutConfig {
   itemId: number | null;
@@ -48,6 +54,9 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
   const [selectedAbilityId, setSelectedAbilityId] = useState<number | null>(null);
   const [selectedNatureId, setSelectedNatureId] = useState<number | null>(null);
   const [selectedMoveIds, setSelectedMoveIds] = useState<(number | null)[]>([null, null, null, null]);
+  const [isEncounterOpen, setIsEncounterOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isBagOpen, setIsBagOpen] = useState(false);
 
   const isLegendary = pokemon.is_legendary || pokemon.is_mythical;
   const primaryType = pokemon.type1.toLowerCase();
@@ -203,7 +212,18 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
                 </button>
               </div>
 
-              {renderSelect('Held Item', itemsData, selectedItemId, setSelectedItemId, 'Select Item')}
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">Held Item</span>
+                <button
+                  type="button"
+                  onClick={() => setIsBagOpen(true)}
+                  className="flex items-center gap-1 text-[9px] font-bold text-indigo-400 hover:text-indigo-300"
+                >
+                  <Package size={11} /> Open Bag
+                </button>
+              </div>
+              {renderSelect('', itemsData, selectedItemId, setSelectedItemId, 'Select Item')}
+
               {renderSelect('Ability', abilitiesData, selectedAbilityId, setSelectedAbilityId, 'Select Ability')}
               {renderSelect('Nature', naturesData, selectedNatureId, setSelectedNatureId, 'Select Nature')}
 
@@ -288,11 +308,102 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
             </>
           )}
 
-          <button className="p-3 bg-white/5 hover:bg-white/10 text-white/30 hover:text-white rounded-2xl transition-all border border-white/5 group/info">
+          {/* Where to catch button */}
+          <button
+            type="button"
+            onClick={() => setIsEncounterOpen(true)}
+            title="Where to catch"
+            aria-label={`Where to catch ${pokemon.name}`}
+            className="p-3 bg-white/5 hover:bg-indigo-600/20 hover:text-indigo-300 text-white/40 rounded-2xl transition-all border border-white/5"
+          >
+            <MapPin size={16} />
+          </button>
+
+          {/* Details / Evolution tree button */}
+          <button
+            type="button"
+            onClick={() => setIsDetailOpen(true)}
+            title="Species Details & Evolution"
+            aria-label={`Details and evolution tree for ${pokemon.name}`}
+            className="p-3 bg-white/5 hover:bg-white/10 text-white/30 hover:text-white rounded-2xl transition-all border border-white/5 group/info"
+          >
             <Info size={16} />
           </button>
         </div>
       </div>
+
+      {/* Lazy Encounter Modal */}
+      {isEncounterOpen && (
+        <Suspense fallback={null}>
+          <EncounterModal
+            isOpen={isEncounterOpen}
+            onClose={() => setIsEncounterOpen(false)}
+            pokemonId={pokemon.id}
+            pokemonName={pokemon.name}
+            pokemonSprite={pokemon.sprite_url}
+          />
+        </Suspense>
+      )}
+
+      {/* Lazy Evolution Tree Sheet */}
+      {isDetailOpen && (
+        <Sheet
+          isOpen={isDetailOpen}
+          onClose={() => setIsDetailOpen(false)}
+          title={`${pokemon.name} - Evolution & Species`}
+          description={`Comprehensive species hierarchy and evolution branches for ${pokemon.name}.`}
+        >
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5">
+              <img
+                src={pokemon.sprite_url}
+                alt={pokemon.name}
+                className="w-16 h-16 object-contain drop-shadow"
+              />
+              <div>
+                <h4 className="text-base font-black text-white capitalize">{pokemon.name}</h4>
+                <div className="flex gap-1.5 mt-1">
+                  <span className="text-[9px] px-2 py-0.5 rounded uppercase font-black bg-white/5 text-slate-300">
+                    {pokemon.type1}
+                  </span>
+                  {pokemon.type2 && (
+                    <span className="text-[9px] px-2 py-0.5 rounded uppercase font-black bg-white/5 text-slate-300">
+                      {pokemon.type2}
+                    </span>
+                  )}
+                  {pokemon.generation && (
+                    <span className="text-[9px] px-2 py-0.5 rounded font-bold text-indigo-400">
+                      Gen {pokemon.generation}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <Suspense
+              fallback={
+                <div className="p-8 text-center text-xs text-slate-400 animate-pulse">
+                  Loading evolution lineage...
+                </div>
+              }
+            >
+              <EvolutionTree pokemonId={pokemon.id} currentSpeciesId={pokemon.id} />
+            </Suspense>
+          </div>
+        </Sheet>
+      )}
+
+      {/* Lazy Item Bag Drawer */}
+      {isBagOpen && (
+        <Suspense fallback={null}>
+          <ItemBagDrawer
+            isOpen={isBagOpen}
+            onClose={() => setIsBagOpen(false)}
+            selectedItemId={selectedItemId}
+            onSelectItem={(item) => setSelectedItemId(item.id)}
+          />
+        </Suspense>
+      )}
     </motion.div>
   );
 };

@@ -1,7 +1,11 @@
+import React, { useState, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useTeam } from '../../context/TeamContext';
+import { Package } from 'lucide-react';
+import { useTeam } from '../../context/useTeam';
 import type { TeamMember } from '../../context/TeamContext';
 import axios from 'axios';
+
+const ItemBagDrawer = React.lazy(() => import('../Items/ItemBagDrawer'));
 
 interface PokemonConfiguratorProps {
   pokemon: TeamMember;
@@ -9,6 +13,7 @@ interface PokemonConfiguratorProps {
 
 const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
   const { updateTeamMember } = useTeam();
+  const [isBagOpen, setIsBagOpen] = useState(false);
 
   // Fetch data for dropdowns
   const { data: movesData, isLoading: movesLoading } = useQuery<
@@ -141,8 +146,18 @@ const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
       <h3 className="text-lg font-bold text-indigo-400 mb-4">
         Configure {pokemon.name}
       </h3>
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-gray-300">Held Item</span>
+        <button
+          type="button"
+          onClick={() => setIsBagOpen(true)}
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 text-xs font-semibold border border-indigo-500/30 transition-colors"
+        >
+          <Package size={13} /> Open Bag
+        </button>
+      </div>
       {renderSelect(
-        'Held Item',
+        '',
         itemsData,
         pokemon.selectedItem ?? null,
         (id) => updateTeamMember(pokemon.id, { selectedItem: id }),
@@ -163,6 +178,17 @@ const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
         'No Nature'
       )}
       {renderMoveSlots()}
+
+      {isBagOpen && (
+        <Suspense fallback={null}>
+          <ItemBagDrawer
+            isOpen={isBagOpen}
+            onClose={() => setIsBagOpen(false)}
+            selectedItemId={pokemon.selectedItem ?? null}
+            onSelectItem={(item) => updateTeamMember(pokemon.id, { selectedItem: item.id })}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

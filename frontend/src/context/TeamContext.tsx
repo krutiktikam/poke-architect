@@ -1,55 +1,42 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Pokemon } from '../types';
-
-export interface TeamMember extends Pokemon {
-  selectedMoves?: (number | null)[]; // store move IDs, null for empty slot
-  selectedItem?: number | null; // store item ID
-  selectedAbility?: number | null; // store ability ID
-  selectedNature?: number | null; // store nature ID
-}
-
-interface TeamContextType {
-  team: TeamMember[];
-  addToTeam: (pokemon: Pokemon) => void;
-  removeFromTeam: (id: number) => void;
-  replaceInTeam: (newPokemon: Pokemon, oldPokemonId: number) => void;
-  clearTeam: () => void;
-  loadTeam: (team: TeamMember[]) => void;
-  targetGen: number;
-  setTargetGen: (gen: number) => void;
-  updateTeamMember: (pokemonId: number, updates: Partial<TeamMember>) => void;
-}
-
-const TeamContext = createContext<TeamContextType | undefined>(undefined);
+import { TeamContext } from './TeamContext.types';
+import type { TeamMember, TeamContextType } from './TeamContext.types';
+export type { TeamMember, TeamContextType };
 
 export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [team, setTeam] = useState<TeamMember[]>([]);
-  const [targetGen, setTargetGen] = useState<number>(9); // Default to latest gen
-
-  useEffect(() => {
-    const savedTeam = localStorage.getItem('poke-team');
-    if (savedTeam) {
-      try {
+  const [team, setTeam] = useState<TeamMember[]>(() => {
+    try {
+      const savedTeam = typeof localStorage !== 'undefined' ? localStorage.getItem('poke-team') : null;
+      if (savedTeam) {
         const parsed: TeamMember[] = JSON.parse(savedTeam);
-        // Ensure selectedMoves array length is 4 for each member
-        parsed.forEach(member => {
+        parsed.forEach((member) => {
           if (!member.selectedMoves) member.selectedMoves = [null, null, null, null];
           else {
-            // Ensure length 4
             while (member.selectedMoves.length < 4) member.selectedMoves.push(null);
             if (member.selectedMoves.length > 4) member.selectedMoves.length = 4;
           }
         });
-        setTeam(parsed);
-      } catch (e) {
-        console.error('Failed to parse saved team', e);
+        return parsed;
       }
+    } catch (e) {
+      console.error('Failed to parse saved team', e);
     }
-    const savedGen = localStorage.getItem('poke-target-gen');
-    if (savedGen) {
-      setTargetGen(parseInt(savedGen));
+    return [];
+  });
+
+  const [targetGen, setTargetGen] = useState<number>(() => {
+    try {
+      const savedGen = typeof localStorage !== 'undefined' ? localStorage.getItem('poke-target-gen') : null;
+      if (savedGen) {
+        const parsed = parseInt(savedGen, 10);
+        if (!isNaN(parsed)) return parsed;
+      }
+    } catch {
+      // Ignore
     }
-  }, []);
+    return 9;
+  });
 
   useEffect(() => {
     // Prepare team for saving: ensure selectedMoves arrays exist
@@ -168,12 +155,4 @@ export const TeamProvider: React.FC<{ children: React.ReactNode }> = ({ children
       {children}
     </TeamContext.Provider>
   );
-};
-
-export const useTeam = () => {
-  const context = useContext(TeamContext);
-  if (context === undefined) {
-    throw new Error('useTeam must be used within a TeamProvider');
-  }
-  return context;
 };

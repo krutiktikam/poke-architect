@@ -6,7 +6,7 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Cell, Tooltip
 } from 'recharts';
-import { useTeam } from '../context/TeamContext';
+import { useTeam } from '../context/useTeam';
 import { API_BASE_URL } from '../config';
 
 const LiveAnalysisSidebar = () => {

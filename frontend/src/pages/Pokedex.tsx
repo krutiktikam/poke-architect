@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, Filter, Loader2, BarChart2 } from 'lucide-react';
-import { useTeam } from '../context/TeamContext';
+import { useTeam } from '../context/useTeam';
 import type { Pokemon } from '../types';
 
 import { API_BASE_URL } from '../config';
