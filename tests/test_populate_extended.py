@@ -48,6 +48,7 @@ from scripts.populate_extended import (
     STAGE_DEPENDENCY_ORDER,
     download_file,
     populate_encounter_methods_and_conditions,
+    populate_item_flags,
     preflight_check,
     read_csv_rows,
     run_pipeline,
@@ -440,4 +441,70 @@ def test_item_effects_english_selection_and_idempotence(db_session: Session):
     # Verify rows still unchanged
     eff1_after = db_session.scalar(select(ItemEffect).where(ItemEffect.item_id == 1))
     assert eff1_after.short_effect == "Catches a wild Pokémon every time."
+
+
+def test_item_flags_ingestion_and_idempotence(db_session: Session):
+    """
+    Verify:
+    1. Items with 'holdable-active' or 'holdable-passive' flag are marked is_holdable=True.
+    2. Items with other flags (e.g. Master Ball, Potion with 'holdable') are is_holdable=False.
+    3. Orphan item_ids in item_flag_map.csv are tracked in orphan_counts.
+    4. Running populate_item_flags repeatedly is idempotent.
+    """
+    run_pipeline(
+        session=db_session,
+        stages=STAGE_DEPENDENCY_ORDER,
+        csv_dir=FIXTURES_DIR,
+        ref="test-ref",
+        dry_run=False,
+    )
+
+    # Master Ball (id 1): has 'holdable', 'consumable', etc. -> is_holdable=False
+    mb = db_session.scalar(select(Item).where(Item.id == 1))
+    assert mb is not None
+    assert mb.is_holdable is False
+
+    # Potion (id 17): has 'holdable', 'usable-in-battle', etc. -> is_holdable=False
+    pot = db_session.scalar(select(Item).where(Item.id == 17))
+    assert pot is not None
+    assert pot.is_holdable is False
+
+    # Sitrus Berry (id 135): has 'holdable-active' -> is_holdable=True
+    sb = db_session.scalar(select(Item).where(Item.id == 135))
+    assert sb is not None
+    assert sb.is_holdable is True
+
+    # Leftovers (id 211): has 'holdable-active' -> is_holdable=True
+    left = db_session.scalar(select(Item).where(Item.id == 211))
+    assert left is not None
+    assert left.is_holdable is True
+
+    # Life Orb (id 247): has 'holdable-active' -> is_holdable=True
+    lo = db_session.scalar(select(Item).where(Item.id == 247))
+    assert lo is not None
+    assert lo.is_holdable is True
+
+    # Choice Scarf (id 264): has 'holdable-active' -> is_holdable=True
+    cs = db_session.scalar(select(Item).where(Item.id == 264))
+    assert cs is not None
+    assert cs.is_holdable is True
+
+    # Idempotence: re-run stage
+    stage_orphans = {}
+    counts = populate_item_flags(
+        session=db_session,
+        csv_dir=FIXTURES_DIR,
+        ref="test-ref",
+        dry_run=False,
+        orphan_counts=stage_orphans,
+    )
+    assert counts.get("item_flags") is not None
+    assert stage_orphans.get("item_flags: missing item_id in items", 0) == 1
+
+    # Verify rows still have correct flags
+    left_after = db_session.scalar(select(Item).where(Item.id == 211))
+    assert left_after.is_holdable is True
+    mb_after = db_session.scalar(select(Item).where(Item.id == 1))
+    assert mb_after.is_holdable is False
+
 

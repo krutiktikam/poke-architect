@@ -32,7 +32,7 @@ dotenv.load_dotenv = _safe_load_dotenv
 
 # Import database, models, and FastAPI app
 from backend.database import Base, engine, SessionLocal, get_db  # noqa: E402
-from backend.models import Pokemon, Move, TypeEfficacy, Nature  # noqa: E402
+from backend.models import Pokemon, Move, TypeEfficacy, Nature, Item, ItemPocket, ItemCategory, ItemEffect  # noqa: E402
 from backend.main import app  # noqa: E402
 
 # 2. Guard: Fail the run if the engine URL is not SQLite
@@ -125,6 +125,23 @@ def setup_sqlite_database():
             adamant = Nature(id=3, name="adamant", decreased_stat="special-attack", increased_stat="attack")
             modest = Nature(id=16, name="modest", decreased_stat="attack", increased_stat="special-attack")
             session.add_all([hardy, adamant, modest])
+
+        # Seed test Items & Pockets if not already present
+        if not session.query(Item).filter(Item.id == 1).first():
+            pocket = ItemPocket(id=1, name="Items")
+            session.add(pocket)
+            session.flush()
+
+            cat1 = ItemCategory(id=1, name="Held Items", pocket_id=1)
+            cat2 = ItemCategory(id=2, name="Standard Balls", pocket_id=1)
+            session.add_all([cat1, cat2])
+            session.flush()
+
+            mb = Item(id=1, name="Master Ball", category_id=2, is_holdable=False)
+            left = Item(id=211, name="Leftovers", category_id=1, is_holdable=True)
+            lo = Item(id=247, name="Life Orb", category_id=1, is_holdable=True)
+            pot = Item(id=17, name="Potion", category_id=1, is_holdable=False)
+            session.add_all([mb, left, lo, pot])
 
         # Seed basic TypeEfficacy if empty
         if session.query(TypeEfficacy).count() == 0:

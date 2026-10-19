@@ -873,6 +873,11 @@ export interface components {
              * @default General
              */
             category: string | null;
+            /**
+             * Is Holdable
+             * @default false
+             */
+            is_holdable: boolean;
         };
         /** LocationAreaBrief */
         LocationAreaBrief: {
@@ -1024,6 +1029,11 @@ export interface components {
             name: string;
             /** Short Effect */
             short_effect?: string | null;
+            /**
+             * Is Holdable
+             * @default false
+             */
+            is_holdable: boolean;
         };
         /** PokemonBase */
         PokemonBase: {
@@ -1779,6 +1789,8 @@ export interface operations {
                 skip?: number;
                 limit?: number;
                 search?: string | null;
+                holdable?: boolean | null;
+                sort?: string | null;
             };
             header?: never;
             path?: never;

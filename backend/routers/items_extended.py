@@ -46,6 +46,7 @@ def get_item_pockets(
                     identifier=item.name.lower().replace(" ", "-"),
                     name=item.name,
                     short_effect=item.item_effect.short_effect if item.item_effect else None,
+                    is_holdable=bool(item.is_holdable),
                 )
                 for item in cat.items
             ]

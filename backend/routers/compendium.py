@@ -34,7 +34,9 @@ def get_items(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = Query(default=100, lte=1000),
-    search: Optional[str] = None
+    search: Optional[str] = None,
+    holdable: Optional[bool] = None,
+    sort: Optional[str] = None,
 ):
     query = db.query(models.Item).options(
         joinedload(models.Item.item_effect),
@@ -42,6 +44,11 @@ def get_items(
     )
     if search:
         query = query.filter(models.Item.name.ilike(f"%{search}%"))
+    if holdable is not None:
+        query = query.filter(models.Item.is_holdable == holdable)
+    if sort == "name":
+        query = query.order_by(models.Item.name.asc(), models.Item.id.asc())
+
     items = query.offset(skip).limit(limit).all()
     return [
         schemas.ItemResponse(
@@ -51,6 +58,7 @@ def get_items(
             short_effect=item.item_effect.short_effect if item.item_effect else None,
             sprite_url=item.sprite_url,
             category=item.category or (item.item_category.name if item.item_category else "General"),
+            is_holdable=bool(item.is_holdable),
         )
         for item in items
     ]
@@ -75,4 +83,5 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
         short_effect=item.item_effect.short_effect if item.item_effect else None,
         sprite_url=item.sprite_url,
         category=item.category or (item.item_category.name if item.item_category else "General"),
+        is_holdable=bool(item.is_holdable),
     )

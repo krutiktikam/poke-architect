@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Boolean, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Boolean, Text, text
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from datetime import datetime
 from backend.database import Base
@@ -103,6 +103,7 @@ class Item(Base):
     sprite_url = Column(String, nullable=True)
     category = Column(String)
     category_id = Column(Integer, ForeignKey("item_categories.id"), nullable=True)
+    is_holdable = Column(Boolean, nullable=False, default=False, server_default=text("false"))
 
     item_category = relationship("ItemCategory", back_populates="items")
     berry = relationship("Berry", back_populates="item", uselist=False)

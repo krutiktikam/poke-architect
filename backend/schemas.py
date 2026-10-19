@@ -134,6 +134,7 @@ class ItemResponse(BaseModel):
     short_effect: Optional[str] = None
     sprite_url: Optional[str] = None
     category: Optional[str] = "General"
+    is_holdable: bool = False
 
     class Config:
         from_attributes = True
@@ -317,6 +318,7 @@ class PocketItemSchema(BaseModel):
     identifier: Optional[str] = None
     name: str
     short_effect: Optional[str] = None
+    is_holdable: bool = False
 
     class Config:
         from_attributes = True

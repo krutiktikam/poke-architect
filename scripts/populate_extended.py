@@ -84,6 +84,7 @@ STAGE_DEPENDENCY_ORDER: List[str] = [
     "reference",
     "pockets",
     "items",
+    "item_flags",
     "item_effects",
     "berries",
     "locations",
@@ -122,6 +123,10 @@ STAGE_REQUIRED_CSVS: Dict[str, List[str]] = {
     ],
     "items": [
         "items.csv",
+    ],
+    "item_flags": [
+        "item_flags.csv",
+        "item_flag_map.csv",
     ],
     "item_effects": [
         "item_prose.csv",
@@ -756,6 +761,92 @@ def populate_items(
         items_to_upsert,
         conflict_cols=["id"],
         update_cols=["category_id"],
+    )
+
+    if dry_run:
+        session.flush()
+    else:
+        session.commit()
+    return counts
+
+
+def populate_item_flags(
+    session: Session,
+    csv_dir: Optional[str] = None,
+    ref: str = DEFAULT_REF,
+    dry_run: bool = False,
+    orphan_counts: Optional[Dict[str, int]] = None,
+) -> Dict[str, int]:
+    """
+    Populates items.is_holdable from item_flags.csv and item_flag_map.csv.
+    Marks items with flag 'holdable-active' or 'holdable-passive' as is_holdable=True.
+    Skips orphan item_ids not found in items and tracks the orphan count.
+    Upsert-based and idempotent.
+    """
+    logger.info("Executing stage: populate_item_flags")
+    counts: Dict[str, int] = {}
+
+    # Prerequisite: items table must not be empty
+    items_count = session.execute(select(func.count(Item.id))).scalar() or 0
+    if items_count == 0:
+        raise RuntimeError(
+            "Prerequisite missing: items table is empty. Please run populate_items first."
+        )
+
+    valid_items = session.execute(select(Item.id, Item.name)).all()
+    valid_item_ids: Set[int] = {row[0] for row in valid_items}
+
+    # Load item_flags.csv to identify holdable flag IDs (holdable-active, holdable-passive)
+    flags_csv = get_csv_path("item_flags.csv", csv_dir=csv_dir, ref=ref)
+    flag_rows = read_csv_rows(flags_csv, required_columns=["id", "identifier"])
+    target_flag_ids: Set[int] = {
+        int(r["id"])  # type: ignore[arg-type]
+        for r in flag_rows
+        if r.get("id") and r.get("identifier") in ("holdable-active", "holdable-passive")
+    }
+
+    # Load item_flag_map.csv
+    map_csv = get_csv_path("item_flag_map.csv", csv_dir=csv_dir, ref=ref)
+    map_rows = read_csv_rows(map_csv, required_columns=["item_id", "item_flag_id"])
+
+    holdable_item_ids: Set[int] = set()
+    orphan_key = "item_flags: missing item_id in items"
+
+    for r in map_rows:
+        raw_item_id = r.get("item_id")
+        raw_flag_id = r.get("item_flag_id")
+        if not raw_item_id or not raw_flag_id:
+            continue
+
+        try:
+            item_id = int(raw_item_id)
+            flag_id = int(raw_flag_id)
+        except (ValueError, TypeError):
+            continue
+
+        if flag_id in target_flag_ids:
+            if item_id not in valid_item_ids:
+                if orphan_counts is not None:
+                    orphan_counts[orphan_key] = orphan_counts.get(orphan_key, 0) + 1
+            else:
+                holdable_item_ids.add(item_id)
+
+    # Upsert is_holdable for all items to guarantee idempotency and full synchronization
+    items_to_upsert: List[Dict[str, Any]] = [
+        {
+            "id": item_id,
+            "name": item_name,
+            "is_holdable": (item_id in holdable_item_ids),
+        }
+        for item_id, item_name in valid_items
+    ]
+
+    counts["item_flags"] = upsert(
+        session,
+        Item,
+        items_to_upsert,
+        conflict_cols=["id"],
+        update_cols=["is_holdable"],
     )
 
     if dry_run:
@@ -1659,6 +1750,7 @@ def run_pipeline(
         "reference": populate_reference,
         "pockets": populate_item_categories_and_pockets,
         "items": populate_items,
+        "item_flags": populate_item_flags,
         "item_effects": populate_item_effects,
         "berries": populate_berries,
         "locations": populate_locations_and_areas,
@@ -1838,6 +1930,11 @@ def main() -> None:
         help="Ingest missing items and category mappings",
     )
     parser.add_argument(
+        "--item-flags",
+        action="store_true",
+        help="Ingest item holdable flags from item_flags.csv and item_flag_map.csv",
+    )
+    parser.add_argument(
         "--item-effects",
         action="store_true",
         help="Ingest item short effects and detailed prose",
@@ -1910,6 +2007,8 @@ def main() -> None:
             stages.append("pockets")
         if args.items:
             stages.append("items")
+        if args.item_flags:
+            stages.append("item_flags")
         if args.item_effects:
             stages.append("item_effects")
         if args.berries:
