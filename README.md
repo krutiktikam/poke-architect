@@ -150,8 +150,8 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id
    # Ingest full canonical dataset (all 12+ entities) from PokeAPI/Veekun CSVs:
    python scripts/populate_extended.py --all --ref master
 
-   # Populate item holdable flags (dry-run first to preview changes safely):
-   python scripts/populate_extended.py --item-flags --dry-run
+   # Populate item holdable flags (dry-run with diff report to preview changes safely):
+   python scripts/populate_extended.py --item-flags --dry-run --item-flags-report diff.csv
 
    # Ingest/update item holdable flags against target database:
    python scripts/populate_extended.py --item-flags
@@ -159,6 +159,10 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id
    # Or run specific stages individually:
    python scripts/populate_extended.py --stages items,item_flags,item_effects,berries,locations,encounters,evolutions
    ```
+   > [!NOTE]
+   > **Held-Item Picker Definition (`is_holdable`)**: In PokéArchitect, `is_holdable` means "worth offering in a held-item picker" (items with tactical/combat effects in battle), rather than PokéAPI's bag-attachment flag. The rule evaluates:
+   > `rule = (holdable-active/passive OR category in INCLUDE set OR forced-include) - forced-exclude - (ball / medicine / key pockets)`
+
    > [!WARNING]
    > Ingestion commands write directly to whatever database `DATABASE_URL` points at in your environment or `backend/.env`. Always verify your active connection target and execute with `--dry-run` first before modifying production databases.
 

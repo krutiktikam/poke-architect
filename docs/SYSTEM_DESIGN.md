@@ -156,18 +156,38 @@ reference -> pockets -> items -> item_flags -> item_effects -> berries -> locati
 ```
 
 ### Item Holdable Ingestion Stage (`populate_item_flags`)
-- **Source Tables**: Ingests `item_flags.csv` and `item_flag_map.csv`.
-- **Rule Criteria**: Items are flagged as `is_holdable = True` if linked to flag identifier `holdable-active` or `holdable-passive`. This accurately includes in-battle competitive held items (Leftovers, Life Orb, Choice Scarf, Sitrus Berry) while excluding non-combat holdables (Master Ball, Potion).
-- **Integrity & Idempotence**: Verifies prerequisite `items` are present, skips unmapped item IDs with clear warnings, and batch updates `Item.is_holdable` idempotently.
-- **Commands**:
+- **Definition of `is_holdable`**: In PokéArchitect, `is_holdable` strictly denotes an item that is **"worth offering in a held-item picker"**—meaning it provides an active, passive, or tactical battle effect when held by a Pokémon during combat. This deliberately distinguishes it from PokéAPI's native `holdable` flag, which merely denotes bag-level attachability (and inappropriately includes Poké Balls and Potions while omitting battle berries and modern post-Gen 4 held items).
+- **Rule Formulation**:
+  ```text
+  rule = (flag holdable-active/passive OR category in INCLUDE set OR forced-include)
+         - forced-exclude
+         - (ball / medicine / key-item pockets)
+  ```
+- **Included Categories**:
+  - `held-items` (Assault Vest, Heavy-Duty Boots, Booster Energy, Rocky Helmet, Eviolite, etc.)
+  - `choice` (Choice Band, Choice Scarf, Choice Specs)
+  - `bad-held-items` (Flame Orb, Toxic Orb, Iron Ball, Sticky Barb)
+  - `plates` (Flame Plate, Pixie Plate, etc.)
+  - `species-specific` (Light Ball, Thick Club, Soul Dew, Drives, Rusted Sword/Shield)
+  - `type-enhancement` (Black Belt, Charcoal, Magnet, Mystic Water, etc.)
+  - `jewels` (Fire Gem, Normal Gem, etc.)
+  - `mega-stones` (Charizardite X, Gengarite, etc.)
+  - `memories` (Silvally RKS memory drives)
+  - Combat berry categories in the `berries` pocket: `medicine` (Lum, Sitrus, Oran), `other` (Kee, Maranga, Enigma), `in-a-pinch` (Liechi, Salac, Custap), `picky-healing` (Figy, Wiki), `type-protection` (Yache, Chople, Roseli).
+- **Excluded Pockets**: `pokeballs`, `medicine`, `key`.
+- **Explicit Overrides**:
+  - `HELD_ITEM_FORCED_EXCLUDE`: Non-battle training items (`exp-share`, `lucky-egg`, `amulet-coin`, `soothe-bell`, `everstone`, etc.), contest scarves (`red-scarf`, etc.), form-change nectars, and Wonder Launcher items (`pass-orb`).
+  - `HELD_ITEM_FORCED_INCLUDE`: Individual battle-relevant overrides if any items reside in non-standard categories.
+- **Reporting & Dry-Run**:
+  The stage supports generating a diff CSV of all items changing state:
   ```bash
   # Step 1: Run migration
   alembic -c backend/alembic.ini upgrade head
 
-  # Step 2: Validate with dry-run
-  python scripts/populate_extended.py --item-flags --dry-run
+  # Step 2: Validate with dry-run and write audit diff report
+  python scripts/populate_extended.py --item-flags --dry-run --item-flags-report diff.csv
 
-  # Step 3: Populate database
+  # Step 3: Populate target database
   python scripts/populate_extended.py --item-flags
   ```
   > [!WARNING]

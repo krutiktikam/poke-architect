@@ -32,7 +32,7 @@ dotenv.load_dotenv = _safe_load_dotenv
 
 # Import database, models, and FastAPI app
 from backend.database import Base, engine, SessionLocal, get_db  # noqa: E402
-from backend.models import Pokemon, Move, TypeEfficacy, Nature, Item, ItemPocket, ItemCategory, ItemEffect  # noqa: E402
+from backend.models import Pokemon, Move, TypeEfficacy, Nature, Item, ItemPocket, ItemCategory  # noqa: E402
 from backend.main import app  # noqa: E402
 
 # 2. Guard: Fail the run if the engine URL is not SQLite

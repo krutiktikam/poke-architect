@@ -40,7 +40,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
-from backend.database import SessionLocal, engine
+from backend.database import SessionLocal
 from backend.models import (
     Berry,
     BerryFirmness,
@@ -127,6 +127,9 @@ STAGE_REQUIRED_CSVS: Dict[str, List[str]] = {
     "item_flags": [
         "item_flags.csv",
         "item_flag_map.csv",
+        "item_categories.csv",
+        "item_pockets.csv",
+        "items.csv",
     ],
     "item_effects": [
         "item_prose.csv",
@@ -770,17 +773,81 @@ def populate_items(
     return counts
 
 
+# ==========================================
+# Item Held-Effect Rule Configuration
+# ==========================================
+
+# Pockets whose items cannot be held items in battle
+HELD_ITEM_EXCLUDED_POCKETS: Set[str] = {
+    "pokeballs",  # Standard and special capture balls
+    "medicine",   # Potions, vitamins, status cures, recovery items
+    "key",        # Story, event, and progression key items
+}
+
+# Categories whose items are considered held items
+HELD_ITEM_INCLUDE_CATEGORIES: Set[str] = {
+    "held-items",         # Core competitive held items (Assault Vest, Boots, etc.)
+    "choice",             # Choice Band, Scarf, Specs
+    "bad-held-items",     # Toxic Orb, Flame Orb, Iron Ball, Sticky Barb
+    "plates",             # Arceus plates and type damage boosters
+    "species-specific",   # Light Ball, Thick Club, Soul Dew, Drives, Rusted Sword/Shield
+    "type-enhancement",   # Black Belt, Charcoal, Magnet, Mystic Water, etc.
+    "jewels",             # Type-boosting battle gems (Normal Gem, etc.)
+    "mega-stones",        # Mega Evolution stones (Charizardite X, etc.)
+    "memories",           # Silvally RKS memory drives
+    # Combat berries in the 'berries' pocket (triggered in-battle on status/HP threshold)
+    "medicine",           # Lum Berry, Sitrus Berry, Oran Berry, etc. (in 'berries' pocket)
+    "other",              # Kee Berry, Maranga Berry, Enigma Berry, Rowap, Jaboca
+    "in-a-pinch",         # Liechi, Salac, Petaya, Custap, etc.
+    "picky-healing",      # Figy, Wiki, Mago, Aguav, Iapapa
+    "type-protection",    # Occa, Passho, Yache, Chople, Roseli, etc.
+}
+
+# Explicit overrides:
+# Force-included items by identifier:
+HELD_ITEM_FORCED_INCLUDE: Set[str] = set()
+
+# Force-excluded items by identifier:
+HELD_ITEM_FORCED_EXCLUDE: Set[str] = {
+    # Non-battle training and utility items (carry legacy holdable-active flag in Gen 2-5)
+    "exp-share",
+    "soothe-bell",
+    "amulet-coin",
+    "cleanse-tag",
+    "everstone",
+    "lucky-egg",
+    "luck-incense",
+    "pure-incense",
+    # Contest condition scarves (carry holdable-active flag, no battle effect)
+    "red-scarf",
+    "blue-scarf",
+    "pink-scarf",
+    "green-scarf",
+    "yellow-scarf",
+    # Form-change nectar consumables (in species-specific category)
+    "red-nectar",
+    "yellow-nectar",
+    "pink-nectar",
+    "purple-nectar",
+    # Wonder Launcher battle item
+    "pass-orb",
+}
+
+
 def populate_item_flags(
     session: Session,
     csv_dir: Optional[str] = None,
     ref: str = DEFAULT_REF,
     dry_run: bool = False,
     orphan_counts: Optional[Dict[str, int]] = None,
+    report_path: Optional[str] = None,
 ) -> Dict[str, int]:
     """
-    Populates items.is_holdable from item_flags.csv and item_flag_map.csv.
-    Marks items with flag 'holdable-active' or 'holdable-passive' as is_holdable=True.
+    Populates items.is_holdable based on:
+    rule = flag holdable-active/passive OR category in the INCLUDE set OR forced-include,
+           minus forced-exclude, minus the ball / medicine / key-item pockets.
     Skips orphan item_ids not found in items and tracks the orphan count.
+    Writes a diff report CSV if report_path is specified.
     Upsert-based and idempotent.
     """
     logger.info("Executing stage: populate_item_flags")
@@ -793,7 +860,9 @@ def populate_item_flags(
             "Prerequisite missing: items table is empty. Please run populate_items first."
         )
 
-    valid_items = session.execute(select(Item.id, Item.name)).all()
+    valid_items = session.execute(
+        select(Item.id, Item.name, Item.category_id, Item.category, Item.is_holdable)
+    ).all()
     valid_item_ids: Set[int] = {row[0] for row in valid_items}
 
     # Load item_flags.csv to identify holdable flag IDs (holdable-active, holdable-passive)
@@ -809,7 +878,7 @@ def populate_item_flags(
     map_csv = get_csv_path("item_flag_map.csv", csv_dir=csv_dir, ref=ref)
     map_rows = read_csv_rows(map_csv, required_columns=["item_id", "item_flag_id"])
 
-    holdable_item_ids: Set[int] = set()
+    flagged_item_ids: Set[int] = set()
     orphan_key = "item_flags: missing item_id in items"
 
     for r in map_rows:
@@ -829,17 +898,119 @@ def populate_item_flags(
                 if orphan_counts is not None:
                     orphan_counts[orphan_key] = orphan_counts.get(orphan_key, 0) + 1
             else:
-                holdable_item_ids.add(item_id)
+                flagged_item_ids.add(item_id)
 
-    # Upsert is_holdable for all items to guarantee idempotency and full synchronization
-    items_to_upsert: List[Dict[str, Any]] = [
-        {
+    # Load item_pockets.csv
+    pockets_csv = get_csv_path("item_pockets.csv", csv_dir=csv_dir, ref=ref)
+    pocket_rows = read_csv_rows(pockets_csv, required_columns=["id", "identifier"])
+    pockets_map: Dict[int, str] = {
+        int(r["id"]): r["identifier"]  # type: ignore[arg-type]
+        for r in pocket_rows
+        if r.get("id") and r.get("identifier")
+    }
+
+    # Load item_categories.csv
+    categories_csv = get_csv_path("item_categories.csv", csv_dir=csv_dir, ref=ref)
+    category_rows = read_csv_rows(categories_csv, required_columns=["id", "identifier", "pocket_id"])
+    categories_map: Dict[int, Tuple[str, str]] = {}
+    for r in category_rows:
+        cid_raw = r.get("id")
+        c_ident = r.get("identifier")
+        pid_raw = r.get("pocket_id")
+        if cid_raw and c_ident:
+            try:
+                cid = int(cid_raw)
+                pid = int(pid_raw) if pid_raw else None
+                pocket_name = pockets_map.get(pid, "") if pid else ""
+                categories_map[cid] = (c_ident, pocket_name)
+            except ValueError:
+                continue
+
+    # Load items.csv to resolve category_id and identifier for every item
+    items_csv = get_csv_path("items.csv", csv_dir=csv_dir, ref=ref)
+    items_rows = read_csv_rows(items_csv, required_columns=["id", "identifier", "category_id"])
+    items_csv_map: Dict[int, Tuple[str, int]] = {}
+    for r in items_rows:
+        raw_id = r.get("id")
+        raw_ident = r.get("identifier")
+        raw_cid = r.get("category_id")
+        if raw_id and raw_ident:
+            try:
+                items_csv_map[int(raw_id)] = (raw_ident, int(raw_cid) if raw_cid else 0)
+            except ValueError:
+                continue
+
+    diff_report_rows: List[Dict[str, Any]] = []
+    items_to_upsert: List[Dict[str, Any]] = []
+
+    for item_id, item_name, db_cid, db_cat, old_is_holdable in valid_items:
+        csv_info = items_csv_map.get(item_id)
+        identifier = csv_info[0] if csv_info else item_name
+        cat_id = db_cid if db_cid is not None else (csv_info[1] if csv_info else None)
+
+        cat_info = categories_map.get(cat_id) if cat_id else None
+        cat_ident = cat_info[0] if cat_info else (db_cat or "")
+        pocket_ident = cat_info[1] if cat_info else ""
+
+        has_flag = item_id in flagged_item_ids
+        is_forced_exclude = identifier in HELD_ITEM_FORCED_EXCLUDE
+        is_forced_include = identifier in HELD_ITEM_FORCED_INCLUDE
+        is_excluded_pocket = pocket_ident in HELD_ITEM_EXCLUDED_POCKETS
+        is_include_category = cat_ident in HELD_ITEM_INCLUDE_CATEGORIES
+
+        # rule = flag holdable-active/passive OR category in the INCLUDE set OR forced-include,
+        # minus forced-exclude, minus the ball / medicine / key-item pockets.
+        if is_forced_exclude:
+            new_is_holdable = False
+            reason = "override"
+        elif is_excluded_pocket and not is_forced_include:
+            new_is_holdable = False
+            reason = "override"
+        elif is_forced_include:
+            new_is_holdable = True
+            reason = "override"
+        elif is_include_category:
+            new_is_holdable = True
+            reason = "category"
+        elif has_flag:
+            new_is_holdable = True
+            reason = "flag"
+        else:
+            new_is_holdable = False
+            reason = "default"
+
+        items_to_upsert.append({
             "id": item_id,
             "name": item_name,
-            "is_holdable": (item_id in holdable_item_ids),
-        }
-        for item_id, item_name in valid_items
-    ]
+            "is_holdable": new_is_holdable,
+        })
+
+        if bool(old_is_holdable) != new_is_holdable:
+            diff_report_rows.append({
+                "item_id": item_id,
+                "identifier": identifier,
+                "name": item_name,
+                "category": cat_ident,
+                "old": bool(old_is_holdable),
+                "new": new_is_holdable,
+                "reason": reason,
+            })
+
+    if report_path:
+        report_dir = os.path.dirname(os.path.abspath(report_path))
+        if report_dir:
+            os.makedirs(report_dir, exist_ok=True)
+        diff_report_rows.sort(key=lambda r: r["item_id"])
+        with open(report_path, "w", newline="", encoding="utf-8") as f:
+            fieldnames = ["item_id", "identifier", "name", "category", "old", "new", "reason"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(diff_report_rows)
+        logger.info(
+            "Wrote item flags diff report with %d changes to %s",
+            len(diff_report_rows),
+            report_path,
+        )
 
     counts["item_flags"] = upsert(
         session,
@@ -1738,6 +1909,7 @@ def run_pipeline(
     csv_dir: Optional[str] = None,
     ref: str = DEFAULT_REF,
     dry_run: bool = False,
+    item_flags_report: Optional[str] = None,
 ) -> Tuple[Dict[str, int], Dict[str, int]]:
     """
     Executes stages in dependency order, tracks counts and orphans, and manages dry-run rollback.
@@ -1763,13 +1935,15 @@ def run_pipeline(
     for stage_name in STAGE_DEPENDENCY_ORDER:
         if stage_name in stages:
             fn = stage_dispatch[stage_name]
-            stage_results = fn(
-                session,
-                csv_dir=csv_dir,
-                ref=ref,
-                dry_run=dry_run,
-                orphan_counts=orphan_counts,
-            )
+            kwargs: Dict[str, Any] = {
+                "csv_dir": csv_dir,
+                "ref": ref,
+                "dry_run": dry_run,
+                "orphan_counts": orphan_counts,
+            }
+            if stage_name == "item_flags" and item_flags_report:
+                kwargs["report_path"] = item_flags_report
+            stage_results = fn(session, **kwargs)
             table_counts.update(stage_results)
 
     if dry_run:
@@ -1977,6 +2151,12 @@ def main() -> None:
         help="Git commit SHA, tag, or branch in PokeAPI/pokeapi (default: master)",
     )
     parser.add_argument(
+        "--item-flags-report",
+        type=str,
+        default=None,
+        help="Path to write a diff CSV of item flags changes (works with --dry-run)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Execute pipeline and count rows, then roll back without committing",
@@ -2039,6 +2219,7 @@ def main() -> None:
             csv_dir=args.csv_dir,
             ref=args.ref,
             dry_run=args.dry_run,
+            item_flags_report=args.item_flags_report,
         )
         print_summary_table(table_counts, orphan_counts, dry_run=args.dry_run)
         print_row_count_summary(session)

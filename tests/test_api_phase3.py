@@ -16,8 +16,8 @@ import os
 from contextlib import contextmanager
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, event, func, select, text
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy import create_engine, event, text
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from backend.database import Base, get_db
@@ -25,26 +25,9 @@ import backend.http_cache as http_cache
 import backend.routers.meta as meta_router
 from backend.main import app
 from backend.models import (
-    DataMeta,
     Encounter,
-    EncounterCondition,
-    EncounterConditionValue,
-    encounter_condition_value_map,
-    EncounterMethod,
-    Evolution,
-    EvolutionChain,
-    EvolutionTrigger,
-    Item,
-    ItemCategory,
-    ItemPocket,
-    Location,
-    LocationArea,
     Pokemon,
     PokemonSpecies,
-    Region,
-    Type,
-    Version,
-    VersionGroup,
 )
 from scripts.populate_extended import STAGE_DEPENDENCY_ORDER, run_pipeline
 

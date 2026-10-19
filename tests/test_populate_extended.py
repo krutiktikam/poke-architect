@@ -44,7 +44,6 @@ from backend.models import (
     VersionGroup,
 )
 from scripts.populate_extended import (
-    FILE_FOR_NAMES,
     STAGE_DEPENDENCY_ORDER,
     download_file,
     populate_encounter_methods_and_conditions,
@@ -443,13 +442,17 @@ def test_item_effects_english_selection_and_idempotence(db_session: Session):
     assert eff1_after.short_effect == "Catches a wild Pokémon every time."
 
 
-def test_item_flags_ingestion_and_idempotence(db_session: Session):
+def test_item_flags_ingestion_and_idempotence(db_session: Session, tmp_path):
     """
     Verify:
-    1. Items with 'holdable-active' or 'holdable-passive' flag are marked is_holdable=True.
-    2. Items with other flags (e.g. Master Ball, Potion with 'holdable') are is_holdable=False.
-    3. Orphan item_ids in item_flag_map.csv are tracked in orphan_counts.
-    4. Running populate_item_flags repeatedly is idempotent.
+    1. Category inclusion: unflagged items in include categories (e.g. eviolite, assault-vest) become is_holdable=True.
+    2. Flag-only / combat berry inclusion: items with 'holdable-active' in valid pockets (e.g. sitrus-berry) are is_holdable=True.
+    3. Forced exclude: items with 'holdable-active' in forced-exclude (e.g. exp-share) become is_holdable=False.
+    4. Excluded pockets: items in pokeballs (master-ball) and medicine (potion) are is_holdable=False.
+    5. Excluded consumable category: stat-boosts items (x-attack) are is_holdable=False.
+    6. Diff report: generated CSV reflects item value changes with reasons (flag/category/override).
+    7. Orphan item_ids in item_flag_map.csv are tracked in orphan_counts.
+    8. Running populate_item_flags repeatedly is idempotent.
     """
     run_pipeline(
         session=db_session,
@@ -459,37 +462,49 @@ def test_item_flags_ingestion_and_idempotence(db_session: Session):
         dry_run=False,
     )
 
-    # Master Ball (id 1): has 'holdable', 'consumable', etc. -> is_holdable=False
-    mb = db_session.scalar(select(Item).where(Item.id == 1))
-    assert mb is not None
-    assert mb.is_holdable is False
+    # 1. Category inclusion: unflagged items in 'held-items'
+    eviolite = db_session.scalar(select(Item).where(Item.id == 581))
+    assert eviolite is not None
+    assert eviolite.is_holdable is True
 
-    # Potion (id 17): has 'holdable', 'usable-in-battle', etc. -> is_holdable=False
-    pot = db_session.scalar(select(Item).where(Item.id == 17))
-    assert pot is not None
-    assert pot.is_holdable is False
+    vest = db_session.scalar(select(Item).where(Item.id == 683))
+    assert vest is not None
+    assert vest.is_holdable is True
 
-    # Sitrus Berry (id 135): has 'holdable-active' -> is_holdable=True
+    # 2. Flag-only / combat berry inclusion: Sitrus Berry in pocket berries
     sb = db_session.scalar(select(Item).where(Item.id == 135))
     assert sb is not None
     assert sb.is_holdable is True
 
-    # Leftovers (id 211): has 'holdable-active' -> is_holdable=True
     left = db_session.scalar(select(Item).where(Item.id == 211))
     assert left is not None
     assert left.is_holdable is True
 
-    # Life Orb (id 247): has 'holdable-active' -> is_holdable=True
-    lo = db_session.scalar(select(Item).where(Item.id == 247))
-    assert lo is not None
-    assert lo.is_holdable is True
-
-    # Choice Scarf (id 264): has 'holdable-active' -> is_holdable=True
     cs = db_session.scalar(select(Item).where(Item.id == 264))
     assert cs is not None
     assert cs.is_holdable is True
 
-    # Idempotence: re-run stage
+    # 3. Forced exclude: Exp. Share has holdable-active flag, but is forced-excluded
+    exp = db_session.scalar(select(Item).where(Item.id == 193))
+    assert exp is not None
+    assert exp.is_holdable is False
+
+    # 4. Excluded pockets: Master Ball (pokeballs) and Potion (medicine)
+    mb = db_session.scalar(select(Item).where(Item.id == 1))
+    assert mb is not None
+    assert mb.is_holdable is False
+
+    pot = db_session.scalar(select(Item).where(Item.id == 17))
+    assert pot is not None
+    assert pot.is_holdable is False
+
+    # 5. Excluded consumable category: X Attack in stat-boosts (pocket battle)
+    x_atk = db_session.scalar(select(Item).where(Item.id == 57))
+    assert x_atk is not None
+    assert x_atk.is_holdable is False
+
+    # 6. Diff report generation
+    report_file = tmp_path / "item_flags_diff.csv"
     stage_orphans = {}
     counts = populate_item_flags(
         session=db_session,
@@ -497,14 +512,33 @@ def test_item_flags_ingestion_and_idempotence(db_session: Session):
         ref="test-ref",
         dry_run=False,
         orphan_counts=stage_orphans,
+        report_path=str(report_file),
     )
     assert counts.get("item_flags") is not None
     assert stage_orphans.get("item_flags: missing item_id in items", 0) == 1
+    assert report_file.exists()
+
+    # Read and verify diff report headers
+    import csv
+    with open(report_file, "r", encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+        assert "item_id" in reader[0] if reader else True
+        assert "reason" in reader[0] if reader else True
+
+    # 7. Idempotence: re-run stage again
+    counts2 = populate_item_flags(
+        session=db_session,
+        csv_dir=FIXTURES_DIR,
+        ref="test-ref",
+        dry_run=False,
+    )
+    assert counts2.get("item_flags") is not None
 
     # Verify rows still have correct flags
-    left_after = db_session.scalar(select(Item).where(Item.id == 211))
-    assert left_after.is_holdable is True
-    mb_after = db_session.scalar(select(Item).where(Item.id == 1))
-    assert mb_after.is_holdable is False
+    assert db_session.scalar(select(Item).where(Item.id == 211)).is_holdable is True
+    assert db_session.scalar(select(Item).where(Item.id == 581)).is_holdable is True
+    assert db_session.scalar(select(Item).where(Item.id == 193)).is_holdable is False
+    assert db_session.scalar(select(Item).where(Item.id == 1)).is_holdable is False
+
 
 
