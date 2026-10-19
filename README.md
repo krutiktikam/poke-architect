@@ -150,9 +150,18 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id
    # Ingest full canonical dataset (all 12+ entities) from PokeAPI/Veekun CSVs:
    python scripts/populate_extended.py --all --ref master
 
+   # Populate item holdable flags (dry-run first to preview changes safely):
+   python scripts/populate_extended.py --item-flags --dry-run
+
+   # Ingest/update item holdable flags against target database:
+   python scripts/populate_extended.py --item-flags
+
    # Or run specific stages individually:
-   python scripts/populate_extended.py --stages items,berries,locations,encounters,evolutions
+   python scripts/populate_extended.py --stages items,item_flags,item_effects,berries,locations,encounters,evolutions
    ```
+   > [!WARNING]
+   > Ingestion commands write directly to whatever database `DATABASE_URL` points at in your environment or `backend/.env`. Always verify your active connection target and execute with `--dry-run` first before modifying production databases.
+
    > [!NOTE]
    > The pipeline automatically runs a preflight check to verify remote CSV URLs before opening database sessions, gracefully falls back to GitHub main/master refs, and uses dialect-specific upserts (PostgreSQL / SQLite) for idempotent re-runs.
 
@@ -163,6 +172,7 @@ VITE_GOOGLE_CLIENT_ID=your-google-client-id
 ### Backend
 - `python start.py` - Start the development server (FastAPI + Uvicorn)
 - `python scripts/populate_extended.py --all --ref master` - Run complete CSV ingestion pipeline
+- `python scripts/populate_extended.py --item-flags` - Ingest/update battle-holdable item flags (`is_holdable`)
 - `python -m pytest` - Run automated test suite (API Phase 3, ingestion unit & integration tests)
 - `pip install -r backend/requirements.txt` - Install backend Python dependencies
 - `alembic -c backend/alembic.ini upgrade head` - Apply database schema migrations
@@ -185,7 +195,7 @@ Interactive Swagger UI documentation is available at `/docs` when the backend is
 - `GET /api/pokemon/{id}/evolutions` - Full branching evolution chain, triggers (level, trade, item), and requirements
 - `GET /api/locations` - Paginated locations with region filtering (`limit`, `offset`, `region_id`)
 - `GET /api/locations/{id}` - Location details with location areas and wild encounter distributions
-- `GET /api/items/pockets` - Canonical item pockets containing grouped item categories and items
+- `GET /api/items/pockets` - Canonical item pockets containing grouped item categories and items (including `is_holdable` flag and short effect summary)
 - `GET /api/berries` - Full berry compendium with firmness, soil dryness, growth times, and flavor ratings
 - `GET /api/versions` - Game versions ordered by version group order and ID
 - `GET /api/regions` - World regions (Kanto, Johto, Hoenn, Sinnoh, Unova, Kalos, Alola, Galar, Paldea)
@@ -202,8 +212,8 @@ Interactive Swagger UI documentation is available at `/docs` when the backend is
 - `GET /api/natures/{id}` - Get specific nature details
 - `GET /api/abilities` - Get list of abilities with filtering
 - `GET /api/abilities/{id}` - Get specific ability details
-- `GET /api/items` - Get list of competitive items with filtering
-- `GET /api/items/{id}` - Get specific item details
+- `GET /api/items` - Get list of items with filtering (`?holdable=true|false`, `?sort=name`, pagination)
+- `GET /api/items/{id}` - Get specific item details (including `is_holdable` and `effect`)
 - `GET /api/analytics/global` - Get global statistics
 - `GET /api/analytics/export/pokemon` - Export Pokémon data as CSV
 - `GET /api/analytics/export/teams` - Export teams data as CSV
