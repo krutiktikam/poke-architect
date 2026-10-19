@@ -44,3 +44,7 @@ dist-ssr/
 .idea/
 *.swp
 *.swo
+
+.cache/
+frontend/test-results/
+frontend/playwright-report/
