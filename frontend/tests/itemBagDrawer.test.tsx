@@ -218,4 +218,21 @@ describe('ItemBagDrawer Component', () => {
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
+
+  it('filters items when onlyHoldable is true', async () => {
+    renderWithProviders(
+      <ItemBagDrawer
+        isOpen={true}
+        onClose={vi.fn()}
+        onlyHoldable={true}
+      />
+    );
+
+    await waitFor(() => {
+      // In item_pockets.json fixture, Shoal Salt has is_holdable: false or undefined
+      // When onlyHoldable is true, non-holdable items should not be displayed
+      expect(screen.queryByText(/^shoal salt$/i)).not.toBeInTheDocument();
+    });
+  });
 });
+

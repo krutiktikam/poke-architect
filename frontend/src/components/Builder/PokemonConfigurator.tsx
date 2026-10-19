@@ -32,11 +32,12 @@ const PokemonConfigurator = ({ pokemon }: PokemonConfiguratorProps) => {
   const { data: itemsData, isLoading: itemsLoading } = useQuery<
     Array<{ id: number; name: string }>
   >({
-    queryKey: ['items'],
+    queryKey: ['items', 'holdable'],
     queryFn: async () => {
-      const res = await axios.get(`${API_BASE_URL}/items`, {
-        params: { limit: 1000 }
-      });
+      const requestUrl = API_BASE_URL.endsWith('/api')
+        ? `${API_BASE_URL.replace(/\/api$/, '')}/api/items?holdable=true&sort=name&limit=300`
+        : `${API_BASE_URL}/api/items?holdable=true&sort=name&limit=300`;
+      const res = await axios.get<Array<{ id: number; name: string }>>(requestUrl);
       return res.data;
     }
   });

@@ -104,4 +104,27 @@ export const itemEffectQueryOptions = (itemId: number | null | undefined) => {
   });
 };
 
+export type ItemResponse = components['schemas']['ItemResponse'];
+
+/**
+ * Shared query options for Held Items (battle-relevant items only)
+ * Target URL: `${API_BASE_URL}/api/items?holdable=true&sort=name&limit=300`
+ */
+export const heldItemsQueryOptions = (limit = 300) => {
+  return queryOptions<ItemResponse[], Error>({
+    queryKey: buildEncyclopediaKey('items', 'holdable', limit),
+    queryFn: async () => {
+      const requestUrl = API_BASE_URL.endsWith('/api')
+        ? `${API_BASE_URL.replace(/\/api$/, '')}/api/items?holdable=true&sort=name&limit=${limit}`
+        : `${API_BASE_URL}/api/items?holdable=true&sort=name&limit=${limit}`;
+      const url = formatUrlWithDataVersion(requestUrl);
+      const response = await axios.get<ItemResponse[]>(url);
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 60, // 1 hour
+    gcTime: 1000 * 60 * 60 * 24 * 7, // 7 days
+  });
+};
+
+
 

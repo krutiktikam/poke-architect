@@ -20,6 +20,28 @@ export const handlers = [
   http.get('*/api/items/pockets', () => {
     return HttpResponse.json(itemPockets);
   }),
+  http.get('*/api/items', ({ request }) => {
+    const url = new URL(request.url);
+    const holdable = url.searchParams.get('holdable');
+    const sort = url.searchParams.get('sort');
+    const limit = Number(url.searchParams.get('limit') || '100');
+    let items = [
+      { id: 211, name: 'Leftovers', is_holdable: true, category: 'Held Items' },
+      { id: 247, name: 'Life Orb', is_holdable: true, category: 'Held Items' },
+      { id: 242, name: 'Choice Scarf', is_holdable: true, category: 'Held Items' },
+      { id: 1, name: 'Master Ball', is_holdable: false, category: 'Pokeballs' },
+      { id: 17, name: 'Potion', is_holdable: false, category: 'Medicine' },
+    ];
+    if (holdable === 'true') {
+      items = items.filter((i) => i.is_holdable);
+    } else if (holdable === 'false') {
+      items = items.filter((i) => !i.is_holdable);
+    }
+    if (sort === 'name') {
+      items.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return HttpResponse.json(items.slice(0, limit));
+  }),
   http.get('*/api/berries', () => {
     return HttpResponse.json(berries);
   }),

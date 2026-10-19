@@ -29,6 +29,7 @@ export interface ItemBagDrawerProps {
   onSelectItem?: (item: SelectedItemPayload) => void;
   selectedItemId?: number | null;
   title?: string;
+  onlyHoldable?: boolean;
 }
 
 interface FlatItemWithCategory extends PocketItemSchema {
@@ -194,6 +195,7 @@ export const ItemBagDrawer: React.FC<ItemBagDrawerProps> = ({
   onSelectItem,
   selectedItemId,
   title = 'Trainer Bag',
+  onlyHoldable = false,
 }) => {
   const [selectedPocketId, setSelectedPocketId] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState('');
@@ -223,6 +225,7 @@ export const ItemBagDrawer: React.FC<ItemBagDrawerProps> = ({
       pockets.forEach((pkt) => {
         pkt.categories.forEach((cat) => {
           cat.items.forEach((item) => {
+            if (onlyHoldable && !item.is_holdable) return;
             if (
               item.name.toLowerCase().includes(query) ||
               cat.name.toLowerCase().includes(query) ||
@@ -242,6 +245,7 @@ export const ItemBagDrawer: React.FC<ItemBagDrawerProps> = ({
       active.categories.forEach((cat) => {
         if (!selectedCategory || cat.name === selectedCategory) {
           cat.items.forEach((item) => {
+            if (onlyHoldable && !item.is_holdable) return;
             itemsToFilter.push({
               ...item,
               categoryName: cat.name,
@@ -259,7 +263,7 @@ export const ItemBagDrawer: React.FC<ItemBagDrawerProps> = ({
       filteredItems: itemsToFilter,
       totalMatches: itemsToFilter.length,
     };
-  }, [pockets, selectedPocketId, searchQuery, selectedCategory]);
+  }, [pockets, selectedPocketId, searchQuery, selectedCategory, onlyHoldable]);
 
   const handleSelect = (item: FlatItemWithCategory) => {
     if (onSelectItem) {
