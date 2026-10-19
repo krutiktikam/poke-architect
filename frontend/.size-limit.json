@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Main Application Bundle",
+    "path": "dist/assets/index-*.js",
+    "limit": "300 kB"
+  },
+  {
+    "name": "Evolution Tree Chunk",
+    "path": "dist/assets/EvolutionTree-*.js",
+    "limit": "15 kB"
+  },
+  {
+    "name": "Encounter Modal Chunk",
+    "path": "dist/assets/EncounterModal-*.js",
+    "limit": "15 kB"
+  },
+  {
+    "name": "Item Bag Drawer Chunk",
+    "path": "dist/assets/ItemBagDrawer-*.js",
+    "limit": "15 kB"
+  },
+  {
+    "name": "Berry Detail Chunk",
+    "path": "dist/assets/BerryDetail-*.js",
+    "limit": "15 kB"
+  }
+]
