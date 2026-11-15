@@ -16,6 +16,8 @@ Usage:
     python scripts/populate_extended.py --encounter-meta
     python scripts/populate_extended.py --encounters
     python scripts/populate_extended.py --evolutions
+    python scripts/populate_extended.py --learnsets  # Opt-in: requires pokemon & moves seeded first
+    python scripts/populate_extended.py --all --learnsets
     python scripts/populate_extended.py --all --dry-run
     python scripts/populate_extended.py --all --csv-dir /path/to/csvs
 """
@@ -25,11 +27,12 @@ import csv
 import logging
 import os
 import random
+import re
 import sys
 import time
 from collections import Counter
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Sequence, Set, Tuple
 
 # Ensure repository root is on sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -64,6 +67,8 @@ from backend.models import (
     LocationArea,
     Move,
     Pokemon,
+    PokemonMove,
+    PokemonMoveMethod,
     PokemonSpecies,
     Region,
     Type,
@@ -93,6 +98,11 @@ STAGE_DEPENDENCY_ORDER: List[str] = [
     "evolutions",
 ]
 
+# Learnsets is opt-in and excluded from STAGE_DEPENDENCY_ORDER / --all because it depends on
+# prerequisite tables (pokemon and moves) being seeded first by external scripts.
+OPT_IN_STAGES: List[str] = ["learnsets"]
+ALL_STAGES_ORDER: List[str] = STAGE_DEPENDENCY_ORDER + OPT_IN_STAGES
+
 FILE_FOR_NAMES: Dict[str, Tuple[str, str]] = {
     "encounter_methods": ("encounter_method_prose.csv", "encounter_method_id"),
     "evolution_triggers": ("evolution_trigger_prose.csv", "evolution_trigger_id"),
@@ -102,6 +112,10 @@ FILE_FOR_NAMES: Dict[str, Tuple[str, str]] = {
         "encounter_condition_value_id",
     ),
     "item_categories": ("item_category_prose.csv", "item_category_id"),
+    "pokemon_move_methods": (
+        "pokemon_move_method_prose.csv",
+        "pokemon_move_method_id",
+    ),
 }
 
 STAGE_REQUIRED_CSVS: Dict[str, List[str]] = {
@@ -165,7 +179,16 @@ STAGE_REQUIRED_CSVS: Dict[str, List[str]] = {
         "pokemon_species.csv",
         "pokemon_evolution.csv",
     ],
+    "learnsets": [
+        "pokemon_move_methods.csv",
+        FILE_FOR_NAMES["pokemon_move_methods"][0],
+        "pokemon_moves.csv",
+        "moves.csv",
+        "pokemon_species.csv",
+    ],
 }
+
+LEARNSET_CHUNK_SIZE: int = 2000
 
 logger = logging.getLogger("populate_extended")
 
@@ -1900,6 +1923,320 @@ def populate_evolution_chains(
 
 
 # ==========================================
+# Learnsets Helpers & Stage
+# ==========================================
+
+def _norm(s: Optional[str]) -> str:
+    """Lowercase and strip everything except [a-z0-9]."""
+    return re.sub(r"[^a-z0-9]", "", (s or "").lower())
+
+
+def _count_orphan(orphan_counts: Optional[Dict[str, int]], key: str) -> None:
+    """Safe increment when orphan_counts is not None."""
+    if orphan_counts is not None:
+        orphan_counts[key] = orphan_counts.get(key, 0) + 1
+
+
+def iter_csv_rows(
+    csv_path: str,
+    required_columns: Optional[Sequence[str]] = None,
+) -> Iterator[Dict[str, Optional[str]]]:
+    """
+    Streaming generator version of read_csv_rows (same normalization: strip, empty -> None,
+    same header validation errors). Suitable for large files like pokemon_moves.csv (~600k rows).
+    """
+    with open(csv_path, "r", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        if reader.fieldnames is None:
+            raise ValueError(
+                f"CSV file '{os.path.basename(csv_path)}' has missing or invalid header."
+            )
+
+        if required_columns:
+            missing = [c for c in required_columns if c not in reader.fieldnames]
+            if missing:
+                raise ValueError(
+                    f"CSV file '{os.path.basename(csv_path)}' is missing required column(s): {', '.join(missing)}"
+                )
+
+        for row in reader:
+            yield {
+                k: (v.strip() if v is not None and v.strip() != "" else None)
+                for k, v in row.items()
+            }
+
+
+def _check_id_alignment(
+    label: str,
+    db_names: Dict[int, str],
+    csv_idents: Dict[int, str],
+    max_mismatch_ratio: float = 0.02,
+) -> None:
+    """
+    Compare IDs present in both using _norm on names.
+    Raises RuntimeError if there is zero overlap or mismatch ratio > threshold.
+    Logs a warning with examples if there are mismatches within tolerance.
+    """
+    common_ids = set(db_names.keys()) & set(csv_idents.keys())
+    if not common_ids:
+        raise RuntimeError(
+            f"ID alignment check failed for {label}: zero overlapping IDs between database and CSV."
+        )
+
+    mismatches: List[str] = []
+    for cid in common_ids:
+        db_norm = _norm(db_names[cid])
+        csv_norm = _norm(csv_idents[cid])
+        if not (
+            db_norm
+            and csv_norm
+            and (
+                db_norm == csv_norm
+                or db_norm.startswith(csv_norm)
+                or csv_norm.startswith(db_norm)
+            )
+        ):
+            mismatches.append(f"ID {cid}: DB='{db_names[cid]}' vs CSV='{csv_idents[cid]}'")
+
+    mismatch_ratio = len(mismatches) / len(common_ids)
+    if mismatch_ratio > max_mismatch_ratio:
+        sample = "; ".join(mismatches[:10])
+        raise RuntimeError(
+            f"ID alignment check failed for {label}: mismatch ratio {mismatch_ratio:.4f} "
+            f"({len(mismatches)}/{len(common_ids)}) exceeds threshold {max_mismatch_ratio}. "
+            f"First {min(10, len(mismatches))} mismatches: {sample}"
+        )
+
+    if mismatches:
+        sample = "; ".join(mismatches[:10])
+        logger.warning(
+            "ID alignment minor mismatch for %s within tolerance (%d/%d, %.4f): %s",
+            label,
+            len(mismatches),
+            len(common_ids),
+            mismatch_ratio,
+            sample,
+        )
+    else:
+        logger.info(
+            "ID alignment verified for %s (%d IDs matched 100%%).",
+            label,
+            len(common_ids),
+        )
+
+
+def populate_learnsets(
+    session: Session,
+    csv_dir: Optional[str] = None,
+    ref: str = DEFAULT_REF,
+    dry_run: bool = False,
+    orphan_counts: Optional[Dict[str, int]] = None,
+) -> Dict[str, int]:
+    """
+    Populate move learn methods and per-version-group learnsets from PokéAPI CSVs.
+    """
+    logger.info("Executing stage: populate_learnsets")
+    counts: Dict[str, int] = {}
+
+    # 1. Prerequisite checks: Pokemon, Move, VersionGroup tables must be non-empty
+    has_pokemon = session.query(Pokemon.id).first() is not None
+    has_move = session.query(Move.id).first() is not None
+    has_vg = session.query(VersionGroup.id).first() is not None
+
+    missing_prereqs: List[str] = []
+    if not has_pokemon:
+        missing_prereqs.append("pokemon (run scripts/seed_database.py)")
+    if not has_move:
+        missing_prereqs.append("moves (run scripts/populate_moves_natures.py)")
+    if not has_vg:
+        missing_prereqs.append("version groups (run populate_extended.py with --reference)")
+
+    if missing_prereqs:
+        raise RuntimeError(
+            f"Prerequisite tables missing or empty: {'; '.join(missing_prereqs)}"
+        )
+
+    # 2. Upsert pokemon_move_methods from pokemon_move_methods.csv (columns id, identifier)
+    # with English names from prose csv (id col pokemon_move_method_id), fallback to identifier title-cased.
+    methods_csv = get_csv_path("pokemon_move_methods.csv", ref=ref, csv_dir=csv_dir)
+    prose_csv_name = FILE_FOR_NAMES["pokemon_move_methods"][0]
+    prose_csv = get_csv_path(prose_csv_name, ref=ref, csv_dir=csv_dir)
+
+    method_names = load_english_names(
+        prose_csv, id_col="pokemon_move_method_id", name_col="name"
+    )
+    raw_methods = read_csv_rows(methods_csv, required_columns=["id", "identifier"])
+    method_rows: List[Dict[str, Any]] = []
+    for r in raw_methods:
+        if not r.get("id") or not r.get("identifier"):
+            continue
+        try:
+            mid = int(r["id"])  # type: ignore[arg-type]
+        except ValueError:
+            continue
+        ident = r["identifier"]
+        name = method_names.get(mid) or ident.replace("-", " ").title()
+        method_rows.append({"id": mid, "identifier": ident, "name": name})
+
+    counts["pokemon_move_methods"] = upsert(
+        session,
+        PokemonMoveMethod,
+        method_rows,
+        conflict_cols=["id"],
+        update_cols=["identifier", "name"],
+    )
+
+    # 3. Alignment guards
+    moves_csv = get_csv_path("moves.csv", ref=ref, csv_dir=csv_dir)
+    species_csv = get_csv_path("pokemon_species.csv", ref=ref, csv_dir=csv_dir)
+
+    db_moves = {m.id: m.name for m in session.query(Move.id, Move.name).all()}
+    csv_moves_raw = read_csv_rows(moves_csv, required_columns=["id", "identifier"])
+    csv_moves = {
+        int(r["id"]): r["identifier"]  # type: ignore[arg-type]
+        for r in csv_moves_raw
+        if r.get("id") and r.get("identifier")
+    }
+    _check_id_alignment("moves", db_moves, csv_moves)
+
+    db_pokemon = {p.id: p.name for p in session.query(Pokemon.id, Pokemon.name).all()}
+    csv_species_raw = read_csv_rows(species_csv, required_columns=["id", "identifier"])
+    csv_species = {
+        int(r["id"]): r["identifier"]  # type: ignore[arg-type]
+        for r in csv_species_raw
+        if r.get("id") and r.get("identifier")
+    }
+    _check_id_alignment("pokemon", db_pokemon, csv_species)
+
+    # 4. Build valid sets
+    valid_pokemon_ids: Set[int] = {p.id for p in session.query(Pokemon.id).all()}
+    valid_move_ids: Set[int] = {m.id for m in session.query(Move.id).all()}
+    vg_generation: Dict[int, Optional[int]] = {
+        vg.id: vg.generation_id
+        for vg in session.query(VersionGroup.id, VersionGroup.generation_id).all()
+    }
+    method_ident: Dict[int, str] = {
+        pm.id: pm.identifier
+        for pm in session.query(PokemonMoveMethod.id, PokemonMoveMethod.identifier).all()
+    }
+
+    # 5. Stream pokemon_moves.csv
+    pm_csv = get_csv_path("pokemon_moves.csv", ref=ref, csv_dir=csv_dir)
+    batch_dict: Dict[Tuple[int, int, int, int, int], Dict[str, Any]] = {}
+    total_ingested = 0
+
+    for r in iter_csv_rows(
+        pm_csv,
+        required_columns=[
+            "pokemon_id",
+            "version_group_id",
+            "move_id",
+            "pokemon_move_method_id",
+            "level",
+        ],
+    ):
+        try:
+            pid = int(r["pokemon_id"])  # type: ignore[arg-type]
+            vgid = int(r["version_group_id"])  # type: ignore[arg-type]
+            mid = int(r["move_id"])  # type: ignore[arg-type]
+            pmid = int(r["pokemon_move_method_id"])  # type: ignore[arg-type]
+            lvl = int(r["level"]) if r.get("level") is not None else 0  # type: ignore[arg-type]
+            order_val = int(r["order"]) if r.get("order") is not None else None  # type: ignore[arg-type]
+        except (ValueError, TypeError):
+            _count_orphan(orphan_counts, "learnset: malformed row")
+            continue
+
+        if pid not in valid_pokemon_ids:
+            _count_orphan(
+                orphan_counts, "learnset: pokemon_id not in pokemon (forms unsupported)"
+            )
+            continue
+        if mid not in valid_move_ids:
+            _count_orphan(orphan_counts, "learnset: missing move_id")
+            continue
+        if vgid not in vg_generation:
+            _count_orphan(orphan_counts, "learnset: missing version_group_id")
+            continue
+        if pmid not in method_ident:
+            _count_orphan(orphan_counts, "learnset: missing method_id")
+            continue
+
+        row_dict = {
+            "pokemon_id": pid,
+            "version_group_id": vgid,
+            "move_id": mid,
+            "method_id": pmid,
+            "level": lvl,
+            "order": order_val,
+            "generation_id": vg_generation.get(vgid),
+            "learn_method": method_ident[pmid],
+        }
+
+        # 6. Accumulate in dict keyed by natural key tuple to de-duplicate within batch
+        key = (pid, vgid, mid, pmid, lvl)
+        batch_dict[key] = row_dict
+
+        if len(batch_dict) >= LEARNSET_CHUNK_SIZE:
+            inserted = upsert(
+                session,
+                PokemonMove,
+                list(batch_dict.values()),
+                conflict_cols=[
+                    "pokemon_id",
+                    "version_group_id",
+                    "move_id",
+                    "method_id",
+                    "level",
+                ],
+                update_cols=["generation_id", "learn_method", "order"],
+                chunk_size=LEARNSET_CHUNK_SIZE,
+            )
+            total_ingested += inserted
+            batch_dict.clear()
+
+    if batch_dict:
+        inserted = upsert(
+            session,
+            PokemonMove,
+            list(batch_dict.values()),
+            conflict_cols=[
+                "pokemon_id",
+                "version_group_id",
+                "move_id",
+                "method_id",
+                "level",
+            ],
+            update_cols=["generation_id", "learn_method", "order"],
+            chunk_size=LEARNSET_CHUNK_SIZE,
+        )
+        total_ingested += inserted
+        batch_dict.clear()
+
+    counts["pokemon_moves"] = total_ingested
+
+    # 7. Count legacy rows (version_group_id IS NULL)
+    legacy_count = (
+        session.query(PokemonMove)
+        .filter(PokemonMove.version_group_id.is_(None))
+        .count()
+    )
+    if legacy_count > 0:
+        logger.warning(
+            "Found %d legacy pokemon_moves rows (version_group_id IS NULL). The API ignores them. "
+            "To clean up manually, run: DELETE FROM pokemon_moves WHERE version_group_id IS NULL;",
+            legacy_count,
+        )
+
+    # 8. dry_run semantics
+    if dry_run:
+        session.flush()
+    else:
+        session.commit()
+
+    return counts
+
+
+# ==========================================
 # Orchestrator & CLI
 # ==========================================
 
@@ -1929,10 +2266,11 @@ def run_pipeline(
         "encounter_meta": populate_encounter_methods_and_conditions,
         "encounters": populate_encounters,
         "evolutions": populate_evolution_chains,
+        "learnsets": populate_learnsets,
     }
 
-    # Execute in strict dependency order
-    for stage_name in STAGE_DEPENDENCY_ORDER:
+    # Execute in strict dependency order (including any opt-in stages)
+    for stage_name in ALL_STAGES_ORDER:
         if stage_name in stages:
             fn = stage_dispatch[stage_name]
             kwargs: Dict[str, Any] = {
@@ -2048,6 +2386,8 @@ def print_row_count_summary(session: Session) -> None:
         "evolution_chains",
         "pokemon_species",
         "evolutions",
+        "pokemon_move_methods",
+        "pokemon_moves",
     ]
     print("\n" + "=" * 65)
     print(f"{'Per-Table Database Row-Count Summary':^65}")
@@ -2086,7 +2426,7 @@ def main() -> None:
     parser.add_argument(
         "--all",
         action="store_true",
-        help="Execute all ingestion pipelines in dependency sequence",
+        help="Execute all default ingestion pipelines in dependency sequence (excludes opt-in stages like --learnsets which require pokemon and moves seeded first)",
     )
     parser.add_argument(
         "--reference",
@@ -2137,6 +2477,11 @@ def main() -> None:
         "--evolutions",
         action="store_true",
         help="Ingest Evolution Chains, Species, and Evolution edges",
+    )
+    parser.add_argument(
+        "--learnsets",
+        action="store_true",
+        help="Ingest move learn methods and per-version-group learnsets",
     )
     parser.add_argument(
         "--csv-dir",
@@ -2201,6 +2546,11 @@ def main() -> None:
             stages.append("encounters")
         if args.evolutions:
             stages.append("evolutions")
+
+    # Handle opt-in stages (e.g. --learnsets) separately so --all --learnsets works,
+    # or --learnsets alone works.
+    if args.learnsets and "learnsets" not in stages:
+        stages.append("learnsets")
 
     if not stages:
         parser.print_help()
