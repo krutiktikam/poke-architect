@@ -47,9 +47,10 @@ const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ isOpen, onClose, 
           </div>
           <button 
             onClick={onClose}
+            aria-label="Close"
             className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl transition-all text-slate-400 hover:text-white border border-white/5"
           >
-            <X size={24} />
+            <X size={24} aria-hidden="true" />
           </button>
         </div>
 

@@ -55,7 +55,7 @@ const Builder = () => {
   return (
     <div className="flex h-[calc(100vh-80px)] overflow-hidden relative">
       {/* Main Content: Builder */}
-      <div className="flex-grow overflow-y-auto px-4 sm:px-6 py-8 relative z-10 custom-scrollbar">
+      <div className="flex-grow overflow-y-auto px-4 sm:px-6 pt-8 pb-[calc(8rem+env(safe-area-inset-bottom))] relative z-10 custom-scrollbar">
         <div className="max-w-7xl mx-auto">
           
           {/* Header Section */}
