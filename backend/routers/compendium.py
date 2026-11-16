@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api", tags=["compendium"])
 def get_abilities(
     db: Session = Depends(get_db),
     skip: int = 0,
-    limit: int = Query(default=100, lte=1000),
+    limit: int = Query(default=100, le=1000),
     search: Optional[str] = None
 ):
     query = db.query(models.Ability)
@@ -33,7 +33,7 @@ def get_ability(ability_id: int, db: Session = Depends(get_db)):
 def get_items(
     db: Session = Depends(get_db),
     skip: int = 0,
-    limit: int = Query(default=100, lte=1000),
+    limit: int = Query(default=100, le=1000),
     search: Optional[str] = None,
     holdable: Optional[bool] = None,
     sort: Optional[str] = None,
