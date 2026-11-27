@@ -126,8 +126,8 @@ const Community = () => {
                     )}
                     COMPARE TEAMS
                   </button>
-                  <button className="p-3 bg-slate-100 text-slate-400 rounded-xl hover:bg-slate-200 hover:text-slate-600 transition-all">
-                    <ChevronRight size={20} />
+                  <button aria-label="View team details" className="p-3 bg-slate-100 text-slate-400 rounded-xl hover:bg-slate-200 hover:text-slate-600 transition-all">
+                    <ChevronRight size={20} aria-hidden="true" />
                   </button>
                 </div>
               </div>

@@ -209,8 +209,8 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-[10px] font-black tracking-widest text-indigo-400 uppercase">Loadout Config</span>
-                <button onClick={() => setIsConfiguring(false)} className="text-slate-400 hover:text-white">
-                  <X size={14} />
+                <button onClick={() => setIsConfiguring(false)} aria-label="Close configurator" className="text-slate-400 hover:text-white">
+                  <X size={14} aria-hidden="true" />
                 </button>
               </div>
 
@@ -301,10 +301,11 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ pokemon, onAdd, isAdded, disa
               {!isAdded && !(disabled && isLegendary) && (
                 <button
                   onClick={() => setIsConfiguring(true)}
+                  aria-label="Configure loadout"
                   title="Configure Loadout"
                   className="p-3 bg-white/5 hover:bg-indigo-600/20 hover:text-indigo-300 text-white/40 rounded-2xl transition-all border border-white/5"
                 >
-                  <Settings2 size={16} />
+                  <Settings2 size={16} aria-hidden="true" />
                 </button>
               )}
             </>

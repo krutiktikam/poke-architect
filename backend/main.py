@@ -23,7 +23,7 @@ from .utils import (
     suggest_pokemon,
 )
 from . import auth, teams
-from .routers import compendium, encounters, evolutions, locations, items_extended, meta, moves, natures
+from .routers import compendium, encounters, evolutions, locations, items_extended, meta, moves, natures, pokemon_learnsets
 from .http_cache import HttpCacheMiddleware
 import json
 from fastapi.responses import JSONResponse
@@ -178,6 +178,7 @@ app.include_router(locations.router)
 app.include_router(meta.router)
 app.include_router(moves.router, prefix="/api")
 app.include_router(natures.router, prefix="/api")
+app.include_router(pokemon_learnsets.router)
 
 @app.get("/")
 def read_root():

@@ -239,9 +239,10 @@ const Profile = () => {
                           </button>
                           <button 
                             onClick={() => setEditingId(null)}
+                            aria-label="Cancel editing"
                             className="p-1.5 text-slate-400 hover:bg-slate-50 rounded-lg transition-all"
                           >
-                            <X size={18} />
+                            <X size={18} aria-hidden="true" />
                           </button>
                         </div>
                       ) : (
@@ -280,10 +281,11 @@ const Profile = () => {
                     <div className="flex gap-2">
                       <button 
                         onClick={() => handleEditTeam(team)}
+                        aria-label="Load team in builder"
                         className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                         title="Load in Builder"
                       >
-                        <Edit3 size={18} />
+                        <Edit3 size={18} aria-hidden="true" />
                       </button>
                       <button 
                         onClick={() => handleDeleteTeam(team.id)}
