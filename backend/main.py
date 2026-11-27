@@ -7,7 +7,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from .database import engine, get_db, Base, SessionLocal
-from .models import Pokemon, TypeEfficacy, Move, Nature, PokemonMove, Ability, Item, PokemonAbility
+from .models import Pokemon, TypeEfficacy, Move, Nature, PokemonMove, Ability, Item, PokemonAbility, User
+from .config import SECRET_KEY, get_allowed_origins
 from .schemas import PokemonBase, TeamAnalysisResponse, TeamComparisonResponse, MoveBase, NatureBase, PokemonMoveBase, AbilityResponse, PokemonAbilityBase, ItemResponse, TeamAnalysisRequest
 from .utils import (
     calculate_health_score,
@@ -33,49 +34,29 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Pokémon Team Architect API")
 
-# Robust CORS Configuration
-env_origins = os.getenv("ALLOWED_ORIGINS", "")
-origins = [o.strip() for o in env_origins.split(",") if o.strip()]
+# Explicit CORS Configuration (built-in defaults + ALLOWED_ORIGINS; wildcard '*' ignored)
+allowed_origins = get_allowed_origins()
+allowed_origins_set = set(allowed_origins)
 
-# If "*" is in origins, we use allow_origin_regex to bypass FastAPI's credential restriction
-if "*" in origins:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origin_regex=".*",
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["*", "ETag", "Cache-Control"]
-    )
-else:
-    # If the list is empty we use a sensible default that includes the deployed Vercel site and localhost.
-    if not origins:
-        origins = [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "https://poke-architect.vercel.app",
-        ]
-
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_origin_regex=r"https://poke-architect-.*\.vercel\.app",
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["*", "ETag", "Cache-Control"]
-    )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*", "ETag", "Cache-Control"]
+)
 
 # Log the final list of allowed origins – useful for debugging startup.
-logger.info(f"CORS allowed origins: {origins if origins else '*'}")
+logger.info("CORS allowed origins: %s", allowed_origins)
 
 # HTTP Caching Middleware for encyclopedia GET endpoints
 app.add_middleware(HttpCacheMiddleware)
 
 # Session Middleware
 app.add_middleware(
-    SessionMiddleware, 
-    secret_key=os.getenv("SECRET_KEY", "your-session-secret-change-it")
+    SessionMiddleware,
+    secret_key=SECRET_KEY
 )
 
 @app.on_event("startup")
@@ -152,28 +133,27 @@ async def startup_event():
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
-    import traceback
-    error_msg = str(exc)
-    print(f"GLOBAL ERROR: {error_msg}")
-    print(traceback.format_exc())
-    
+    logger.exception(
+        "Unhandled exception during %s %s",
+        request.method,
+        request.url.path,
+        exc_info=exc,
+    )
+
     response = JSONResponse(
         status_code=500,
-        content={
-            "detail": "Internal Server Error", 
-            "error": error_msg,
-            "type": type(exc).__name__
-        },
+        content={"detail": "Internal Server Error"},
     )
-    
-    # MANUALLY add CORS headers to error responses to prevent "No Access-Control-Allow-Origin"
+
+    # Echo Origin only if it is explicitly in the allowed origins
     origin = request.headers.get("origin")
-    if origin:
+    if origin and origin in allowed_origins_set:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"
-        
+        response.headers["Vary"] = "Origin"
+
     return response
 
 @app.get("/api/health")
@@ -226,10 +206,8 @@ def get_pokemon(
             query = query.filter(Pokemon.generation == generation)
         return query.limit(limit).all()
     except Exception as e:
-        import traceback
-        print(f"POKEMON ROUTE ERROR: {str(e)}")
-        print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
+        logger.exception("POKEMON ROUTE ERROR", exc_info=e)
+        raise HTTPException(status_code=500, detail="Database query failed")
 
 @app.get("/api/pokemon/batch", response_model=List[PokemonBase])
 def get_pokemon_batch(
@@ -433,8 +411,11 @@ def export_pokemon_csv(db: Session = Depends(get_db)):
     )
 
 @app.get("/api/analytics/export/teams")
-def export_teams_csv(db: Session = Depends(get_db)):
-    from .models import SavedTeam, User
+def export_teams_csv(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(auth.get_current_user),
+):
+    from .models import SavedTeam
     output = io.StringIO()
     writer = csv.writer(output)
     
@@ -443,27 +424,22 @@ def export_teams_csv(db: Session = Depends(get_db)):
         "pokemon_1", "pokemon_2", "pokemon_3", "pokemon_4", "pokemon_5", "pokemon_6"
     ])
     
-    teams_list = db.query(SavedTeam).all()
+    teams_list = db.query(SavedTeam).filter(SavedTeam.user_id == current_user.id).all()
     all_p = db.query(Pokemon.id, Pokemon.name).all()
     p_map = {p[0]: p[1] for p in all_p}
+    user_name = current_user.name or "Anonymous"
     
     for t in teams_list:
-        user_name = "Anonymous"
-        if t.user_id:
-            user_obj = db.query(User).filter(User.id == t.user_id).first()
-            if user_obj:
-                user_name = user_obj.name
-                
         try:
             p_ids = json.loads(t.team_data) if t.team_data else []
         except Exception:
             p_ids = []
             
-        p_names = [p_map.get(pid, "") for pid in p_ids]
+        p_names = [p_map.get(pid, "") for pid in p_ids[:6]]
         p_names += [""] * (6 - len(p_names))
         
         writer.writerow([
-            t.id, t.name or "Unnamed Team", t.user_id or "", user_name, t.created_at,
+            t.id, t.name or "Unnamed Team", current_user.id, user_name, t.created_at,
             p_names[0], p_names[1], p_names[2], p_names[3], p_names[4], p_names[5]
         ])
         

@@ -7,18 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- **Version-Group Learnset Storage**: Added `PokemonMoveMethod` model and extended `PokemonMove` with `version_group_id`, `method_id`, `level`, `order`, a composite index `ix_pokemon_moves_lookup`, and natural key constraint `uq_pokemon_moves_natural_key` (Alembic migration `0005_learnsets_by_version_group`).
-- **Learnset API Endpoint**: Added `GET /api/pokemon/{pokemon_id}/moves` endpoint with required `version_group` and optional `method` query parameters.
-- **Opt-In Ingestion Stage**: Added `--learnsets` pipeline stage in `scripts/populate_extended.py` to stream and batch upsert move learnsets from official PokéAPI CSVs (`pokemon_moves.csv`, `pokemon_move_methods.csv`, `pokemon_move_method_prose.csv`).
-- **Learnset Ingestion Test Suite**: Added `tests/test_learnsets_ingestion.py` covering happy path ingestion, idempotency, orphan tracking, duplicate natural keys de-duplication, prerequisite guards, and stage isolation.
-- **Architectural Decision Record**: Added `docs/adr/0001-learnsets-per-version-group.md` documenting context, schema decisions, and opt-in pipeline design.
-- **Migration Test Suite**: Added `tests/test_migrations.py` validating `upgrade head`, schema reflection via `compare_metadata` for `pokemon_moves` and `pokemon_move_methods`, and `downgrade -1` / `upgrade head` cycles on SQLite.
-- **Game-Aware Move Picker**: Added `frontend/src/api/learnsets.ts` hook `useLearnset` and updated `PokemonConfigurator.tsx` to group learnset moves by method (`Level-up` with "Lv N", `Machine`, `Egg`, `Tutor`, `Other`), de-duplicate moves, flag illegal moves as `⚠ <name> (not learnable in <game>)` without auto-clearing, and fall back to global moves with helpful status hints.
-- **Frontend Learnset Test Suite**: Added `frontend/tests/pokemonConfiguratorLearnset.test.tsx` verifying grouped learnsets, illegal move preservation, no-game global moves list, and fallback on empty/failed learnset queries.
-- **Accessibility Labels**: Added `aria-label` and `aria-hidden` attributes to interactive elements and icons across `Header.tsx`, `PokemonCard.tsx`, `Profile.tsx`, `AnalysisDashboard.tsx`, `CompareModal.tsx`, and `Community.tsx`.
-
-### Changed
-- **Pipeline Stage Isolation**: Excluded `learnsets` from `STAGE_DEPENDENCY_ORDER` and `--all` default execution. Learnsets is designated an opt-in stage via `OPT_IN_STAGES = ["learnsets"]`, allowing `--all` to run hermetically across test environments without requiring pre-seeded move and Pokémon tables.
-- **CLI Behavior**: Updated `--all` flag to run only self-contained stages, while `--all --learnsets` or `--learnsets` explicitly includes learnset ingestion.
-- **TeamDock Scroll Overlap Fix**: Updated `frontend/src/pages/Builder.tsx` scroll container with `pt-8 pb-[calc(8rem+env(safe-area-inset-bottom))]` to clear the fixed bottom `TeamDock`.
+### Security
+- **Centralized `SECRET_KEY` Enforcement**: Added `backend/config.py` to enforce a non-default `SECRET_KEY` when `RENDER` is set or `ENVIRONMENT=production` (raising `RuntimeError` at import), and generating an ephemeral `secrets.token_urlsafe(48)` key in local development. Removed hardcoded secret fallbacks from `backend/main.py` and `backend/auth.py`.
+- **Protected Team Export Endpoint**: Secured `GET /api/analytics/export/teams` with `Depends(auth.get_current_user)`, scoped results to the caller's own `SavedTeam` rows, and removed per-row `User` lookups while keeping `/api/analytics/export/pokemon` public.
+- **Hardened CORS Allowlist**: Removed the `"*"` (`allow_origin_regex=".*"`) wildcard branch and `https://poke-architect-.*\.vercel\.app` regex from `backend/main.py`. Only built-in defaults plus explicit `ALLOWED_ORIGINS` entries are allowed, and `"*"` entries are ignored with a warning.
+- **Sanitized Error Responses**: Updated `global_exception_handler` in `backend/main.py` to log tracebacks server-side, return only `{"detail": "Internal Server Error"}`, and echo `Origin` only when in `allowed_origins`. Replaced `str(e)` detail leakage in `/api/pokemon` with `"Database query failed"`.
+- **Security Tests & Documentation**: Added `tests/test_security.py` and `docs/security-hardening.md` documenting implemented fixes and planned follow-up improvements.

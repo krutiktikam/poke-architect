@@ -5,13 +5,13 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from authlib.integrations.starlette_client import OAuth
 from jose import jwt, JWTError
+from .config import SECRET_KEY
 from .database import get_db
 from .models import User
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 # JWT Configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-it-in-prod")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7 # 1 week
 
