@@ -395,3 +395,33 @@ class RegionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# Learnsets (Version Groups)
+class VersionGroupBrief(BaseModel):
+    id: int
+    identifier: str
+    generation_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+
+class LearnsetMove(BaseModel):
+    move: MoveBase
+    method: str
+    level: int
+    order: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+
+class PokemonLearnsetResponse(BaseModel):
+    pokemon_id: int
+    version_group: VersionGroupBrief
+    total: int
+    moves: List[LearnsetMove]
+
+    class Config:
+        from_attributes = True

@@ -97,9 +97,10 @@ const Header: React.FC = () => {
               </Link>
               <button 
                 onClick={logout}
+                aria-label="Logout"
                 className="p-2.5 text-slate-600 hover:text-red-400 transition-all"
               >
-                <LogOut size={18} />
+                <LogOut size={18} aria-hidden="true" />
               </button>
             </div>
           ) : (

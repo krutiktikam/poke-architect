@@ -48,3 +48,10 @@ dist-ssr/
 .cache/
 frontend/test-results/
 frontend/playwright-report/
+
+*.bak
+.ruff_cache/
+.claude/
+dry_run_diff.csv
+item_flags_diff.csv
+pokemon.db.bak*

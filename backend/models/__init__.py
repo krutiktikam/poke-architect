@@ -1,5 +1,17 @@
 from typing import Optional
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, Boolean, Text, text
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Float,
+    ForeignKey,
+    DateTime,
+    Boolean,
+    Text,
+    text,
+    UniqueConstraint,
+    Index,
+)
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from datetime import datetime
 from backend.database import Base
@@ -233,6 +245,13 @@ class Nature(Base):
     decreased_stat = Column(String, nullable=True)  # e.g., 'attack', 'defense', etc.
     increased_stat = Column(String, nullable=True)
 
+class PokemonMoveMethod(Base):
+    __tablename__ = "pokemon_move_methods"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=False)
+    identifier: Mapped[str] = mapped_column(String(64), unique=True)
+    name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
+
 class PokemonMove(Base):
     __tablename__ = "pokemon_moves"
 
@@ -241,6 +260,23 @@ class PokemonMove(Base):
     move_id = Column(Integer, ForeignKey("moves.id"))
     generation_id = Column(Integer)  # could also be version_group_id
     learn_method = Column(String)
+
+    version_group_id = Column(Integer, ForeignKey("version_groups.id"), nullable=True)
+    method_id = Column(Integer, ForeignKey("pokemon_move_methods.id"), nullable=True)
+    level = Column(Integer, nullable=False, default=0, server_default=text("0"))
+    order = Column(Integer, nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint(
+            "pokemon_id",
+            "version_group_id",
+            "move_id",
+            "method_id",
+            "level",
+            name="uq_pokemon_moves_natural_key",
+        ),
+        Index("ix_pokemon_moves_lookup", "pokemon_id", "version_group_id"),
+    )
 
     pokemon = relationship("Pokemon", back_populates="pokemon_moves")
     move = relationship("Move", back_populates="pokemon_moves")

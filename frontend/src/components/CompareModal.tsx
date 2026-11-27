@@ -38,8 +38,8 @@ const CompareModal: React.FC<CompareModalProps> = ({
             </div>
             <h2 className="text-2xl font-black text-slate-800 m-0 uppercase tracking-tight">Battle Simulation</h2>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-            <X size={24} className="text-slate-400" />
+          <button onClick={onClose} aria-label="Close" className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+            <X size={24} className="text-slate-400" aria-hidden="true" />
           </button>
         </div>
 
